@@ -4,6 +4,7 @@ import {
   ElPagination,
   type PaginationProps,
   type ElTable,
+  TableInstance,
 } from "element-plus";
 import type {
   Pagination,
@@ -28,7 +29,7 @@ const withTable = <FormData extends object, RecordData extends object>(
       props: ElPagination["props"],
       setup(props, { expose, attrs }) {
         const selectorRef = ref<FormInstance>();
-        const tableRef = ref<typeof ElTable>();
+        const tableRef = ref<TableInstance>();
         const tableDataRef = ref<RecordData[]>();
         const pageinationRef = ref<Pagination>(DefaultPagination);
         const loading = ref<boolean>(false);

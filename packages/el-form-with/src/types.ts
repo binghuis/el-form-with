@@ -3,6 +3,7 @@ import type {
   FormInstance,
   MessageOptions,
   ElTable,
+  TableInstance,
 } from "element-plus";
 import type { FunctionalComponent, Ref } from "vue";
 
@@ -68,7 +69,7 @@ export type TableSelectorProps = {
 export type TableSelector = FunctionalComponent<TableSelectorProps>;
 
 export type TableContainerProps<RecordData> = {
-  table: Ref<typeof ElTable | undefined>;
+  table: Ref<TableInstance | undefined>;
   data?: RecordData[];
 };
 
