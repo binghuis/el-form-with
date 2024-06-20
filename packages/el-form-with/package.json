@@ -24,8 +24,7 @@
   ],
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup",
-    "publish": "pnpm publish"
+    "build": "tsup"
   },
   "dependencies": {
     "element-plus": "^2.7.5",

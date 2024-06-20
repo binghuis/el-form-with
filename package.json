@@ -4,8 +4,7 @@
   },
   "scripts": {
     "dev:lib": "pnpm --prefix $npm_package_config_libdir dev",
-    "build:lib": "pnpm --prefix $npm_package_config_libdir build",
-    "publish:lib": "pnpm --prefix $npm_package_config_libdir publish"
+    "build:lib": "pnpm --prefix $npm_package_config_libdir build"
   },
   "config": {
     "libdir": "./packages/el-form-with"
