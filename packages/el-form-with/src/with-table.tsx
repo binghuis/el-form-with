@@ -3,7 +3,6 @@ import {
   type FormInstance,
   ElPagination,
   type PaginationProps,
-  type ElTable,
   TableInstance,
 } from "element-plus";
 import type {
