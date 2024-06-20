@@ -12,6 +12,7 @@ import type {
   WithTableParams,
   Request,
   TableSearch,
+  Filters,
 } from "./types";
 import { getFormDataByFields } from "./utils";
 
@@ -33,9 +34,13 @@ const withTable = <FormData extends object, RecordData extends object>(
         const tableDataRef = ref<RecordData[]>();
         const pageinationRef = ref<Pagination>(DefaultPagination);
         const loading = ref<boolean>(false);
+        const filtersRef = ref<Filters>({});
 
         const request: Request<RecordData> = async (params) => {
-          const { pagination = pageinationRef.value, filters } = params ?? {};
+          const {
+            pagination = pageinationRef.value,
+            filters = filtersRef.value,
+          } = params ?? {};
 
           const formData = getFormDataByFields<FormData>(
             selectorRef.value?.fields
@@ -50,6 +55,7 @@ const withTable = <FormData extends object, RecordData extends object>(
             ...pagination,
             total: res?.total,
           };
+          filtersRef.value = filters;
           tableDataRef.value = res?.list;
           loading.value = false;
         };
@@ -61,7 +67,7 @@ const withTable = <FormData extends object, RecordData extends object>(
 
         const reset = async () => {
           selectorRef.value?.resetFields();
-          search();
+          search({ filters: {} });
         };
 
         const refresh = request;
@@ -81,6 +87,7 @@ const withTable = <FormData extends object, RecordData extends object>(
                 table={tableRef}
                 data={tableDataRef.value}
                 search={search}
+                filters={toRaw(filtersRef.value)}
               />
               <ElPagination
                 {...props}

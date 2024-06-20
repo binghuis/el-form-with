@@ -1,5 +1,6 @@
 import type {
   ElMessageBoxOptions,
+  Filter,
   FormInstance,
   MessageOptions,
   TableColumnCtx,
@@ -17,6 +18,8 @@ export enum FormMode {
   Add = "add",
   Edit = "edit",
 }
+
+export type Filters = Record<string, (string | number)[]>;
 
 export type FormContainerProps = {
   form: Ref<FormInstance | undefined>;
@@ -68,14 +71,13 @@ export type TableSelectorProps = {
 
 export type TableSelector = FunctionalComponent<TableSelectorProps>;
 
-export type TableSearch = (params?: {
-  filters?: Record<string, (string | number)[]>;
-}) => void;
+export type TableSearch = (params?: { filters?: Filters }) => void;
 
 export type TableContainerProps<RecordData> = {
   table: Ref<TableInstance | undefined>;
   data?: RecordData[];
   search: TableSearch;
+  filters: Filters;
 };
 
 export type TableContainer<RecordData> = FunctionalComponent<
@@ -96,7 +98,7 @@ export interface RequesterResponse<Item> {
 export interface RequesterParams<FormData, RecordData> {
   query: Partial<FormData>;
   pagination: Pagination;
-  filters?: Record<string, (string | number)[]>;
+  filters?: Filters;
 }
 
 export interface Requester<FormData, RecordData> {
@@ -107,7 +109,7 @@ export interface Requester<FormData, RecordData> {
 
 export interface RequestParams<RecordData> {
   pagination?: Pagination;
-  filters?: Record<string, (string | number)[]>;
+  filters?: Filters;
 }
 
 export type Request<RecordData> = (params?: RequestParams<RecordData>) => void;
