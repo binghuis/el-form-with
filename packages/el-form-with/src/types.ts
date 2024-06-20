@@ -2,7 +2,6 @@ import type {
   ElMessageBoxOptions,
   FormInstance,
   MessageOptions,
-  ElTable,
   TableInstance,
 } from "element-plus";
 import type { FunctionalComponent, Ref } from "vue";
@@ -18,7 +17,7 @@ export enum FormMode {
   Edit = "edit",
 }
 
-export type FormComponentProps = {
+export type FormContainerProps = {
   form: Ref<FormInstance | undefined>;
   mode: FormMode;
   data?: FormData;
@@ -27,7 +26,7 @@ export type FormComponentProps = {
   loading: boolean;
 };
 
-export type FormComponent = FunctionalComponent<FormComponentProps>;
+export type FormContainer = FunctionalComponent<FormContainerProps>;
 
 export type OpenOverlayParams<FormData, RecordData> = {
   title: string;

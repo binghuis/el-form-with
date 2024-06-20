@@ -2,7 +2,7 @@ import { defineComponent, ref, isProxy, toRaw } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import {
   FormMode,
-  type FormComponent,
+  type FormContainer,
   type OpenOverlayParams,
   type WithModalParams,
 } from "./types";
@@ -11,7 +11,7 @@ import { getFormDataByFields, isDate, isInEnum } from "./utils";
 const withModal = <FormData extends object, RecordData extends object>(
   params?: WithModalParams<FormData, RecordData>
 ) => {
-  return (FormCom: FormComponent) => {
+  return (FormArea: FormContainer) => {
     return defineComponent<Partial<DialogProps>>({
       props: ElDialog["props"],
       setup(props, { expose, attrs }) {
@@ -78,7 +78,7 @@ const withModal = <FormData extends object, RecordData extends object>(
                 modelValue={visible.value}
                 title={title.value}
               >
-                <FormCom
+                <FormArea
                   loading={loading.value}
                   form={formRef}
                   mode={mode.value}

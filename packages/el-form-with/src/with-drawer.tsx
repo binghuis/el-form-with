@@ -10,7 +10,7 @@ import {
 } from "element-plus";
 import {
   FormMode,
-  type FormComponent,
+  type FormContainer,
   type OpenOverlayParams,
   type WithDrawerParams,
 } from "./types";
@@ -39,7 +39,7 @@ const withDrawer = <FormData extends object, RecordData extends object>(
     cancelMsgBoxOpts = true,
   } = params ?? {};
 
-  return (FormCom: FormComponent) => {
+  return (FormArea: FormContainer) => {
     return defineComponent<Partial<DrawerProps>>({
       props: ElDrawer["props"],
       setup(props, { expose, attrs }) {
@@ -133,7 +133,7 @@ const withDrawer = <FormData extends object, RecordData extends object>(
                 modelValue={visible.value}
                 title={title.value}
               >
-                <FormCom
+                <FormArea
                   form={formRef}
                   mode={mode.value}
                   ok={ok}
