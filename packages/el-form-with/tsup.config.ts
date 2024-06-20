@@ -1,4 +1,6 @@
 import { defineConfig } from "tsup";
+// @ts-ignore
+import vueJsx from "unplugin-vue-jsx/esbuild";
 
 export default defineConfig({
   entry: ["./src/index.ts"],
@@ -11,9 +13,5 @@ export default defineConfig({
   splitting: true,
   target: "es2020",
   minify: true,
-  esbuildOptions(options) {
-    options.banner = {
-      js: '"use client"',
-    };
-  },
+  esbuildPlugins: [vueJsx()],
 });
