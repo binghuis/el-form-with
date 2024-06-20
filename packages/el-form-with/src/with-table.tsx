@@ -1,4 +1,4 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, toRaw } from "vue";
 import {
   type FormInstance,
   ElPagination,
@@ -11,6 +11,7 @@ import type {
   TableSelector,
   WithTableParams,
   Request,
+  TableSearch,
 } from "./types";
 import { getFormDataByFields } from "./utils";
 
@@ -23,7 +24,7 @@ const withTable = <FormData extends object, RecordData extends object>(
     pageSize: pageSize ?? 10,
     total: 0,
   };
-  return (Selector: TableSelector, Table: TableContainer<RecordData>) => {
+  return (Selector: TableSelector, TableArea: TableContainer<RecordData>) => {
     return defineComponent<Partial<PaginationProps>>({
       props: ElPagination["props"],
       setup(props, { expose, attrs }) {
@@ -33,14 +34,17 @@ const withTable = <FormData extends object, RecordData extends object>(
         const pageinationRef = ref<Pagination>(DefaultPagination);
         const loading = ref<boolean>(false);
 
-        const request: Request<FormData, RecordData> = async (params) => {
-          const { pagination = pageinationRef.value } = params ?? {};
+        const request: Request<RecordData> = async (params) => {
+          const { pagination = pageinationRef.value, filters } = params ?? {};
+
           const formData = getFormDataByFields<FormData>(
             selectorRef.value?.fields
           );
           loading.value = true;
           const res = await requester?.({
-            query: { ...formData, ...pagination },
+            query: formData,
+            pagination,
+            filters,
           });
           pageinationRef.value = {
             ...pagination,
@@ -50,8 +54,9 @@ const withTable = <FormData extends object, RecordData extends object>(
           loading.value = false;
         };
 
-        const search = async () => {
-          request({ pagination: DefaultPagination });
+        const search: TableSearch = async (params) => {
+          const { filters } = params ?? {};
+          request({ pagination: DefaultPagination, filters });
         };
 
         const reset = async () => {
@@ -72,7 +77,11 @@ const withTable = <FormData extends object, RecordData extends object>(
                 reset={reset}
                 refresh={refresh}
               />
-              <Table table={tableRef} data={tableDataRef.value} />
+              <TableArea
+                table={tableRef}
+                data={tableDataRef.value}
+                search={search}
+              />
               <ElPagination
                 {...props}
                 total={pageinationRef.value.total}
