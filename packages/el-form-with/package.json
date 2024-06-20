@@ -34,5 +34,9 @@
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "unplugin-vue-jsx": "^0.4.0"
+  },
+  "peerDependencies": {
+    "element-plus": ">2.0.0",
+    "vue": ">3.0.0"
   }
 }
