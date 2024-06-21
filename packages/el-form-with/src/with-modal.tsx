@@ -6,7 +6,7 @@ import {
   type OpenOverlayParams,
   type WithModalParams,
 } from "./types";
-import { getFormDataByFields, isDate, isInEnum } from "./utils";
+import { getFormDataByFields, isInEnum } from "./utils";
 
 const withModal = <FormData extends object, RecordData extends object>(
   params?: WithModalParams<FormData, RecordData>

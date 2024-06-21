@@ -1,11 +1,4 @@
-import type {
-  ElMessageBoxOptions,
-  Filter,
-  FormInstance,
-  MessageOptions,
-  TableColumnCtx,
-  TableInstance,
-} from "element-plus";
+import type { FormInstance, MessageOptions, TableInstance } from "element-plus";
 import type { FunctionalComponent, Ref } from "vue";
 
 export interface PlainObject {
@@ -41,7 +34,8 @@ export type OpenOverlayParams<FormData, RecordData> = {
 
 export type WithDrawerParams<FormData, RecordData> = {
   successMsgOpts?: Partial<MessageOptions> | boolean;
-  cancelMsgBoxOpts?: Partial<ElMessageBoxOptions> | boolean;
+  beforeClose?: () => Promise<"confirm"> | Promise<void>;
+  afterClose?: () => void | Promise<void>;
   submit: (params: {
     mode: FormMode;
     data?: FormData | null;

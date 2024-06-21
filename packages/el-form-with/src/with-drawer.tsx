@@ -1,43 +1,17 @@
 import { defineComponent, ref } from "vue";
-import {
-  type FormInstance,
-  ElDrawer,
-  type DrawerProps,
-  ElMessageBox,
-  ElMessage,
-  type ElMessageBoxOptions,
-  type MessageOptions,
-} from "element-plus";
+import { type FormInstance, ElDrawer, type DrawerProps } from "element-plus";
 import {
   FormMode,
   type FormContainer,
   type OpenOverlayParams,
   type WithDrawerParams,
 } from "./types";
-import { getFormDataByFields, isDate, isInEnum } from "./utils";
-
-const DefaultSuccessMsgOpts: Partial<MessageOptions> = {
-  message: "创建成功",
-  plain: true,
-  type: "success",
-};
-
-const DefaultCancelMsgBoxOpts: Partial<ElMessageBoxOptions> = {
-  title: "确认退出当前表单?",
-  message: "关闭表单当前已填信息将会丢失。",
-  type: "warning",
-  confirmButtonText: "关闭",
-  cancelButtonText: "取消",
-};
+import { getFormDataByFields, isInEnum } from "./utils";
 
 const withDrawer = <FormData extends object, RecordData extends object>(
   params?: WithDrawerParams<FormData, RecordData>
 ) => {
-  const {
-    submit,
-    successMsgOpts = true,
-    cancelMsgBoxOpts = true,
-  } = params ?? {};
+  const { submit, beforeClose, afterClose } = params ?? {};
 
   return (FormArea: FormContainer) => {
     return defineComponent<Partial<DrawerProps>>({
@@ -51,27 +25,11 @@ const withDrawer = <FormData extends object, RecordData extends object>(
         const record = ref<RecordData | null>();
         const loading = ref<boolean>(false);
 
-        const close = () => {
-          if (cancelMsgBoxOpts) {
-            const localCancelMsgBoxOpts =
-              typeof cancelMsgBoxOpts === "boolean"
-                ? DefaultCancelMsgBoxOpts
-                : { ...DefaultCancelMsgBoxOpts, ...cancelMsgBoxOpts };
-
-            ElMessageBox.confirm(
-              localCancelMsgBoxOpts.message,
-              localCancelMsgBoxOpts.title,
-              {
-                confirmButtonText: localCancelMsgBoxOpts.confirmButtonText,
-                cancelButtonText: localCancelMsgBoxOpts.cancelButtonText,
-                type: localCancelMsgBoxOpts.type,
-              }
-            )
-              .then(() => {
-                visible.value = false;
-                formRef.value?.resetFields();
-              })
-              .catch(() => {});
+        const close = async () => {
+          const res = await beforeClose?.();
+          if (res === "confirm") {
+            visible.value = false;
+            formRef.value?.resetFields();
           }
         };
 
@@ -111,12 +69,7 @@ const withDrawer = <FormData extends object, RecordData extends object>(
             data.value = formData;
             loading.value = false;
             close();
-            if (successMsgOpts) {
-              ElMessage({
-                ...DefaultSuccessMsgOpts,
-                ...(typeof successMsgOpts === "boolean" ? {} : successMsgOpts),
-              });
-            }
+            afterClose?.();
           }
         };
 
