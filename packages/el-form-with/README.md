@@ -8,8 +8,8 @@ English · [简体中文](./packages/el-form-with/README.zh-CN.md)
 
 [![npm version](https://img.shields.io/npm/v/el-form-with?style=flat-square)](https://www.npmjs.com/package/el-form-with)
 [![GitHub](https://img.shields.io/github/license/binghuis/el-form-with.svg?style=flat-square)](https://github.com/binghuis/el-form-with/blob/main/LICENSE)
-![npm peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/vue?style=flat-square)
-![npm peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/element-plus?style=flat-square)
+![vue peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/vue?style=flat-square)
+![element-plus peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/element-plus?style=flat-square)
 
 </div>
 
