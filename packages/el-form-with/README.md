@@ -1,6 +1,6 @@
 # el-form-with
 
-English · [简体中文](./README.zh-CN.md)
+English · [简体中文](./packages/el-form-with/README.zh-CN.md)
 
 <div align="left">
 
