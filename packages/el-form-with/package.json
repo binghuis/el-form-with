@@ -1,6 +1,6 @@
 {
   "name": "el-form-with",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Quickly and conveniently combine ElementPlus Form with other components.",
   "type": "module",
   "license": "MIT",
@@ -26,17 +26,13 @@
     "dev": "tsup --watch",
     "build": "tsup"
   },
-  "dependencies": {
-    "element-plus": "^2.7.5",
-    "vue": "^3.4.29"
+  "peerDependencies": {
+    "element-plus": ">=2.0.0",
+    "vue": ">=3.0.0"
   },
   "devDependencies": {
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "unplugin-vue-jsx": "^0.4.0"
-  },
-  "peerDependencies": {
-    "element-plus": ">=2.0.0",
-    "vue": ">=3.0.0"
   }
 }

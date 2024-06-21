@@ -15,10 +15,10 @@ importers:
   packages/el-form-with:
     dependencies:
       element-plus:
-        specifier: ^2.7.5
+        specifier: '>=2.0.0'
         version: 2.7.5(vue@3.4.29(typescript@5.4.5))
       vue:
-        specifier: ^3.4.29
+        specifier: '>=3.0.0'
         version: 3.4.29(typescript@5.4.5)
     devDependencies:
       tsup:
