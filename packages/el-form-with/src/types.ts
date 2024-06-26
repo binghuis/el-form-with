@@ -11,17 +11,20 @@ type MaybeUndefined<T> = T | undefined;
 
 export type TableFilters = Record<string, (string | number)[]>;
 
-export type FormContainerProps = {
+export type FormContainerProps<FormData, RecordData> = {
   form: Ref<MaybeUndefined<FormInstance>>;
   mode: FormMode;
   data?: FormData;
+  record?: RecordData;
   close: () => void;
   ok: () => void;
   loading: boolean;
   extra?: PlainObject | null;
 };
 
-export type FormContainer = FunctionalComponent<FormContainerProps>;
+export type FormContainer<FormData, RecordData> = FunctionalComponent<
+  FormContainerProps<FormData, RecordData>
+>;
 
 export type OpenOverlayParams<FormData, RecordData> = {
   title: string;

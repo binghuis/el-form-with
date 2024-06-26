@@ -7,14 +7,14 @@ import {
   type PlainObject,
   type WithDrawerParams,
 } from "./types";
-import { getFormDataByFields, isInEnum } from "./utils";
+import { getFormDataByFields } from "./utils";
 
 const withDrawer = <FormData extends object, RecordData extends object>(
   params?: WithDrawerParams<FormData, RecordData>
 ) => {
   const { submit, beforeClose, afterClose } = params ?? {};
 
-  return (FormArea: FormContainer) => {
+  return (FormArea: FormContainer<FormData, RecordData>) => {
     return defineComponent<Partial<DrawerProps>>({
       props: ElDrawer["props"],
       setup(props, { expose, attrs }) {

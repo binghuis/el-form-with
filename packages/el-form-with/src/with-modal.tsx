@@ -7,12 +7,12 @@ import {
   type PlainObject,
   type WithModalParams,
 } from "./types";
-import { getFormDataByFields, isInEnum } from "./utils";
+import { getFormDataByFields } from "./utils";
 
 const withModal = <FormData extends object, RecordData extends object>(
   params?: WithModalParams<FormData, RecordData>
 ) => {
-  return (FormArea: FormContainer) => {
+  return (FormArea: FormContainer<FormData, RecordData>) => {
     const visible = ref<boolean>(false);
     const formRef = ref<FormInstance>();
     const title = ref<string>();

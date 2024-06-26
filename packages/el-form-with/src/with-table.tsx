@@ -1,11 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  ref,
-  toRaw,
-  type Ref,
-} from "vue";
+import { computed, defineComponent, onMounted, ref, toRaw } from "vue";
 import {
   type FormInstance,
   ElPagination,
@@ -21,6 +14,7 @@ import type {
   TableSearcher,
   TableFilters,
   PlainObject,
+  Loadings,
 } from "./types";
 import { getFormDataByFields } from "./utils";
 
@@ -42,11 +36,7 @@ const withTable = <FormData extends object, RecordData extends object>(
     const tableRef = ref<TableInstance>();
     const tableDataRef = ref<RecordData[]>();
     const pageinationRef = ref<Pagination>(DefaultPagination);
-    const loadings = ref<{
-      search: boolean;
-      reset: boolean;
-      refresh: boolean;
-    }>({
+    const loadings = ref<Loadings>({
       search: false,
       reset: false,
       refresh: false,
