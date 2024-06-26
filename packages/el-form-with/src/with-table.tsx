@@ -1,4 +1,4 @@
-import { defineComponent, ref, toRaw } from "vue";
+import { defineComponent, onMounted, ref, toRaw } from "vue";
 import {
   type FormInstance,
   ElPagination,
@@ -8,11 +8,11 @@ import {
 import type {
   Pagination,
   TableContainer,
-  TableSelector,
+  TableSelectorContainer,
   WithTableParams,
   Request,
-  TableSearch,
-  Filters,
+  TableSearcher,
+  TableFilters,
 } from "./types";
 import { getFormDataByFields } from "./utils";
 
@@ -25,54 +25,56 @@ const withTable = <FormData extends object, RecordData extends object>(
     pageSize: pageSize ?? 10,
     total: 0,
   };
-  return (Selector: TableSelector, TableArea: TableContainer<RecordData>) => {
+  return (
+    Selector: TableSelectorContainer,
+    TableArea: TableContainer<RecordData>
+  ) => {
+    const selectorRef = ref<FormInstance>();
+    const tableRef = ref<TableInstance>();
+    const tableDataRef = ref<RecordData[]>();
+    const pageinationRef = ref<Pagination>(DefaultPagination);
+    const loading = ref<boolean>(false);
+    const filtersRef = ref<TableFilters>({});
+
+    const request: Request<RecordData> = async (params) => {
+      const { pagination = pageinationRef.value, filters = filtersRef.value } =
+        params ?? {};
+
+      const formData = getFormDataByFields<FormData>(selectorRef.value?.fields);
+      loading.value = true;
+      const res = await requester?.({
+        query: formData,
+        pagination,
+        filters,
+      });
+      pageinationRef.value = {
+        ...pagination,
+        total: res?.total,
+      };
+      filtersRef.value = filters;
+      tableDataRef.value = res?.list;
+      loading.value = false;
+    };
+
+    const search: TableSearcher = async (params) => {
+      const { filters } = params ?? {};
+      request({ pagination: DefaultPagination, filters });
+    };
+
+    const reset = async () => {
+      selectorRef.value?.resetFields();
+      search({ filters: {} });
+    };
+    const refresh = request;
+
     return defineComponent<Partial<PaginationProps>>({
       props: ElPagination["props"],
       setup(props, { expose, attrs }) {
-        const selectorRef = ref<FormInstance>();
-        const tableRef = ref<TableInstance>();
-        const tableDataRef = ref<RecordData[]>();
-        const pageinationRef = ref<Pagination>(DefaultPagination);
-        const loading = ref<boolean>(false);
-        const filtersRef = ref<Filters>({});
-
-        const request: Request<RecordData> = async (params) => {
-          const {
-            pagination = pageinationRef.value,
-            filters = filtersRef.value,
-          } = params ?? {};
-
-          const formData = getFormDataByFields<FormData>(
-            selectorRef.value?.fields
-          );
-          loading.value = true;
-          const res = await requester?.({
-            query: formData,
-            pagination,
-            filters,
-          });
-          pageinationRef.value = {
-            ...pagination,
-            total: res?.total,
-          };
-          filtersRef.value = filters;
-          tableDataRef.value = res?.list;
-          loading.value = false;
-        };
-
-        const search: TableSearch = async (params) => {
-          const { filters } = params ?? {};
-          request({ pagination: DefaultPagination, filters });
-        };
-
-        const reset = async () => {
-          selectorRef.value?.resetFields();
-          search({ filters: {} });
-        };
-
-        const refresh = request;
-
         expose({ search, reset, refresh });
+
+        onMounted(() => {
+          search();
+        });
 
         return () => {
           return (
@@ -82,12 +84,14 @@ const withTable = <FormData extends object, RecordData extends object>(
                 search={search}
                 reset={reset}
                 refresh={refresh}
+                loading={loading.value}
               />
               <TableArea
                 table={tableRef}
                 data={tableDataRef.value}
                 search={search}
                 filters={toRaw(filtersRef.value)}
+                loading={loading.value}
               />
               <ElPagination
                 {...props}

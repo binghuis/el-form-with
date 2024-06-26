@@ -6,13 +6,13 @@ export interface PlainObject {
 }
 
 export enum FormMode {
-  View = "view",
-  Copy = "copy",
-  Add = "add",
-  Edit = "edit",
+  VIEW = "view",
+  COPY = "copy",
+  ADD = "add",
+  EDIT = "edit",
 }
 
-export type Filters = Record<string, (string | number)[]>;
+export type TableFilters = Record<string, (string | number)[]>;
 
 export type FormContainerProps = {
   form: Ref<FormInstance | undefined>;
@@ -56,25 +56,28 @@ export type WithTableParams<FormData, RecordData> = {
   requester?: Requester<FormData, RecordData>;
 };
 
-export type TableSelectorProps = {
+export type TableSelectorContainerProps = {
   form: Ref<FormInstance | undefined>;
   search: () => void;
   reset: () => void;
   refresh: () => void;
+  loading: boolean;
 };
 
-export type TableSelector = FunctionalComponent<TableSelectorProps>;
+export type TableSelectorContainer =
+  FunctionalComponent<TableSelectorContainerProps>;
 
-export type TableSearch = (params?: { filters?: Filters }) => void;
+export type TableSearcher = (params?: { filters?: TableFilters }) => void;
 
-export type TableContainerProps<RecordData> = {
+export type TableContainerProps<RecordData extends object> = {
   table: Ref<TableInstance | undefined>;
   data?: RecordData[];
-  search: TableSearch;
-  filters: Filters;
+  search: TableSearcher;
+  filters: TableFilters;
+  loading: boolean;
 };
 
-export type TableContainer<RecordData> = FunctionalComponent<
+export type TableContainer<RecordData extends object> = FunctionalComponent<
   TableContainerProps<RecordData>
 >;
 
@@ -92,7 +95,7 @@ export interface RequesterResponse<Item> {
 export interface RequesterParams<FormData, RecordData> {
   query: Partial<FormData>;
   pagination: Pagination;
-  filters?: Filters;
+  filters?: TableFilters;
 }
 
 export interface Requester<FormData, RecordData> {
@@ -103,7 +106,7 @@ export interface Requester<FormData, RecordData> {
 
 export interface RequestParams<RecordData> {
   pagination?: Pagination;
-  filters?: Filters;
+  filters?: TableFilters;
 }
 
 export type Request<RecordData> = (params?: RequestParams<RecordData>) => void;
