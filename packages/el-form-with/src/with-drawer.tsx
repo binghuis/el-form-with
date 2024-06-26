@@ -4,6 +4,7 @@ import {
   FormMode,
   type FormContainer,
   type OpenOverlayParams,
+  type PlainObject,
   type WithDrawerParams,
 } from "./types";
 import { getFormDataByFields, isInEnum } from "./utils";
@@ -20,10 +21,11 @@ const withDrawer = <FormData extends object, RecordData extends object>(
         const visible = ref<boolean>(false);
         const formRef = ref<FormInstance>();
         const title = ref<string>();
-        const mode = ref<FormMode>(FormMode.ADD);
+        const mode = ref<FormMode>("add");
         const data = ref<FormData | null>();
         const record = ref<RecordData | null>();
         const loading = ref<boolean>(false);
+        const extra = ref<PlainObject | null>();
 
         const close = async () => {
           const res = await beforeClose?.();
@@ -34,7 +36,7 @@ const withDrawer = <FormData extends object, RecordData extends object>(
         };
 
         const open = (openParams: OpenOverlayParams<FormData, RecordData>) => {
-          if (!openParams || !isInEnum(FormMode, openParams.mode)) {
+          if (!openParams) {
             return;
           }
           data.value = openParams.initialValue ?? null;
@@ -43,6 +45,7 @@ const withDrawer = <FormData extends object, RecordData extends object>(
             mode.value = openParams.mode;
           }
           title.value = openParams.title ?? "";
+          extra.value = openParams.extra ?? null;
           visible.value = true;
         };
 
@@ -92,6 +95,7 @@ const withDrawer = <FormData extends object, RecordData extends object>(
                   ok={ok}
                   close={close}
                   loading={loading.value}
+                  extra={extra.value}
                 />
               </ElDrawer>
             </div>
