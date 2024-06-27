@@ -48,7 +48,7 @@ const withTable = <
     pageSize: pageSize ?? 10,
     total: 0,
   };
-  return function <Extra extends object = PlainObject>(
+  return function <Extra extends object>(
     SelectorArea: TableSelectorContainer,
     TableArea: TableContainer<RecordValue, Extra>,
     exrea?: Extra

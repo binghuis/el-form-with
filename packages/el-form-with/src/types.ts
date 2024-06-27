@@ -91,8 +91,8 @@ export type TableContainerProps<
 };
 
 export type TableContainer<
-  RecordValue extends object,
-  Extra extends object
+  RecordValue extends object = PlainObject,
+  Extra extends object = PlainObject
 > = FunctionalComponent<TableContainerProps<RecordValue, Extra>>;
 
 export interface Pagination {
