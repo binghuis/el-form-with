@@ -11,11 +11,11 @@ export function isInEnum<T extends {}>(enumObj: T, value: unknown): boolean {
   return Object.values(enumObj).includes(value);
 }
 
-export function getFormDataByFields<FormData extends object>(
+export function getFormValueByFields<FormValue>(
   fields?: FormItemContext[]
-): FormData {
+): FormValue {
   if (!fields || fields?.length === 0) {
-    return null as unknown as FormData;
+    return null as unknown as FormValue;
   }
   return fields.reduce((acc, cur) => {
     let field = cur.fieldValue;
@@ -33,5 +33,5 @@ export function getFormDataByFields<FormData extends object>(
     }
 
     return acc;
-  }, {} as FormData);
+  }, {} as FormValue);
 }

@@ -1,5 +1,5 @@
-import type { FormInstance, MessageOptions, TableInstance } from "element-plus";
-import { MaybeRef, type FunctionalComponent, type Ref } from "vue";
+import type { FormInstance, TableInstance } from "element-plus";
+import { type FunctionalComponent, type Ref } from "vue";
 
 export interface PlainObject {
   [key: string]: unknown;
@@ -11,50 +11,51 @@ type MaybeUndefined<T> = T | undefined;
 
 export type TableFilters = Record<string, (string | number)[]>;
 
-export type FormContainerProps<FormData, RecordData> = {
+export type FormContainerProps<FormValue, RecordValue> = {
   form: Ref<MaybeUndefined<FormInstance>>;
   mode: FormMode;
-  data?: FormData;
-  record?: RecordData;
+  data?: FormValue;
+  record?: RecordValue;
   close: () => void;
   ok: () => void;
   loading: boolean;
-  extra?: PlainObject | null;
-};
-
-export type FormContainer<FormData, RecordData> = FunctionalComponent<
-  FormContainerProps<FormData, RecordData>
->;
-
-export type OpenOverlayParams<FormData, RecordData> = {
-  title: string;
-  initialValue?: FormData;
-  mode?: FormMode;
-  record?: RecordData;
   extra?: PlainObject;
 };
 
-export type WithDrawerParams<FormData, RecordData> = {
+export type FormContainer<
+  FormValue extends object = PlainObject,
+  RecordValue extends object = PlainObject
+> = FunctionalComponent<FormContainerProps<FormValue, RecordValue>>;
+
+export type OpenOverlayParams<FormValue, RecordValue> = {
+  title: string;
+  data?: FormValue;
+  mode?: FormMode;
+  record?: RecordValue;
+  extra?: PlainObject;
+};
+
+export type WithDrawerParams<FormValue, RecordValue> = {
   beforeClose?: () => Promise<"confirm"> | Promise<void>;
   afterClose?: () => void | Promise<void>;
   submit: (params: {
     mode: FormMode;
-    data?: FormData | null;
-    record?: RecordData | null;
+    data?: FormValue;
+    record?: RecordValue;
   }) => Promise<void> | Promise<"success">;
 };
 
-export type WithModalParams<FormData, RecordData> = {
+export type WithModalParams<FormValue, RecordValue> = {
   submit?: (params: {
     mode: FormMode;
-    data?: FormData | null;
-    record?: RecordData | null;
+    data?: FormValue;
+    record?: RecordValue;
   }) => Promise<void> | Promise<"success">;
 };
 
-export type WithTableParams<FormData, RecordData> = {
+export type WithTableParams<FormValue, RecordValue> = {
   pageSize?: number;
-  requester?: Requester<FormData, RecordData>;
+  requester?: Requester<FormValue, RecordValue>;
 };
 
 export type Loadings = {
@@ -75,24 +76,24 @@ export type TableSelectorContainerProps = {
 export type TableSelectorContainer =
   FunctionalComponent<TableSelectorContainerProps>;
 
-export type TableSearcher = (params?: { filters?: TableFilters }) => void;
+export type TableSearch = (params?: { filters?: TableFilters }) => void;
 
 export type TableContainerProps<
-  RecordData extends object,
-  Extra extends PlainObject
+  RecordValue extends object,
+  Extra extends object
 > = {
   table: Ref<TableInstance | undefined>;
-  data?: RecordData[];
-  search: TableSearcher;
+  data?: RecordValue[];
+  search: TableSearch;
   filters: TableFilters;
   isLoading: boolean;
   extra?: Extra;
 };
 
 export type TableContainer<
-  RecordData extends object,
-  Extra extends PlainObject
-> = FunctionalComponent<TableContainerProps<RecordData, Extra>>;
+  RecordValue extends object,
+  Extra extends object
+> = FunctionalComponent<TableContainerProps<RecordValue, Extra>>;
 
 export interface Pagination {
   current?: number;
@@ -105,21 +106,21 @@ export interface RequesterResponse<Item> {
   list: Item[];
 }
 
-export interface RequesterParams<FormData, RecordData> {
-  query: Partial<FormData>;
+export interface RequesterParams<FormValue> {
+  data: Partial<FormValue>;
   pagination: Pagination;
   filters?: TableFilters;
 }
 
-export interface Requester<FormData, RecordData> {
-  (params: RequesterParams<FormData, RecordData>): Promise<
-    RequesterResponse<RecordData>
-  >;
+export interface Requester<FormValue, RecordValue> {
+  (params: RequesterParams<FormValue>): Promise<RequesterResponse<RecordValue>>;
 }
 
-export interface RequestParams<RecordData> {
+export interface RequestParams<RecordValue> {
   pagination?: Pagination;
   filters?: TableFilters;
 }
 
-export type Request<RecordData> = (params?: RequestParams<RecordData>) => void;
+export type Request<RecordValue> = (
+  params?: RequestParams<RecordValue>
+) => void;

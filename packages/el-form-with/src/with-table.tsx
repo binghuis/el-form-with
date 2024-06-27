@@ -1,9 +1,18 @@
-import { computed, defineComponent, onMounted, ref, toRaw } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  ref,
+  toRaw,
+  type PropType,
+} from "vue";
 import {
   type FormInstance,
   ElPagination,
-  type PaginationProps,
   TableInstance,
+  ElRow,
+  ElDivider,
+  type PaginationProps,
 } from "element-plus";
 import type {
   Pagination,
@@ -11,15 +20,27 @@ import type {
   TableSelectorContainer,
   WithTableParams,
   Request,
-  TableSearcher,
+  TableSearch,
   TableFilters,
   PlainObject,
   Loadings,
 } from "./types";
-import { getFormDataByFields } from "./utils";
+import { getFormValueByFields } from "./utils";
 
-const withTable = <FormData extends object, RecordData extends object>(
-  params?: WithTableParams<FormData, RecordData>
+type TableReset = () => Promise<void>;
+type TableRefresh = () => Promise<void>;
+
+export type WithTableRef = {
+  search: TableSearch;
+  reset: TableReset;
+  refresh: TableRefresh;
+};
+
+const withTable = <
+  FormValue extends object = PlainObject,
+  RecordValue extends object = PlainObject
+>(
+  params?: WithTableParams<FormValue, RecordValue>
 ) => {
   const { pageSize = 10, requester } = params ?? {};
   const DefaultPagination: Pagination = {
@@ -27,14 +48,14 @@ const withTable = <FormData extends object, RecordData extends object>(
     pageSize: pageSize ?? 10,
     total: 0,
   };
-  return function <Extra extends PlainObject>(
+  return function <Extra extends object = PlainObject>(
     SelectorArea: TableSelectorContainer,
-    TableArea: TableContainer<RecordData, Extra>,
+    TableArea: TableContainer<RecordValue, Extra>,
     exrea?: Extra
   ) {
     const selectorRef = ref<FormInstance>();
     const tableRef = ref<TableInstance>();
-    const tableDataRef = ref<RecordData[]>();
+    const tableDataRef = ref<RecordValue[]>();
     const pageinationRef = ref<Pagination>(DefaultPagination);
     const loadings = ref<Loadings>({
       search: false,
@@ -47,13 +68,15 @@ const withTable = <FormData extends object, RecordData extends object>(
       return Object.values(loadings.value).some((loading) => loading);
     });
 
-    const request: Request<RecordData> = async (params) => {
+    const request: Request<RecordValue> = async (params) => {
       const { pagination = pageinationRef.value, filters = filtersRef.value } =
         params ?? {};
 
-      const formData = getFormDataByFields<FormData>(selectorRef.value?.fields);
+      const FormValue = getFormValueByFields<FormValue>(
+        selectorRef.value?.fields
+      );
       const res = await requester?.({
-        query: formData,
+        data: FormValue,
         pagination,
         filters,
       });
@@ -65,26 +88,33 @@ const withTable = <FormData extends object, RecordData extends object>(
       tableDataRef.value = res?.list;
     };
 
-    const search: TableSearcher = async (params) => {
+    const search: TableSearch = async (params) => {
       const { filters } = params ?? {};
       loadings.value.search = true;
       await request({ pagination: DefaultPagination, filters });
       loadings.value.search = false;
     };
 
-    const reset = async () => {
+    const reset: TableReset = async () => {
       selectorRef.value?.resetFields();
       loadings.value.reset = true;
       await request({ pagination: DefaultPagination, filters: {} });
       loadings.value.reset = false;
     };
-    const refresh = async () => {
+    const refresh: TableRefresh = async () => {
       loadings.value.refresh = true;
       await request();
       loadings.value.refresh = false;
     };
 
     return defineComponent<Partial<PaginationProps>>({
+      name: "TableWithOverlay",
+      // props: {
+      //   paginationOpts: {
+      //     type: Object as PropType<Partial<PaginationProps>>,
+      //     required: false,
+      //   },
+      // },
       props: ElPagination["props"],
       setup(props, { expose, attrs }) {
         expose({ search, reset, refresh });
@@ -112,19 +142,31 @@ const withTable = <FormData extends object, RecordData extends object>(
                 filters={toRaw(filtersRef.value)}
                 isLoading={isLoading.value}
               />
-              <ElPagination
-                {...props}
-                disabled={isLoading.value}
-                total={pageinationRef.value.total}
-                currentPage={pageinationRef.value.current}
-                pageSize={pageinationRef.value.pageSize}
-                onUpdate:current-page={(current: number) => {
-                  request({ pagination: { ...DefaultPagination, current } });
-                }}
-                onUpdate:page-size={(pageSize: number) => {
-                  request({ pagination: { ...DefaultPagination, pageSize } });
-                }}
-              />
+              <div>
+                <ElDivider />
+                <ElRow justify="end">
+                  <ElPagination
+                    {...props}
+                    layout={
+                      props.layout ?? "total, sizes, prev, pager, next, jumper"
+                    }
+                    disabled={isLoading.value}
+                    total={pageinationRef.value.total}
+                    currentPage={pageinationRef.value.current}
+                    pageSize={pageinationRef.value.pageSize}
+                    onUpdate:current-page={(current: number) => {
+                      request({
+                        pagination: { ...DefaultPagination, current },
+                      });
+                    }}
+                    onUpdate:page-size={(pageSize: number) => {
+                      request({
+                        pagination: { ...DefaultPagination, pageSize },
+                      });
+                    }}
+                  />
+                </ElRow>
+              </div>
             </div>
           );
         };

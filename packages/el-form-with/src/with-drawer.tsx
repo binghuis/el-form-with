@@ -7,25 +7,40 @@ import {
   type PlainObject,
   type WithDrawerParams,
 } from "./types";
-import { getFormDataByFields } from "./utils";
+import { getFormValueByFields } from "./utils";
 
-const withDrawer = <FormData extends object, RecordData extends object>(
-  params?: WithDrawerParams<FormData, RecordData>
+type WithDrawerOpen<FormValue, RecordValue> = (
+  openParams: OpenOverlayParams<FormValue, RecordValue>
+) => void;
+
+export type WithDrawerRef<
+  FormValue extends object = PlainObject,
+  RecordValue extends object = PlainObject
+> = {
+  open: WithDrawerOpen<FormValue, RecordValue>;
+};
+
+const withDrawer = <
+  FormValue extends object = PlainObject,
+  RecordValue extends object = PlainObject
+>(
+  params?: WithDrawerParams<FormValue, RecordValue>
 ) => {
   const { submit, beforeClose, afterClose } = params ?? {};
 
-  return (FormArea: FormContainer<FormData, RecordData>) => {
+  return (FormArea: FormContainer<FormValue, RecordValue>) => {
     return defineComponent<Partial<DrawerProps>>({
+      name: "DrawerWithForm",
       props: ElDrawer["props"],
       setup(props, { expose, attrs }) {
         const visible = ref<boolean>(false);
         const formRef = ref<FormInstance>();
         const title = ref<string>();
         const mode = ref<FormMode>("add");
-        const data = ref<FormData | null>();
-        const record = ref<RecordData | null>();
+        const data = ref<FormValue>();
+        const record = ref<RecordValue>();
         const loading = ref<boolean>(false);
-        const extra = ref<PlainObject | null>();
+        const extra = ref<PlainObject>();
 
         const close = async () => {
           const res = await beforeClose?.();
@@ -35,17 +50,17 @@ const withDrawer = <FormData extends object, RecordData extends object>(
           }
         };
 
-        const open = (openParams: OpenOverlayParams<FormData, RecordData>) => {
+        const open: WithDrawerOpen<FormValue, RecordValue> = (openParams) => {
           if (!openParams) {
             return;
           }
-          data.value = openParams.initialValue ?? null;
-          record.value = openParams.record ?? null;
+          data.value = openParams.data;
+          record.value = openParams.record;
           if (openParams.mode) {
             mode.value = openParams.mode;
           }
           title.value = openParams.title ?? "";
-          extra.value = openParams.extra ?? null;
+          extra.value = openParams.extra;
           visible.value = true;
         };
 
@@ -59,17 +74,19 @@ const withDrawer = <FormData extends object, RecordData extends object>(
             return;
           }
 
-          const formData = getFormDataByFields<FormData>(formRef.value.fields);
+          const FormValue = getFormValueByFields<FormValue>(
+            formRef.value.fields
+          );
 
           loading.value = true;
           const result = await submit?.({
             mode: mode.value,
-            data: formData,
+            data: FormValue,
             record: record.value,
           });
 
           if (result === "success") {
-            data.value = formData;
+            data.value = FormValue;
             loading.value = false;
             close();
             afterClose?.();

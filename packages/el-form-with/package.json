@@ -1,6 +1,6 @@
 {
   "name": "el-form-with",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Quickly and conveniently combine ElementPlus Form with other components.",
   "type": "module",
   "license": "MIT",
