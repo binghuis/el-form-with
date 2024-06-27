@@ -107,15 +107,15 @@ const withTable = <
       loadings.value.refresh = false;
     };
 
-    return defineComponent<Partial<PaginationProps>>({
+    return defineComponent({
       name: "TableWithOverlay",
-      // props: {
-      //   paginationOpts: {
-      //     type: Object as PropType<Partial<PaginationProps>>,
-      //     required: false,
-      //   },
-      // },
-      props: ElPagination["props"],
+      props: {
+        paginationOpts: {
+          type: Object as PropType<Partial<PaginationProps>>,
+          required: false,
+        },
+      },
+      // props: ElPagination["props"],
       setup(props, { expose, attrs }) {
         expose({ search, reset, refresh });
 
@@ -146,9 +146,10 @@ const withTable = <
                 <ElDivider />
                 <ElRow justify="end">
                   <ElPagination
-                    {...props}
+                    {...props.paginationOpts}
                     layout={
-                      props.layout ?? "total, sizes, prev, pager, next, jumper"
+                      props.paginationOpts?.layout ??
+                      "total, sizes, prev, pager, next, jumper"
                     }
                     disabled={isLoading.value}
                     total={pageinationRef.value.total}
