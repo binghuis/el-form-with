@@ -65,7 +65,7 @@ export type Loadings = {
 };
 
 export type TableSelectorContainerProps = {
-  form: Ref<MaybeUndefined<FormInstance>>;
+  selector: Ref<MaybeUndefined<FormInstance>>;
   search: () => void;
   reset: () => void;
   refresh: () => void;
