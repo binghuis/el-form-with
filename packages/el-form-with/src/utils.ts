@@ -1,6 +1,6 @@
 import type { FormItemContext } from "element-plus";
 import { isProxy, toRaw } from "vue";
-import type { PlainObject } from "./types";
+import type { WEPlainObject } from "./types";
 
 export const isDate = (val: any) => val instanceof Date;
 
@@ -29,7 +29,7 @@ export function getFormValueByFields<FormValue>(
     }
 
     if (cur.prop) {
-      (acc as PlainObject)[cur.prop.toString()] = field;
+      (acc as WEPlainObject)[cur.prop.toString()] = field;
     }
 
     return acc;

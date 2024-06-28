@@ -2,125 +2,126 @@ import type { FormInstance, TableInstance } from "element-plus";
 import { type FunctionalComponent, type Ref } from "vue";
 import type { WithModalRef } from "./with-modal";
 import type { WithDrawerRef } from "./with-drawer";
-import type { WithTableRef } from "./with-table";
 
-export interface PlainObject {
+export interface WEPlainObject {
   [key: string]: unknown;
 }
 
-export type FormMode = "view" | "copy" | "add" | "edit";
+export type WEFormMode = "view" | "copy" | "add" | "edit";
 
 type MaybeUndefined<T> = T | undefined;
 
-export type TableFilters = Record<string, (string | number)[]>;
+export type WETableFilters = Record<string, (string | number)[]>;
 
-export type FormContainerProps<FormValue, RecordValue> = {
+export type WEFormContainerProps<FormValue, RecordValue> = {
   form: Ref<MaybeUndefined<FormInstance>>;
-  mode: FormMode;
+  mode: WEFormMode;
   data?: FormValue;
   record?: RecordValue;
   close: () => void;
   ok: () => void;
   loading: boolean;
-  extra?: PlainObject;
+  extra?: WEPlainObject;
 };
 
-export type FormContainer<
-  FormValue extends object = PlainObject,
-  RecordValue extends object = PlainObject
-> = FunctionalComponent<FormContainerProps<FormValue, RecordValue>>;
+export type WEFormContainer<
+  FormValue extends object = WEPlainObject,
+  RecordValue extends object = WEPlainObject
+> = FunctionalComponent<WEFormContainerProps<FormValue, RecordValue>>;
 
-export type OpenOverlayParams<FormValue, RecordValue> = {
+export type WEOpenOverlayParams<FormValue, RecordValue> = {
   title?: string;
   data?: FormValue;
-  mode?: FormMode;
+  mode?: WEFormMode;
   record?: RecordValue;
-  extra?: PlainObject;
+  extra?: WEPlainObject;
 };
 
-export type WithDrawerParams<FormValue, RecordValue> = {
+export type WEWithDrawerParams<FormValue, RecordValue> = {
   beforeClose?: () => Promise<"confirm"> | Promise<void>;
   afterClose?: () => void | Promise<void>;
   submit: (params: {
-    mode: FormMode;
+    mode: WEFormMode;
     data?: FormValue;
     record?: RecordValue;
   }) => Promise<void> | Promise<"success">;
 };
 
-export type WithModalParams<FormValue, RecordValue> = {
+export type WEWithModalParams<FormValue, RecordValue> = {
   submit?: (params: {
-    mode: FormMode;
+    mode: WEFormMode;
     data?: FormValue;
     record?: RecordValue;
   }) => Promise<void> | Promise<"success">;
 };
 
-export type WithTableParams<FormValue, RecordValue> = {
+export type WEWithTableParams<FormValue, RecordValue> = {
   pageSize?: number;
-  requester?: Requester<FormValue, RecordValue>;
+  requester?: WERequester<FormValue, RecordValue>;
 };
 
-export type Loadings = {
+export type WELoadings = {
   search: boolean;
   reset: boolean;
   refresh: boolean;
 };
 
-export type TableSelectorContainerProps = {
+export type WETableSelectorContainerProps = {
   selector: Ref<MaybeUndefined<FormInstance>>;
   search: () => void;
   reset: () => void;
   refresh: () => void;
   isLoading: boolean;
-  loadings: Loadings;
+  loadings: WELoadings;
 };
 
-export type TableSelectorContainer =
-  FunctionalComponent<TableSelectorContainerProps>;
+export type WETableSelectorContainer =
+  FunctionalComponent<WETableSelectorContainerProps>;
 
-export type TableSearch = (params?: { filters?: TableFilters }) => void;
+export type WETableSearch = (params?: { filters?: WETableFilters }) => void;
 
-export type TableContainerProps<RecordValue extends object> = {
+export type WETableContainerProps<RecordValue extends object> = {
   table: Ref<TableInstance | undefined>;
   data?: RecordValue[];
-  search: TableSearch;
-  filters: TableFilters;
+  search: WETableSearch;
+  filters: WETableFilters;
   isLoading: boolean;
-  forms?: Record<string, Ref<WithOverLayRefs>>;
+  forms?: Record<string, Ref<WEWithOverLayRefs>>;
 };
 
-export type WithOverLayRefs = WithModalRef | WithDrawerRef;
+export type WEWithOverLayRefs = WithModalRef | WithDrawerRef;
 
-export type TableContainer<RecordValue extends object = PlainObject> =
-  FunctionalComponent<TableContainerProps<RecordValue>>;
+export type WETableContainer<RecordValue extends object = WEPlainObject> =
+  FunctionalComponent<WETableContainerProps<RecordValue>>;
 
-export interface Pagination {
+export interface WEPagination {
   current?: number;
   pageSize?: number;
   total?: number;
 }
 
-export interface RequesterResponse<Item> {
+export interface WERequesterResponse<Item> {
   total: number;
   list: Item[];
 }
 
-export interface RequesterParams<FormValue> {
+export interface WERequesterParams<FormValue> {
   data: Partial<FormValue>;
-  pagination: Pagination;
-  filters?: TableFilters;
+  pagination: WEPagination;
+  filters?: WETableFilters;
 }
 
-export interface Requester<FormValue, RecordValue> {
-  (params: RequesterParams<FormValue>): Promise<RequesterResponse<RecordValue>>;
+export interface WERequester<FormValue, RecordValue> {
+  (params: WERequesterParams<FormValue>): Promise<
+    WERequesterResponse<RecordValue>
+  >;
 }
 
-export interface RequestParams<RecordValue> {
-  pagination?: Pagination;
-  filters?: TableFilters;
+export interface WERequestParams<RecordValue> {
+  pagination?: WEPagination;
+  filters?: WETableFilters;
 }
 
-export type Request<RecordValue> = (
-  params?: RequestParams<RecordValue>
+export type WERequest<RecordValue> = (
+  params?: WERequestParams<RecordValue>
 ) => void;

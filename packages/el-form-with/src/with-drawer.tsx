@@ -1,34 +1,34 @@
 import { defineComponent, ref } from "vue";
 import { type FormInstance, ElDrawer, type DrawerProps } from "element-plus";
 import {
-  FormMode,
-  type FormContainer,
-  type OpenOverlayParams,
-  type PlainObject,
-  type WithDrawerParams,
+  WEFormMode,
+  type WEFormContainer,
+  type WEOpenOverlayParams,
+  type WEPlainObject,
+  type WEWithDrawerParams,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
 type WithDrawerOpen<FormValue, RecordValue> = (
-  openParams: OpenOverlayParams<FormValue, RecordValue>
+  openParams: WEOpenOverlayParams<FormValue, RecordValue>
 ) => void;
 
 export type WithDrawerRef<
-  FormValue extends object = PlainObject,
-  RecordValue extends object = PlainObject
+  FormValue extends object = WEPlainObject,
+  RecordValue extends object = WEPlainObject
 > = {
   open: WithDrawerOpen<FormValue, RecordValue>;
 };
 
 const withDrawer = <
-  FormValue extends object = PlainObject,
-  RecordValue extends object = PlainObject
+  FormValue extends object = WEPlainObject,
+  RecordValue extends object = WEPlainObject
 >(
-  params?: WithDrawerParams<FormValue, RecordValue>
+  params?: WEWithDrawerParams<FormValue, RecordValue>
 ) => {
   const { submit, beforeClose, afterClose } = params ?? {};
 
-  return (FormArea: FormContainer<FormValue, RecordValue>) => {
+  return (FormArea: WEFormContainer<FormValue, RecordValue>) => {
     return defineComponent<Partial<DrawerProps>>({
       name: "DrawerWithForm",
       props: ElDrawer["props"],
@@ -36,11 +36,11 @@ const withDrawer = <
         const visible = ref<boolean>(false);
         const formRef = ref<FormInstance>();
         const title = ref<string>();
-        const mode = ref<FormMode>("add");
+        const mode = ref<WEFormMode>("add");
         const data = ref<FormValue>();
         const record = ref<RecordValue>();
         const loading = ref<boolean>(false);
-        const extra = ref<PlainObject>();
+        const extra = ref<WEPlainObject>();
 
         const close = async () => {
           const res = await beforeClose?.();

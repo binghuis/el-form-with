@@ -1,40 +1,40 @@
 import { defineComponent, ref } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import {
-  FormMode,
-  type FormContainer,
-  type OpenOverlayParams,
-  type PlainObject,
-  type WithModalParams,
+  WEFormMode,
+  type WEFormContainer,
+  type WEOpenOverlayParams,
+  type WEPlainObject,
+  type WEWithModalParams,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
 type WithModalOpen<FormValue, RecordValue> = (
-  openParams: OpenOverlayParams<FormValue, RecordValue>
+  openParams: WEOpenOverlayParams<FormValue, RecordValue>
 ) => void;
 
 export type WithModalRef<
-  FormValue extends object = PlainObject,
-  RecordValue extends object = PlainObject
+  FormValue extends object = WEPlainObject,
+  RecordValue extends object = WEPlainObject
 > = {
   open: WithModalOpen<FormValue, RecordValue>;
 };
 
 const withModal = <
-  FormValue extends object = PlainObject,
-  RecordValue extends object = PlainObject
+  FormValue extends object = WEPlainObject,
+  RecordValue extends object = WEPlainObject
 >(
-  params?: WithModalParams<FormValue, RecordValue>
+  params?: WEWithModalParams<FormValue, RecordValue>
 ) => {
-  return (FormArea: FormContainer<FormValue, RecordValue>) => {
+  return (FormArea: WEFormContainer<FormValue, RecordValue>) => {
     const visible = ref<boolean>(false);
     const formRef = ref<FormInstance>();
     const title = ref<string>();
-    const mode = ref<FormMode>("add");
+    const mode = ref<WEFormMode>("add");
     const data = ref<FormValue>();
     const record = ref<RecordValue>();
     const loading = ref<boolean>(false);
-    const extra = ref<PlainObject>();
+    const extra = ref<WEPlainObject>();
 
     const close = () => {
       visible.value = false;

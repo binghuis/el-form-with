@@ -8,14 +8,14 @@ import {
 } from "vue";
 import { type FormInstance, TableInstance } from "element-plus";
 import type {
-  Pagination,
-  WithTableParams,
-  Request,
-  TableSearch,
-  TableFilters,
-  PlainObject,
-  Loadings,
-  WithOverLayRefs,
+  WEPagination,
+  WEWithTableParams,
+  WERequest,
+  WETableSearch,
+  WETableFilters,
+  WEPlainObject,
+  WELoadings,
+  WEWithOverLayRefs,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -23,19 +23,19 @@ type TableReset = () => Promise<void>;
 type TableRefresh = () => Promise<void>;
 
 export type WithTableRef = {
-  search: TableSearch;
+  search: WETableSearch;
   reset: TableReset;
   refresh: TableRefresh;
 };
 
 const withTable = <
-  FormValue extends object = PlainObject,
-  RecordValue extends object = PlainObject
+  FormValue extends object = WEPlainObject,
+  RecordValue extends object = WEPlainObject
 >(
-  params?: WithTableParams<FormValue, RecordValue>
+  params?: WEWithTableParams<FormValue, RecordValue>
 ) => {
   const { pageSize = 10, requester } = params ?? {};
-  const DefaultPagination: Pagination = {
+  const DefaultPagination: WEPagination = {
     current: 1,
     pageSize: pageSize ?? 10,
     total: 0,
@@ -44,19 +44,19 @@ const withTable = <
   const selectorRef = ref<FormInstance>();
   const tableRef = ref<TableInstance>();
   const tableDataRef = ref<RecordValue[]>();
-  const pageinationRef = ref<Pagination>(DefaultPagination);
-  const loadings = ref<Loadings>({
+  const pageinationRef = ref<WEPagination>(DefaultPagination);
+  const loadings = ref<WELoadings>({
     search: false,
     reset: false,
     refresh: false,
   });
-  const filtersRef = ref<TableFilters>({});
+  const filtersRef = ref<WETableFilters>({});
 
   const isLoading = computed(() => {
     return Object.values(loadings.value).some((loading) => loading);
   });
 
-  const request: Request<RecordValue> = async (params) => {
+  const request: WERequest<RecordValue> = async (params) => {
     const { pagination = pageinationRef.value, filters = filtersRef.value } =
       params ?? {};
 
@@ -76,7 +76,7 @@ const withTable = <
     tableDataRef.value = res?.list;
   };
 
-  const search: TableSearch = async (params) => {
+  const search: WETableSearch = async (params) => {
     const { filters } = params ?? {};
     loadings.value.search = true;
     await request({ pagination: DefaultPagination, filters });
@@ -100,7 +100,7 @@ const withTable = <
     name: "TableWithOverlay",
     props: {
       forms: {
-        type: Object as () => Record<string, Ref<WithOverLayRefs>>,
+        type: Object as () => Record<string, Ref<WEWithOverLayRefs>>,
         required: false,
       },
     },
