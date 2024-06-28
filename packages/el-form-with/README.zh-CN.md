@@ -40,20 +40,20 @@ const ModalWithForm = withModal({
 
 export default defineComponent({
   setup() {
-    const ModalWithFormRef = ref<WithModalRef>();
+    const ModalWithRef = ref<WithModalRef>();
 
     return (
       <div>
         <ElButton
           onClick={() => {
-            ModalWithFormRef.value.open({
+            ModalWithRef.value.open({
               mode: "add",
             });
           }}
         >
           Create
         </ElButton>
-        <ModalWithForm destroyOnClose ref={ModalWithFormRef} />
+        <ModalWithForm destroyOnClose ref={ModalWithRef} />
       </div>
     );
   },

@@ -1,11 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  ref,
-  toRaw,
-  onBeforeMount,
-  type Ref,
-} from "vue";
+import { computed, defineComponent, ref, toRaw, onBeforeMount } from "vue";
 import { type FormInstance, TableInstance } from "element-plus";
 import type {
   WEPagination,
@@ -15,7 +8,6 @@ import type {
   WETableFilters,
   WEPlainObject,
   WELoadings,
-  WEWithOverLayRefs,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
