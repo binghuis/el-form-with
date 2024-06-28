@@ -13,20 +13,65 @@
 
 </div>
 
+ToB 业务中 `Form`、`Table`、弹层 UI `Modal`、`Drawer` 等组件的联动非常常见。这类逻辑简单、重复性强、繁琐。
+
+`el-form-with` 实现的是封装组件的联动逻辑并返回组合组件。
+
 ## 安装
 
 您可以使用 pnpm 来安装 `el-form-with`：
 
-```
-pnpm i el-form-with -D
-```
-
-## 高阶组件
-
-- `withModal`
-- `withTable`
+`pnpm i el-form-with`
 
 ## 如何使用
+
+```tsx
+import { withModal, withDrawer, withTable } from "el-form-with";
+import type { WithModalRef } from "el-form-with";
+import { ref, defineComponent } from "vue";
+import { ElDivider, ElPagination } from "element-plus";
+import FormContainer from "";
+import TableContainer from "";
+import TableSelectorContainer from "";
+
+export default defineComponent({
+  setup() {
+    const ModalWithFormRef = ref<WithModalRef>();
+    const ModalWithForm = withModal({
+      async submit({ data, mode, record }) {
+        return "success";
+      },
+    })(FormContainer);
+
+    const TableWithOverlay = withTable({
+      async requester() {
+        return {
+          list: [],
+          total: 0,
+        };
+      },
+    });
+
+    return (
+      <div>
+        <ModalWithForm destroyOnClose ref={ModalWithFormRef} />
+        <TableWithOverlay forms={{ ModalWithFormRef }}>
+          {{
+            selector: (props) => <TableSelectorContainer {...props} />,
+            table: (props) => <TableContainer {...props} />,
+            pagination: (props) => (
+              <div>
+                <ElDivider />
+                <ElPagination {...props} />
+              </div>
+            ),
+          }}
+        </TableWithOverlay>
+      </div>
+    );
+  },
+});
+```
 
 ## 在线示例
 
