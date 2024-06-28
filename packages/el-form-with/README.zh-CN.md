@@ -23,16 +23,18 @@ ToB 业务中 `Form`、`Table`、弹层 UI `Modal`、`Drawer` 等组件的联动
 
 `pnpm i el-form-with`
 
-## 如何使用
+## 使用
+
+`el-form-with` 只对组件联动逻辑进行封装，并暴露相应方法和数据。不侵入 `Form`、`Table`、`Pagination` 等 UI 布局。
+
+开发者仅需要编写简单的容器组件并传给 `el-form-with` 即可，若要复用 UI，开发者可二次封装 UI 组件。
 
 ```tsx
-import { withModal, withDrawer, withTable } from "el-form-with";
+import { withModal } from "el-form-with";
 import type { WithModalRef } from "el-form-with";
 import { ref, defineComponent } from "vue";
-import { ElDivider, ElPagination } from "element-plus";
+import { ElButton } from "element-plus";
 import FormContainer from "";
-import TableContainer from "";
-import TableSelectorContainer from "";
 
 export default defineComponent({
   setup() {
@@ -43,30 +45,16 @@ export default defineComponent({
       },
     })(FormContainer);
 
-    const TableWithOverlay = withTable({
-      async requester() {
-        return {
-          list: [],
-          total: 0,
-        };
-      },
-    });
+    const open = () => {
+      ModalWithFormRef.value.open({
+        mode: "add",
+      });
+    };
 
     return (
       <div>
+        <ElButton onClick={open}>Create</ElButton>
         <ModalWithForm destroyOnClose ref={ModalWithFormRef} />
-        <TableWithOverlay forms={{ ModalWithFormRef }}>
-          {{
-            selector: (props) => <TableSelectorContainer {...props} />,
-            table: (props) => <TableContainer {...props} />,
-            pagination: (props) => (
-              <div>
-                <ElDivider />
-                <ElPagination {...props} />
-              </div>
-            ),
-          }}
-        </TableWithOverlay>
       </div>
     );
   },
