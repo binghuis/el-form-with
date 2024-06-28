@@ -30,10 +30,6 @@ ToB 业务中 `Form`、`Table`、弹层 UI `Modal`、`Drawer` 等组件的联动
 开发者仅需要编写简单的容器组件并传给 `el-form-with` 即可，若要复用 UI，开发者可二次封装 UI 组件。
 
 ```tsx
-import { withModal } from "el-form-with";
-import type { WithModalRef } from "el-form-with";
-import { ref, defineComponent } from "vue";
-import { ElButton } from "element-plus";
 import FormContainer from "";
 
 const ModalWithForm = withModal({
@@ -46,15 +42,17 @@ export default defineComponent({
   setup() {
     const ModalWithFormRef = ref<WithModalRef>();
 
-    const open = () => {
-      ModalWithFormRef.value.open({
-        mode: "add",
-      });
-    };
-
     return (
       <div>
-        <ElButton onClick={open}>Create</ElButton>
+        <ElButton
+          onClick={() => {
+            ModalWithFormRef.value.open({
+              mode: "add",
+            });
+          }}
+        >
+          Create
+        </ElButton>
         <ModalWithForm destroyOnClose ref={ModalWithFormRef} />
       </div>
     );
