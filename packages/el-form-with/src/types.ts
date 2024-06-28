@@ -1,5 +1,8 @@
 import type { FormInstance, TableInstance } from "element-plus";
 import { type FunctionalComponent, type Ref } from "vue";
+import type { WithModalRef } from "./with-modal";
+import type { WithDrawerRef } from "./with-drawer";
+import type { WithTableRef } from "./with-table";
 
 export interface PlainObject {
   [key: string]: unknown;
@@ -28,7 +31,7 @@ export type FormContainer<
 > = FunctionalComponent<FormContainerProps<FormValue, RecordValue>>;
 
 export type OpenOverlayParams<FormValue, RecordValue> = {
-  title: string;
+  title?: string;
   data?: FormValue;
   mode?: FormMode;
   record?: RecordValue;
@@ -78,22 +81,19 @@ export type TableSelectorContainer =
 
 export type TableSearch = (params?: { filters?: TableFilters }) => void;
 
-export type TableContainerProps<
-  RecordValue extends object,
-  Extra extends object
-> = {
+export type TableContainerProps<RecordValue extends object> = {
   table: Ref<TableInstance | undefined>;
   data?: RecordValue[];
   search: TableSearch;
   filters: TableFilters;
   isLoading: boolean;
-  extra?: Extra;
+  forms?: Record<string, Ref<WithOverLayRefs>>;
 };
 
-export type TableContainer<
-  RecordValue extends object = PlainObject,
-  Extra extends object = PlainObject
-> = FunctionalComponent<TableContainerProps<RecordValue, Extra>>;
+export type WithOverLayRefs = WithModalRef | WithDrawerRef;
+
+export type TableContainer<RecordValue extends object = PlainObject> =
+  FunctionalComponent<TableContainerProps<RecordValue>>;
 
 export interface Pagination {
   current?: number;

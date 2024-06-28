@@ -1,15 +1,21 @@
-import { computed, defineComponent, onMounted, ref, toRaw } from "vue";
-import { type FormInstance, ElPagination, TableInstance } from "element-plus";
+import {
+  computed,
+  defineComponent,
+  ref,
+  toRaw,
+  onBeforeMount,
+  type Ref,
+} from "vue";
+import { type FormInstance, TableInstance } from "element-plus";
 import type {
   Pagination,
-  TableContainer,
-  TableSelectorContainer,
   WithTableParams,
   Request,
   TableSearch,
   TableFilters,
   PlainObject,
   Loadings,
+  WithOverLayRefs,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -92,10 +98,16 @@ const withTable = <
 
   return defineComponent({
     name: "TableWithOverlay",
+    props: {
+      forms: {
+        type: Object as () => Record<string, Ref<WithOverLayRefs>>,
+        required: false,
+      },
+    },
     setup(props, { expose, slots }) {
       expose({ search, reset, refresh });
 
-      onMounted(() => {
+      onBeforeMount(() => {
         search();
       });
 
@@ -113,6 +125,7 @@ const withTable = <
             })}
             {slots["table"]?.({
               table: tableRef,
+              forms: props.forms,
               data: tableDataRef.value,
               isLoading: isLoading.value,
               loadings: loadings.value,
