@@ -98,12 +98,6 @@ const withTable = <
 
   return defineComponent({
     name: "TableWithOverlay",
-    props: {
-      forms: {
-        type: Object as () => Record<string, Ref<WEWithOverLayRefs>>,
-        required: false,
-      },
-    },
     setup(props, { expose, slots }) {
       expose({ search, reset, refresh });
 
@@ -125,7 +119,6 @@ const withTable = <
             })}
             {slots["table"]?.({
               table: tableRef,
-              forms: props.forms,
               data: tableDataRef.value,
               isLoading: isLoading.value,
               loadings: loadings.value,
