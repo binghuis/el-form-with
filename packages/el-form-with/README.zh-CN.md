@@ -36,14 +36,15 @@ import { ref, defineComponent } from "vue";
 import { ElButton } from "element-plus";
 import FormContainer from "";
 
+const ModalWithForm = withModal({
+  async submit({ data, mode, record }) {
+    return "success";
+  },
+})(FormContainer);
+
 export default defineComponent({
   setup() {
     const ModalWithFormRef = ref<WithModalRef>();
-    const ModalWithForm = withModal({
-      async submit({ data, mode, record }) {
-        return "success";
-      },
-    })(FormContainer);
 
     const open = () => {
       ModalWithFormRef.value.open({
