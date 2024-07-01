@@ -13,7 +13,7 @@
 
 </div>
 
-ToB 业务中 `Form`、`Table`、弹层 UI `Modal`、`Drawer` 等组件的联动非常常见。这类逻辑简单、重复性强、繁琐。
+ToB 业务中 `Form`、`Table`、弹层 UI `Dialog`、`Drawer` 等组件的联动非常常见。这类逻辑简单、重复性强、繁琐。
 
 `el-form-with` 实现的是封装组件的联动逻辑并返回组合组件。
 
@@ -32,7 +32,7 @@ ToB 业务中 `Form`、`Table`、弹层 UI `Modal`、`Drawer` 等组件的联动
 ```tsx
 import FormContainer from "";
 
-const ModalWithForm = withDialog({
+const DialogWithForm = withDialog({
   async submit({ data, mode, record }) {
     return "success";
   }
@@ -40,20 +40,20 @@ const ModalWithForm = withDialog({
 
 export default defineComponent({
   setup() {
-    const ModalWithRef = ref<WithDialogRef>();
+    const DialogWithRef = ref<WithDialogRef>();
 
     return (
       <div>
         <ElButton
           onClick={() => {
-            ModalWithRef.value.open({
+            DialogWithRef.value.open({
               mode: "add"
             });
           }}
         >
           Create
         </ElButton>
-        <ModalWithForm destroyOnClose ref={ModalWithRef} />
+        <DialogWithForm destroyOnClose ref={DialogWithRef} />
       </div>
     );
   }

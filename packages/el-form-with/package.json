@@ -12,7 +12,7 @@
     "vue",
     "element-plus",
     "form",
-    "modal",
+    "dialog",
     "table",
     "el-form-with",
     "form-with"

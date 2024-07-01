@@ -85,7 +85,7 @@ const withDialog = <
     };
 
     return defineComponent<Partial<DialogProps>>({
-      name: "ModalWithForm",
+      name: "DialogWithForm",
       props: ElDialog["props"],
       setup(props, { expose, attrs }) {
         expose({
