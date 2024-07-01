@@ -32,22 +32,22 @@ ToB 业务中 `Form`、`Table`、弹层 UI `Modal`、`Drawer` 等组件的联动
 ```tsx
 import FormContainer from "";
 
-const ModalWithForm = withModal({
+const ModalWithForm = withDialog({
   async submit({ data, mode, record }) {
     return "success";
-  },
+  }
 })(FormContainer);
 
 export default defineComponent({
   setup() {
-    const ModalWithRef = ref<WithModalRef>();
+    const ModalWithRef = ref<WithDialogRef>();
 
     return (
       <div>
         <ElButton
           onClick={() => {
             ModalWithRef.value.open({
-              mode: "add",
+              mode: "add"
             });
           }}
         >
@@ -56,7 +56,7 @@ export default defineComponent({
         <ModalWithForm destroyOnClose ref={ModalWithRef} />
       </div>
     );
-  },
+  }
 });
 ```
 

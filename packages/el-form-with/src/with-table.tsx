@@ -1,5 +1,5 @@
 import { computed, defineComponent, ref, toRaw, onBeforeMount } from "vue";
-import { type FormInstance, TableInstance } from "element-plus";
+import type { FormInstance, TableInstance } from "element-plus";
 import type {
   WEPagination,
   WEWithTableParams,
@@ -7,7 +7,7 @@ import type {
   WETableSearch,
   WETableFilters,
   WEPlainObject,
-  WELoadings,
+  WELoadings
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -30,7 +30,7 @@ const withTable = <
   const DefaultPagination: WEPagination = {
     current: 1,
     pageSize: pageSize ?? 10,
-    total: 0,
+    total: 0
   };
 
   const selectorRef = ref<FormInstance>();
@@ -40,15 +40,15 @@ const withTable = <
   const loadings = ref<WELoadings>({
     search: false,
     reset: false,
-    refresh: false,
+    refresh: false
   });
   const filtersRef = ref<WETableFilters>({});
 
   const isLoading = computed(() => {
-    return Object.values(loadings.value).some((loading) => loading);
+    return Object.values(loadings.value).some(loading => loading);
   });
 
-  const request: WERequest<RecordValue> = async (params) => {
+  const request: WERequest<RecordValue> = async params => {
     const { pagination = pageinationRef.value, filters = filtersRef.value } =
       params ?? {};
 
@@ -58,17 +58,17 @@ const withTable = <
     const res = await requester?.({
       data: FormValue,
       pagination,
-      filters,
+      filters
     });
     pageinationRef.value = {
       ...pagination,
-      total: res?.total,
+      total: res?.total
     };
     filtersRef.value = filters;
     tableDataRef.value = res?.list;
   };
 
-  const search: WETableSearch = async (params) => {
+  const search: WETableSearch = async params => {
     const { filters } = params ?? {};
     loadings.value.search = true;
     await request({ pagination: DefaultPagination, filters });
@@ -107,7 +107,7 @@ const withTable = <
               reset,
               refresh,
               isLoading: isLoading.value,
-              loadings: loadings.value,
+              loadings: loadings.value
             })}
             {slots["table"]?.({
               table: tableRef,
@@ -118,7 +118,7 @@ const withTable = <
               search,
               reset,
               refresh,
-              filters: toRaw(filtersRef.value),
+              filters: toRaw(filtersRef.value)
             })}
             {slots["pagination"]?.({
               layout: "total, sizes, prev, pager, next, jumper",
@@ -131,22 +131,22 @@ const withTable = <
               "onUpdate:current-page": async (current: number) => {
                 loadings.value.search = true;
                 await request({
-                  pagination: { ...DefaultPagination, current },
+                  pagination: { ...DefaultPagination, current }
                 });
                 loadings.value.search = false;
               },
               "onUpdate:page-size": async (pageSize: number) => {
                 loadings.value.search = true;
                 await request({
-                  pagination: { ...DefaultPagination, pageSize },
+                  pagination: { ...DefaultPagination, pageSize }
                 });
                 loadings.value.search = false;
-              },
+              }
             })}
           </div>
         );
       };
-    },
+    }
   });
 };
 

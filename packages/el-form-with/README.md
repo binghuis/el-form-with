@@ -23,7 +23,7 @@ pnpm i el-form-with -D
 
 ## Higher-Order Components
 
-- `withModal`
+- `withDialog`
 - `withTable`
 
 ## How to Use

@@ -1,6 +1,6 @@
 import type { FormInstance, TableInstance } from "element-plus";
-import { type FunctionalComponent, type Ref } from "vue";
-import type { WithModalRef } from "./with-modal";
+import type { FunctionalComponent, Ref } from "vue";
+import type { WithDialogRef } from "./with-dialog";
 import type { WithDrawerRef } from "./with-drawer";
 
 export interface WEPlainObject {
@@ -19,7 +19,7 @@ export type WEFormContainerProps<FormValue, RecordValue> = {
   data?: FormValue;
   record?: RecordValue;
   close: () => void;
-  ok: () => void;
+  ok: (params?: { extra?: object }) => void;
   loading: boolean;
   extra?: WEPlainObject;
 };
@@ -40,19 +40,26 @@ export type WEOpenOverlayParams<FormValue, RecordValue> = {
 export type WEWithDrawerParams<FormValue, RecordValue> = {
   beforeClose?: () => Promise<"confirm"> | Promise<void>;
   afterClose?: () => void | Promise<void>;
-  submit: (params: {
-    mode: WEFormMode;
-    data?: FormValue;
-    record?: RecordValue;
-  }) => Promise<void> | Promise<"success">;
+  submit: (
+    params: {
+      mode: WEFormMode;
+      data?: FormValue;
+      record?: RecordValue;
+    },
+    done: () => void
+  ) => Promise<void>;
 };
 
-export type WEWithModalParams<FormValue, RecordValue> = {
-  submit?: (params: {
-    mode: WEFormMode;
-    data?: FormValue;
-    record?: RecordValue;
-  }) => Promise<void> | Promise<"success">;
+export type WEWithDialogParams<FormValue, RecordValue> = {
+  submit?: (
+    params: {
+      mode: WEFormMode;
+      data?: FormValue;
+      record?: RecordValue;
+      extra?: object;
+    },
+    done: () => void
+  ) => Promise<void>;
 };
 
 export type WEWithTableParams<FormValue, RecordValue> = {
@@ -89,7 +96,7 @@ export type WETableContainerProps<RecordValue extends object> = {
   forms?: Record<string, Ref<WEWithOverLayRefs>>;
 };
 
-export type WEWithOverLayRefs = WithModalRef | WithDrawerRef;
+export type WEWithOverLayRefs = WithDialogRef | WithDrawerRef;
 
 export type WETableContainer<RecordValue extends object = WEPlainObject> =
   FunctionalComponent<WETableContainerProps<RecordValue>>;
@@ -112,9 +119,9 @@ export interface WERequesterParams<FormValue> {
 }
 
 export interface WERequester<FormValue, RecordValue> {
-  (params: WERequesterParams<FormValue>): Promise<
-    WERequesterResponse<RecordValue>
-  >;
+  (
+    params: WERequesterParams<FormValue>
+  ): Promise<WERequesterResponse<RecordValue>>;
 }
 
 export interface WERequestParams<RecordValue> {

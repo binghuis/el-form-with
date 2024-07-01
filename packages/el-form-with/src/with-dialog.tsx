@@ -1,30 +1,30 @@
 import { defineComponent, ref } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
-import {
+import type {
   WEFormMode,
-  type WEFormContainer,
-  type WEOpenOverlayParams,
-  type WEPlainObject,
-  type WEWithModalParams,
+  WEFormContainer,
+  WEOpenOverlayParams,
+  WEPlainObject,
+  WEWithDialogParams
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
-type WithModalOpen<FormValue, RecordValue> = (
+type WithDialogOpen<FormValue, RecordValue> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue>
 ) => void;
 
-export type WithModalRef<
+export type WithDialogRef<
   FormValue extends object = WEPlainObject,
   RecordValue extends object = WEPlainObject
 > = {
-  open: WithModalOpen<FormValue, RecordValue>;
+  open: WithDialogOpen<FormValue, RecordValue>;
 };
 
-const withModal = <
+const withDialog = <
   FormValue extends object = WEPlainObject,
   RecordValue extends object = WEPlainObject
 >(
-  params?: WEWithModalParams<FormValue, RecordValue>
+  params?: WEWithDialogParams<FormValue, RecordValue>
 ) => {
   return (FormArea: WEFormContainer<FormValue, RecordValue>) => {
     const visible = ref<boolean>(false);
@@ -41,7 +41,7 @@ const withModal = <
       formRef.value?.resetFields();
     };
 
-    const open: WithModalOpen<FormValue, RecordValue> = (openParams) => {
+    const open: WithDialogOpen<FormValue, RecordValue> = openParams => {
       if (!openParams) {
         return;
       }
@@ -55,11 +55,11 @@ const withModal = <
       visible.value = true;
     };
 
-    const ok = async () => {
+    const ok = async (okParams?: { extra?: object }) => {
       if (!formRef.value) {
         return;
       }
-      const isValid = await formRef.value.validate().catch((error) => {});
+      const isValid = await formRef.value.validate().catch(error => {});
 
       if (!isValid) {
         return;
@@ -67,17 +67,21 @@ const withModal = <
 
       const FormValue = getFormValueByFields<FormValue>(formRef.value.fields);
       loading.value = true;
-      const result = await params?.submit?.({
-        mode: mode.value,
-        data: FormValue,
-        record: record.value,
-      });
 
-      if (result === "success") {
+      function done() {
         data.value = FormValue;
         loading.value = false;
         close();
       }
+      params?.submit?.(
+        {
+          mode: mode.value,
+          data: FormValue,
+          record: record.value,
+          extra: okParams?.extra
+        },
+        done
+      );
     };
 
     return defineComponent<Partial<DialogProps>>({
@@ -85,7 +89,7 @@ const withModal = <
       props: ElDialog["props"],
       setup(props, { expose, attrs }) {
         expose({
-          open,
+          open
         });
         return () => {
           return (
@@ -108,9 +112,9 @@ const withModal = <
             </div>
           );
         };
-      },
+      }
     });
   };
 };
 
-export default withModal;
+export default withDialog;

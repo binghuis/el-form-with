@@ -1,11 +1,11 @@
 import { defineComponent, ref } from "vue";
 import { type FormInstance, ElDrawer, type DrawerProps } from "element-plus";
-import {
+import type {
   WEFormMode,
-  type WEFormContainer,
-  type WEOpenOverlayParams,
-  type WEPlainObject,
-  type WEWithDrawerParams,
+  WEFormContainer,
+  WEOpenOverlayParams,
+  WEPlainObject,
+  WEWithDrawerParams
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -50,7 +50,7 @@ const withDrawer = <
           }
         };
 
-        const open: WithDrawerOpen<FormValue, RecordValue> = (openParams) => {
+        const open: WithDrawerOpen<FormValue, RecordValue> = openParams => {
           if (!openParams) {
             return;
           }
@@ -68,7 +68,7 @@ const withDrawer = <
           if (!formRef.value) {
             return;
           }
-          const isValid = await formRef.value.validate().catch((error) => {});
+          const isValid = await formRef.value.validate().catch(error => {});
 
           if (!isValid) {
             return;
@@ -79,22 +79,24 @@ const withDrawer = <
           );
 
           loading.value = true;
-          const result = await submit?.({
-            mode: mode.value,
-            data: FormValue,
-            record: record.value,
-          });
-
-          if (result === "success") {
+          function done() {
             data.value = FormValue;
             loading.value = false;
             close();
             afterClose?.();
           }
+          submit?.(
+            {
+              mode: mode.value,
+              data: FormValue,
+              record: record.value
+            },
+            done
+          );
         };
 
         expose({
-          open,
+          open
         });
 
         return () => {
@@ -118,7 +120,7 @@ const withDrawer = <
             </div>
           );
         };
-      },
+      }
     });
   };
 };

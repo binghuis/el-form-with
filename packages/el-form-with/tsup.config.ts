@@ -12,5 +12,5 @@ export default defineConfig({
   splitting: true,
   target: "es2020",
   minify: true,
-  esbuildPlugins: [VueJsx()],
+  esbuildPlugins: [VueJsx()]
 });
