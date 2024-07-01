@@ -34,7 +34,7 @@ const withDialog = <
     const data = ref<FormValue>();
     const record = ref<RecordValue>();
     const loading = ref<boolean>(false);
-    const extra = ref<WEPlainObject>();
+    const type = ref<string>();
 
     const close = () => {
       visible.value = false;
@@ -50,12 +50,12 @@ const withDialog = <
       if (openParams.mode) {
         mode.value = openParams.mode;
       }
-      extra.value = openParams.extra;
+      type.value = openParams.type;
       title.value = openParams.title ?? "";
       visible.value = true;
     };
 
-    const ok = async (okParams?: { extra?: object }) => {
+    const ok = async (okParams?: { type?: string }) => {
       if (!formRef.value) {
         return;
       }
@@ -78,7 +78,7 @@ const withDialog = <
           mode: mode.value,
           data: FormValue,
           record: record.value,
-          extra: okParams?.extra
+          type: okParams?.type
         },
         done
       );
@@ -106,7 +106,7 @@ const withDialog = <
                   mode={mode.value}
                   ok={ok}
                   close={close}
-                  extra={extra.value}
+                  type={type.value}
                 />
               </ElDialog>
             </div>

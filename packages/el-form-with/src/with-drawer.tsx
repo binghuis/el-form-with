@@ -40,7 +40,7 @@ const withDrawer = <
         const data = ref<FormValue>();
         const record = ref<RecordValue>();
         const loading = ref<boolean>(false);
-        const extra = ref<WEPlainObject>();
+        const type = ref<string>();
 
         const close = async () => {
           const res = await beforeClose?.();
@@ -60,7 +60,7 @@ const withDrawer = <
             mode.value = openParams.mode;
           }
           title.value = openParams.title ?? "";
-          extra.value = openParams.extra;
+          type.value = openParams.type;
           visible.value = true;
         };
 
@@ -114,7 +114,7 @@ const withDrawer = <
                   ok={ok}
                   close={close}
                   loading={loading.value}
-                  extra={extra.value}
+                  type={type.value}
                 />
               </ElDrawer>
             </div>

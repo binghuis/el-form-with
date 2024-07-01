@@ -19,9 +19,9 @@ export type WEFormContainerProps<FormValue, RecordValue> = {
   data?: FormValue;
   record?: RecordValue;
   close: () => void;
-  ok: (params?: { extra?: object }) => void;
+  ok: (params?: { type?: string }) => void;
   loading: boolean;
-  extra?: WEPlainObject;
+  type?: string;
 };
 
 export type WEFormContainer<
@@ -34,7 +34,7 @@ export type WEOpenOverlayParams<FormValue, RecordValue> = {
   data?: FormValue;
   mode?: WEFormMode;
   record?: RecordValue;
-  extra?: WEPlainObject;
+  type?: string;
 };
 
 export type WEWithDrawerParams<FormValue, RecordValue> = {
@@ -56,7 +56,7 @@ export type WEWithDialogParams<FormValue, RecordValue> = {
       mode: WEFormMode;
       data?: FormValue;
       record?: RecordValue;
-      extra?: object;
+      type?: string;
     },
     done: () => void
   ) => Promise<void>;
