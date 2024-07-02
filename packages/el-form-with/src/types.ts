@@ -29,12 +29,12 @@ export type WEFormContainer<
   RecordValue extends object = WEPlainObject
 > = FunctionalComponent<WEFormContainerProps<FormValue, RecordValue>>;
 
-export type WEOpenOverlayParams<FormValue, RecordValue> = {
+export type WEOpenOverlayParams<FormValue, RecordValue, FormType> = {
   title?: string;
   data?: FormValue;
   mode?: WEFormMode;
   record?: RecordValue;
-  type?: string;
+  type?: FormType;
 };
 
 export type WEWithDrawerParams<FormValue, RecordValue> = {
@@ -87,14 +87,14 @@ export type WETableSelectorContainer =
 
 export type WETableSearch = (params?: { filters?: WETableFilters }) => void;
 
-export type WETableContainerProps<RecordValue extends object> = {
-  table: Ref<TableInstance | undefined>;
-  data?: RecordValue[];
-  search: WETableSearch;
-  filters: WETableFilters;
-  isLoading: boolean;
-  forms?: Record<string, Ref<WEWithOverLayRefs>>;
-};
+export type WETableContainerProps<RecordValue extends object = WEPlainObject> =
+  {
+    table: Ref<TableInstance | undefined>;
+    data?: RecordValue[];
+    search: WETableSearch;
+    filters: WETableFilters;
+    isLoading: boolean;
+  };
 
 export type WEWithOverLayRefs = WithDialogRef | WithDrawerRef;
 
@@ -119,9 +119,9 @@ export interface WERequesterParams<FormValue> {
 }
 
 export interface WERequester<FormValue, RecordValue> {
-  (
-    params: WERequesterParams<FormValue>
-  ): Promise<WERequesterResponse<RecordValue>>;
+  (params: WERequesterParams<FormValue>): Promise<
+    WERequesterResponse<RecordValue>
+  >;
 }
 
 export interface WERequestParams<RecordValue> {

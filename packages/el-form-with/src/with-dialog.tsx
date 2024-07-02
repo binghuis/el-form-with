@@ -1,28 +1,30 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, toRaw } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import type {
   WEFormMode,
   WEFormContainer,
   WEOpenOverlayParams,
   WEPlainObject,
-  WEWithDialogParams
+  WEWithDialogParams,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
-type WithDialogOpen<FormValue, RecordValue> = (
-  openParams: WEOpenOverlayParams<FormValue, RecordValue>
+type WithDialogOpen<FormValue, RecordValue, FormType> = (
+  openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
 export type WithDialogRef<
   FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject
+  RecordValue extends object = WEPlainObject,
+  FormType extends string = string
 > = {
-  open: WithDialogOpen<FormValue, RecordValue>;
+  open: WithDialogOpen<FormValue, RecordValue, FormType>;
 };
 
 const withDialog = <
   FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject
+  RecordValue extends object = WEPlainObject,
+  FormType extends string = string
 >(
   params?: WEWithDialogParams<FormValue, RecordValue>
 ) => {
@@ -34,14 +36,17 @@ const withDialog = <
     const data = ref<FormValue>();
     const record = ref<RecordValue>();
     const loading = ref<boolean>(false);
-    const type = ref<string>();
+    const type = ref<FormType>();
+    const DialogRef = ref<WithDialogRef<FormValue, RecordValue, FormType>>();
 
     const close = () => {
       visible.value = false;
       formRef.value?.resetFields();
     };
 
-    const open: WithDialogOpen<FormValue, RecordValue> = openParams => {
+    const open: WithDialogOpen<FormValue, RecordValue, FormType> = (
+      openParams
+    ) => {
       if (!openParams) {
         return;
       }
@@ -59,7 +64,7 @@ const withDialog = <
       if (!formRef.value) {
         return;
       }
-      const isValid = await formRef.value.validate().catch(error => {});
+      const isValid = await formRef.value.validate().catch((error) => {});
 
       if (!isValid) {
         return;
@@ -77,25 +82,33 @@ const withDialog = <
         {
           mode: mode.value,
           data: FormValue,
-          record: record.value,
-          type: okParams?.type
+          record: toRaw(record.value),
+          type: okParams?.type,
         },
         done
       );
     };
 
-    return defineComponent<Partial<DialogProps>>({
+    const DialogWithForm = defineComponent<Partial<DialogProps>>({
       name: "DialogWithForm",
-      props: ElDialog["props"],
+      props: {
+        ...ElDialog["props"],
+        destroyOnClose: {
+          type: Boolean,
+          default: true,
+        },
+      },
       setup(props, { expose, attrs }) {
         expose({
-          open
+          open,
         });
+
         return () => {
           return (
             <div>
               <ElDialog
                 {...props}
+                destroyOnClose={props.destroyOnClose}
                 modelValue={visible.value}
                 onClose={close}
                 title={title.value}
@@ -107,13 +120,20 @@ const withDialog = <
                   ok={ok}
                   close={close}
                   type={type.value}
+                  record={toRaw(record.value)}
+                  data={toRaw(data.value)}
                 />
               </ElDialog>
             </div>
           );
         };
-      }
+      },
     });
+
+    return [DialogWithForm, DialogRef] as [
+      typeof DialogWithForm,
+      typeof DialogRef
+    ];
   };
 };
 

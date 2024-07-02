@@ -5,24 +5,26 @@ import type {
   WEFormContainer,
   WEOpenOverlayParams,
   WEPlainObject,
-  WEWithDrawerParams
+  WEWithDrawerParams,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
-type WithDrawerOpen<FormValue, RecordValue> = (
-  openParams: WEOpenOverlayParams<FormValue, RecordValue>
+type WithDrawerOpen<FormValue, RecordValue, FormType> = (
+  openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
 export type WithDrawerRef<
   FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject
+  RecordValue extends object = WEPlainObject,
+  FormType extends string = string
 > = {
-  open: WithDrawerOpen<FormValue, RecordValue>;
+  open: WithDrawerOpen<FormValue, RecordValue, FormType>;
 };
 
 const withDrawer = <
   FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject
+  RecordValue extends object = WEPlainObject,
+  FormType extends string = string
 >(
   params?: WEWithDrawerParams<FormValue, RecordValue>
 ) => {
@@ -50,7 +52,9 @@ const withDrawer = <
           }
         };
 
-        const open: WithDrawerOpen<FormValue, RecordValue> = openParams => {
+        const open: WithDrawerOpen<FormValue, RecordValue, FormType> = (
+          openParams
+        ) => {
           if (!openParams) {
             return;
           }
@@ -68,7 +72,7 @@ const withDrawer = <
           if (!formRef.value) {
             return;
           }
-          const isValid = await formRef.value.validate().catch(error => {});
+          const isValid = await formRef.value.validate().catch((error) => {});
 
           if (!isValid) {
             return;
@@ -89,14 +93,14 @@ const withDrawer = <
             {
               mode: mode.value,
               data: FormValue,
-              record: record.value
+              record: record.value,
             },
             done
           );
         };
 
         expose({
-          open
+          open,
         });
 
         return () => {
@@ -120,7 +124,7 @@ const withDrawer = <
             </div>
           );
         };
-      }
+      },
     });
   };
 };
