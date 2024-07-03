@@ -1,5 +1,8 @@
 # el-form-with
 
+![vue](https://img.shields.io/badge/Vue_3-4FC08D?logo=vue.js&labelColor=263238)
+![tailwindcss](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&labelColor=263238)
+
 English · [简体中文](./packages/el-form-with/README.zh-CN.md)
 
 <div align="left">
