@@ -5,6 +5,7 @@ import {
   toRaw,
   onBeforeMount,
   type Prop,
+  type VNode,
 } from "vue";
 import {
   type FormInstance,
@@ -37,8 +38,8 @@ export type TableWithOverlayRef = {
 };
 
 type TableWithOverlayProps<RecordValue extends object = WEPlainObject> = {
-  tableContainer: (props: WETableContainerProps<RecordValue>) => Element;
-  selectorContainer: (props: WETableSelectorContainerProps) => Element;
+  tableContainer: (props: WETableContainerProps<RecordValue>) => VNode;
+  selectorContainer: (props: WETableSelectorContainerProps) => VNode;
 };
 
 const withTable = <
