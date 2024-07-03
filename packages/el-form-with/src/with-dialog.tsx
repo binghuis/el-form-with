@@ -28,7 +28,7 @@ const withDialog = <
 >(
   params?: WEWithDialogParams<FormValue, RecordValue>
 ) => {
-  return (FormArea: WEFormContainer<FormValue, RecordValue>) => {
+  return (FormContainer: WEFormContainer<FormValue, RecordValue>) => {
     const visible = ref<boolean>(false);
     const formRef = ref<FormInstance>();
     const title = ref<string>();
@@ -113,7 +113,7 @@ const withDialog = <
                 onClose={close}
                 title={title.value}
               >
-                <FormArea
+                <FormContainer
                   loading={loading.value}
                   form={formRef}
                   mode={mode.value}

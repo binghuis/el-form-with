@@ -1,5 +1,12 @@
 import { computed, defineComponent, ref, toRaw, onBeforeMount } from "vue";
-import type { FormInstance, TableInstance } from "element-plus";
+import {
+  type FormInstance,
+  type TableInstance,
+  ElPagination,
+  ElRow,
+  ElCard,
+  ElSpace,
+} from "element-plus";
 import type {
   WEPagination,
   WEWithTableParams,
@@ -100,52 +107,64 @@ const withTable = <
       });
 
       return () => {
+        const paginationParams = {
+          layout: "total, sizes, prev, pager, next, jumper",
+          pagination: pageinationRef.value,
+          isLoading: isLoading.value,
+          disabled: isLoading.value,
+          total: pageinationRef.value.total,
+          currentPage: pageinationRef.value.current,
+          pageSize: pageinationRef.value.pageSize,
+          "onUpdate:current-page": async (current: number) => {
+            loadings.value.search = true;
+            await request({
+              pagination: { ...DefaultPagination, current },
+            });
+            loadings.value.search = false;
+          },
+          "onUpdate:page-size": async (pageSize: number) => {
+            loadings.value.search = true;
+            await request({
+              pagination: { ...DefaultPagination, pageSize },
+            });
+            loadings.value.search = false;
+          },
+        };
         return (
-          <div>
+          <ElSpace direction="vertical" fill>
             {slots["default"]?.()}
-            {slots["selector"]?.({
-              selector: selectorRef,
-              search,
-              reset,
-              refresh,
-              isLoading: isLoading.value,
-              loadings: loadings.value,
-            })}
-            {slots["table"]?.({
-              table: tableRef,
-              data: tableDataRef.value,
-              isLoading: isLoading.value,
-              loadings: loadings.value,
-              pagination: pageinationRef.value,
-              search,
-              reset,
-              refresh,
-              filters: toRaw(filtersRef.value),
-            })}
-            {slots["pagination"]?.({
-              layout: "total, sizes, prev, pager, next, jumper",
-              pagination: pageinationRef.value,
-              isLoading: isLoading.value,
-              disabled: isLoading.value,
-              total: pageinationRef.value.total,
-              currentPage: pageinationRef.value.current,
-              pageSize: pageinationRef.value.pageSize,
-              "onUpdate:current-page": async (current: number) => {
-                loadings.value.search = true;
-                await request({
-                  pagination: { ...DefaultPagination, current },
-                });
-                loadings.value.search = false;
-              },
-              "onUpdate:page-size": async (pageSize: number) => {
-                loadings.value.search = true;
-                await request({
-                  pagination: { ...DefaultPagination, pageSize },
-                });
-                loadings.value.search = false;
-              },
-            })}
-          </div>
+            {slots["selector"] && (
+              <ElCard shadow={"never"}>
+                {slots["selector"]({
+                  selector: selectorRef,
+                  search,
+                  reset,
+                  refresh,
+                  isLoading: isLoading.value,
+                  loadings: loadings.value,
+                })}
+              </ElCard>
+            )}
+
+            {slots["table"] && (
+              <ElCard shadow={"never"}>
+                {slots["table"]({
+                  table: tableRef,
+                  data: tableDataRef.value,
+                  isLoading: isLoading.value,
+                  loadings: loadings.value,
+                  pagination: pageinationRef.value,
+                  search,
+                  reset,
+                  refresh,
+                  filters: toRaw(filtersRef.value),
+                })}
+                <ElRow justify="end" class={"py-4"}>
+                  <ElPagination {...paginationParams} />
+                </ElRow>
+              </ElCard>
+            )}
+          </ElSpace>
         );
       };
     },
