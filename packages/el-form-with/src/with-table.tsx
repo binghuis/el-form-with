@@ -4,7 +4,6 @@ import {
   ref,
   toRaw,
   onBeforeMount,
-  type Prop,
   type VNode,
 } from "vue";
 import {
@@ -145,39 +144,41 @@ const withTable = <
           },
         };
         return (
-          <ElSpace direction="vertical" fill>
-            {props.selectorContainer && (
-              <ElCard shadow={"never"}>
-                {props.selectorContainer({
-                  selector: selectorRef,
-                  search,
-                  reset,
-                  refresh,
-                  isLoading: isLoading.value,
-                  loadings: loadings.value,
-                })}
-              </ElCard>
-            )}
-            {slots["default"]?.()}
-            {props.tableContainer && (
-              <ElCard shadow={"never"}>
-                {props.tableContainer({
-                  table: tableRef,
-                  data: tableDataRef.value,
-                  isLoading: isLoading.value,
-                  loadings: loadings.value,
-                  pagination: pageinationRef.value,
-                  search,
-                  reset,
-                  refresh,
-                  filters: toRaw(filtersRef.value),
-                })}
-                <ElRow justify="end" class={"py-4"}>
-                  <ElPagination {...paginationParams} />
-                </ElRow>
-              </ElCard>
-            )}
-          </ElSpace>
+          <div>
+            <ElSpace direction="vertical" fill>
+              {props.selectorContainer && (
+                <ElCard shadow={"never"}>
+                  {props.selectorContainer({
+                    selector: selectorRef,
+                    search,
+                    reset,
+                    refresh,
+                    isLoading: isLoading.value,
+                    loadings: loadings.value,
+                  })}
+                </ElCard>
+              )}
+              {slots["default"]?.()}
+              {props.tableContainer && (
+                <ElCard shadow={"never"}>
+                  {props.tableContainer({
+                    table: tableRef,
+                    data: tableDataRef.value,
+                    isLoading: isLoading.value,
+                    loadings: loadings.value,
+                    pagination: pageinationRef.value,
+                    search,
+                    reset,
+                    refresh,
+                    filters: toRaw(filtersRef.value),
+                  })}
+                  <ElRow justify="end" class={"py-4"}>
+                    <ElPagination {...paginationParams} />
+                  </ElRow>
+                </ElCard>
+              )}
+            </ElSpace>
+          </div>
         );
       };
     },
