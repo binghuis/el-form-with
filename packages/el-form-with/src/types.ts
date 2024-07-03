@@ -89,11 +89,15 @@ export type WETableSearch = (params?: { filters?: WETableFilters }) => void;
 
 export type WETableContainerProps<RecordValue extends object = WEPlainObject> =
   {
-    table: Ref<TableInstance | undefined>;
+    table: Ref<MaybeUndefined<TableInstance>>;
     data?: RecordValue[];
+    reset: () => void;
+    refresh: () => void;
     search: WETableSearch;
     filters: WETableFilters;
     isLoading: boolean;
+    loadings: WELoadings;
+    pagination: WEPagination;
   };
 
 export type WEWithOverLayRefs = WithDialogRef | WithDrawerRef;

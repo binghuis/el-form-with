@@ -31,9 +31,8 @@ const withSteps = <
       }
     };
 
-    const StepsWithForms = defineComponent({
-      name: "StepsWithForms",
-      setup(props, { expose, slots }) {
+    const StepsWithForms = defineComponent(
+      (props, { expose, slots }) => {
         return () => {
           return (
             <div>
@@ -47,7 +46,8 @@ const withSteps = <
           );
         };
       },
-    });
+      { name: "StepsWithForms" }
+    );
 
     return [StepsWithForms, StepsWithFormsRef] as [
       typeof StepsWithForms,

@@ -89,16 +89,8 @@ const withDialog = <
       );
     };
 
-    const DialogWithForm = defineComponent<Partial<DialogProps>>({
-      name: "DialogWithForm",
-      props: {
-        ...ElDialog["props"],
-        destroyOnClose: {
-          type: Boolean,
-          default: true,
-        },
-      },
-      setup(props, { expose, attrs }) {
+    const DialogWithForm = defineComponent<Partial<DialogProps>>(
+      (props, { expose, attrs }) => {
         expose({
           open,
         });
@@ -128,7 +120,17 @@ const withDialog = <
           );
         };
       },
-    });
+      {
+        name: "DialogWithForm",
+        props: {
+          ...ElDialog["props"],
+          destroyOnClose: {
+            type: Boolean,
+            default: true,
+          },
+        },
+      }
+    );
 
     return [DialogWithForm, DialogRef] as [
       typeof DialogWithForm,

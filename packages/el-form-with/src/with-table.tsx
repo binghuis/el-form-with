@@ -1,4 +1,11 @@
-import { computed, defineComponent, ref, toRaw, onBeforeMount } from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  toRaw,
+  onBeforeMount,
+  type Prop,
+} from "vue";
 import {
   type FormInstance,
   type TableInstance,
@@ -15,6 +22,8 @@ import type {
   WETableFilters,
   WEPlainObject,
   WELoadings,
+  WETableSelectorContainerProps,
+  WETableContainerProps,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -25,6 +34,11 @@ export type TableWithOverlayRef = {
   search: WETableSearch;
   reset: TableReset;
   refresh: TableRefresh;
+};
+
+type TableWithOverlayProps<RecordValue extends object = WEPlainObject> = {
+  tableContainer: (props: WETableContainerProps<RecordValue>) => Element;
+  selectorContainer: (props: WETableSelectorContainerProps) => Element;
 };
 
 const withTable = <
@@ -97,9 +111,8 @@ const withTable = <
     loadings.value.refresh = false;
   };
 
-  const TableWithOverlay = defineComponent({
-    name: "TableWithOverlay",
-    setup(props, { expose, slots }) {
+  const TableWithOverlay = defineComponent<TableWithOverlayProps<RecordValue>>(
+    (props, { expose, slots, attrs }) => {
       expose({ search, reset, refresh });
 
       onBeforeMount(() => {
@@ -132,10 +145,9 @@ const withTable = <
         };
         return (
           <ElSpace direction="vertical" fill>
-            {slots["default"]?.()}
-            {slots["selector"] && (
+            {props.selectorContainer && (
               <ElCard shadow={"never"}>
-                {slots["selector"]({
+                {props.selectorContainer({
                   selector: selectorRef,
                   search,
                   reset,
@@ -145,10 +157,10 @@ const withTable = <
                 })}
               </ElCard>
             )}
-
-            {slots["table"] && (
+            {slots["default"]?.()}
+            {props.tableContainer && (
               <ElCard shadow={"never"}>
-                {slots["table"]({
+                {props.tableContainer({
                   table: tableRef,
                   data: tableDataRef.value,
                   isLoading: isLoading.value,
@@ -168,7 +180,11 @@ const withTable = <
         );
       };
     },
-  });
+    {
+      name: "TableWithOverlay",
+      props: ["tableContainer", "selectorContainer"],
+    }
+  );
 
   return [TableWithOverlay, TableWithOverlayRef] as [
     typeof TableWithOverlay,

@@ -31,10 +31,8 @@ const withDrawer = <
   const { submit, beforeClose, afterClose } = params ?? {};
 
   return (FormArea: WEFormContainer<FormValue, RecordValue>) => {
-    return defineComponent<Partial<DrawerProps>>({
-      name: "DrawerWithForm",
-      props: ElDrawer["props"],
-      setup(props, { expose, attrs }) {
+    return defineComponent<Partial<DrawerProps>>(
+      (props, { expose, attrs }) => {
         const visible = ref<boolean>(false);
         const formRef = ref<FormInstance>();
         const title = ref<string>();
@@ -125,7 +123,11 @@ const withDrawer = <
           );
         };
       },
-    });
+      {
+        name: "DrawerWithForm",
+        props: ElDrawer["props"],
+      }
+    );
   };
 };
 
