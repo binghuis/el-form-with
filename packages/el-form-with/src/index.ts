@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./props";
 export type * from "./with-dialog";
 export type * from "./with-drawer";
 export type * from "./with-table";

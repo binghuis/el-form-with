@@ -1,7 +1,5 @@
 import type { FormInstance, TableInstance } from "element-plus";
-import type { FunctionalComponent, Ref } from "vue";
-import type { WithDialogRef } from "./with-dialog";
-import type { WithDrawerRef } from "./with-drawer";
+import type { Ref } from "vue";
 
 export interface WEPlainObject {
   [key: string]: unknown;
@@ -9,106 +7,97 @@ export interface WEPlainObject {
 
 export type WEFormMode = "view" | "copy" | "add" | "edit";
 
-type MaybeUndefined<T> = T | undefined;
+export type MaybeUndefined<T> = T | undefined;
 
 export type WETableFilters = Record<string, (string | number)[]>;
 
-export type WEFormContainerProps<FormValue, RecordValue> = {
-  form: Ref<MaybeUndefined<FormInstance>>;
+export type FormBoxOkHandle<FormValue, OkType> = (params?: {
+  type?: OkType;
+  data?: FormValue;
+}) => void;
+
+export interface WEFormBoxProps<
+  FormValue extends object,
+  RecordValue extends object = object,
+  FormType extends string = string,
+  OkType extends string = string
+> {
+  reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
   data?: FormValue;
   record?: RecordValue;
   close: () => void;
-  ok: (params?: { type?: string }) => void;
+  ok: FormBoxOkHandle<FormValue, OkType>;
   loading: boolean;
-  type?: string;
-};
+  type?: FormType;
+}
 
-export type WEFormContainer<
-  FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject
-> = FunctionalComponent<WEFormContainerProps<FormValue, RecordValue>>;
-
-export type WEOpenOverlayParams<FormValue, RecordValue, FormType> = {
+export interface WEOpenOverlayParams<FormValue, RecordValue, FormType> {
   title?: string;
   data?: FormValue;
   mode?: WEFormMode;
   record?: RecordValue;
   type?: FormType;
-};
+}
 
-export type WEWithDrawerParams<FormValue, RecordValue> = {
-  beforeClose?: () => Promise<"confirm"> | Promise<void>;
+export interface WEWithOverlaysParams<
+  FormValue extends object,
+  RecordValue extends object,
+  FormType extends string,
+  OkType extends string
+> {
+  beforeClose?: (done: () => void) => Promise<void>;
   afterClose?: () => void | Promise<void>;
   submit: (
     params: {
       mode: WEFormMode;
       data?: FormValue;
       record?: RecordValue;
+      okType?: OkType;
+      formType?: FormType;
     },
     done: () => void
   ) => Promise<void>;
-};
+}
 
-export type WEWithDialogParams<FormValue, RecordValue> = {
-  submit?: (
-    params: {
-      mode: WEFormMode;
-      data?: FormValue;
-      record?: RecordValue;
-      type?: string;
-    },
-    done: () => void
-  ) => Promise<void>;
-};
-
-export type WEWithTableParams<FormValue, RecordValue> = {
+export interface WEWithTableParams<SelectorFormValue, RecordValue> {
   pageSize?: number;
-  requester?: WERequester<FormValue, RecordValue>;
-};
+  requester: WERequester<SelectorFormValue, RecordValue>;
+}
 
-export type WELoadings = {
+export interface WELoadings {
   search: boolean;
   reset: boolean;
   refresh: boolean;
-};
+}
 
-export type WETableSelectorContainerProps = {
-  selector: Ref<MaybeUndefined<FormInstance>>;
+export interface WESelectorBoxProps {
+  reference: Ref<MaybeUndefined<FormInstance>>;
   search: () => void;
   reset: () => void;
   refresh: () => void;
   isLoading: boolean;
   loadings: WELoadings;
-};
-
-export type WETableSelectorContainer =
-  FunctionalComponent<WETableSelectorContainerProps>;
+}
 
 export type WETableSearch = (params?: { filters?: WETableFilters }) => void;
 
-export type WETableContainerProps<RecordValue extends object = WEPlainObject> =
-  {
-    table: Ref<MaybeUndefined<TableInstance>>;
-    data?: RecordValue[];
-    reset: () => void;
-    refresh: () => void;
-    search: WETableSearch;
-    filters: WETableFilters;
-    isLoading: boolean;
-    loadings: WELoadings;
-    pagination: WEPagination;
-  };
-
-export type WEWithOverLayRefs = WithDialogRef | WithDrawerRef;
-
-export type WETableContainer<RecordValue extends object = WEPlainObject> =
-  FunctionalComponent<WETableContainerProps<RecordValue>>;
+export interface WETableBoxProps<RecordValue extends object> {
+  reference: Ref<MaybeUndefined<TableInstance>>;
+  data?: RecordValue[];
+  reset: () => void;
+  refresh: () => void;
+  search: WETableSearch;
+  filters: WETableFilters;
+  isLoading: boolean;
+  loadings: WELoadings;
+  pagination: WEPagination;
+}
 
 export interface WEPagination {
-  current?: number;
-  pageSize?: number;
-  total?: number;
+  current: number;
+  pageSize: number;
+  total: number;
 }
 
 export interface WERequesterResponse<Item> {
@@ -117,7 +106,7 @@ export interface WERequesterResponse<Item> {
 }
 
 export interface WERequesterParams<FormValue> {
-  data: Partial<FormValue>;
+  data?: FormValue;
   pagination: WEPagination;
   filters?: WETableFilters;
 }
@@ -128,11 +117,9 @@ export interface WERequester<FormValue, RecordValue> {
   >;
 }
 
-export interface WERequestParams<RecordValue> {
+export interface WERequestParams {
   pagination?: WEPagination;
   filters?: WETableFilters;
 }
 
-export type WERequest<RecordValue> = (
-  params?: WERequestParams<RecordValue>
-) => void;
+export type WERequest = (params?: WERequestParams) => void;

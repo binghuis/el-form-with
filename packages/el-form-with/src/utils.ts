@@ -28,6 +28,18 @@ export function getFormValueByFields<FormValue>(
       field = field.valueOf();
     }
 
+    if (Array.isArray(field)) {
+      field = field.map((item) => {
+        if (isProxy(item)) {
+          return toRaw(item);
+        }
+        if (isDate(item)) {
+          return item.valueOf();
+        }
+        return item;
+      });
+    }
+
     if (cur.prop) {
       (acc as WEPlainObject)[cur.prop.toString()] = field;
     }

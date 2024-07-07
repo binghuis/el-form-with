@@ -1,11 +1,11 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, toRaw, type PropType, type VNode } from "vue";
 import { type FormInstance, ElDrawer, type DrawerProps } from "element-plus";
 import type {
   WEFormMode,
-  WEFormContainer,
   WEOpenOverlayParams,
-  WEPlainObject,
-  WEWithDrawerParams,
+  WEWithOverlaysParams,
+  WEFormBoxProps,
+  FormBoxOkHandle,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -13,122 +13,151 @@ type WithDrawerOpen<FormValue, RecordValue, FormType> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
-export type WithDrawerRef<
-  FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject,
+export type WithDrawer<
+  FormValue extends object = object,
+  RecordValue extends object = object,
   FormType extends string = string
 > = {
   open: WithDrawerOpen<FormValue, RecordValue, FormType>;
 };
 
 const withDrawer = <
-  FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject,
-  FormType extends string = string
+  FormValue extends object,
+  RecordValue extends object = object,
+  FormType extends string = string,
+  OkType extends string = string
 >(
-  params?: WEWithDrawerParams<FormValue, RecordValue>
+  params?: WEWithOverlaysParams<FormValue, RecordValue, FormType, OkType>
 ) => {
-  const { submit, beforeClose, afterClose } = params ?? {};
+  const visible = ref<boolean>(false);
+  const formRef = ref<FormInstance>();
+  const title = ref<string>();
+  const mode = ref<WEFormMode>("add");
+  const data = ref<FormValue>();
+  const record = ref<RecordValue>();
+  const loading = ref<boolean>(false);
+  const type = ref<FormType>();
+  const DrawerRef = ref<WithDrawer<FormValue, RecordValue, FormType>>();
 
-  return (FormArea: WEFormContainer<FormValue, RecordValue>) => {
-    return defineComponent<Partial<DrawerProps>>(
-      (props, { expose, attrs }) => {
-        const visible = ref<boolean>(false);
-        const formRef = ref<FormInstance>();
-        const title = ref<string>();
-        const mode = ref<WEFormMode>("add");
-        const data = ref<FormValue>();
-        const record = ref<RecordValue>();
-        const loading = ref<boolean>(false);
-        const type = ref<string>();
+  const close = () => {
+    function done() {
+      visible.value = false;
+      formRef.value?.resetFields();
+    }
+    if (params?.beforeClose) {
+      params.beforeClose(done);
+    } else {
+      done();
+    }
+    params?.afterClose?.();
+  };
 
-        const close = async () => {
-          const res = await beforeClose?.();
-          if (res === "confirm") {
-            visible.value = false;
-            formRef.value?.resetFields();
-          }
-        };
+  const open: WithDrawerOpen<FormValue, RecordValue, FormType> = (
+    openParams
+  ) => {
+    if (!openParams) {
+      return;
+    }
+    data.value = openParams.data;
+    record.value = openParams.record;
+    if (openParams.mode) {
+      mode.value = openParams.mode;
+    }
+    type.value = openParams.type;
+    title.value = openParams.title ?? "";
+    visible.value = true;
+  };
 
-        const open: WithDrawerOpen<FormValue, RecordValue, FormType> = (
-          openParams
-        ) => {
-          if (!openParams) {
-            return;
-          }
-          data.value = openParams.data;
-          record.value = openParams.record;
-          if (openParams.mode) {
-            mode.value = openParams.mode;
-          }
-          title.value = openParams.title ?? "";
-          type.value = openParams.type;
-          visible.value = true;
-        };
+  const ok: FormBoxOkHandle<FormValue, OkType> = async (okParams) => {
+    if (!formRef.value) {
+      return;
+    }
+    const isValid = await formRef.value.validate().catch((error) => {});
 
-        const ok = async () => {
-          if (!formRef.value) {
-            return;
-          }
-          const isValid = await formRef.value.validate().catch((error) => {});
+    if (!isValid) {
+      return;
+    }
 
-          if (!isValid) {
-            return;
-          }
+    const formValue =
+      okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+    loading.value = true;
 
-          const FormValue = getFormValueByFields<FormValue>(
-            formRef.value.fields
-          );
-
-          loading.value = true;
-          function done() {
-            data.value = FormValue;
-            loading.value = false;
-            close();
-            afterClose?.();
-          }
-          submit?.(
-            {
-              mode: mode.value,
-              data: FormValue,
-              record: record.value,
-            },
-            done
-          );
-        };
-
-        expose({
-          open,
-        });
-
-        return () => {
-          return (
-            <div>
-              <ElDrawer
-                {...props}
-                beforeClose={close}
-                modelValue={visible.value}
-                title={title.value}
-              >
-                <FormArea
-                  form={formRef}
-                  mode={mode.value}
-                  ok={ok}
-                  close={close}
-                  loading={loading.value}
-                  type={type.value}
-                />
-              </ElDrawer>
-            </div>
-          );
-        };
-      },
+    function done() {
+      data.value = formValue;
+      loading.value = false;
+      close();
+    }
+    params?.submit?.(
       {
-        name: "DrawerWithForm",
-        props: ElDrawer["props"],
-      }
+        mode: mode.value,
+        data: formValue,
+        record: toRaw(record.value),
+        okType: okParams?.type,
+        formType: type.value,
+      },
+      done
     );
   };
+
+  const DrawerWithForm = defineComponent<
+    Partial<DrawerProps> & {
+      form: (
+        props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
+      ) => VNode;
+    }
+  >(
+    (props, { expose, attrs }) => {
+      const { form, ...restProps } = props;
+      expose({
+        open,
+      });
+      return () => {
+        return (
+          <div>
+            <ElDrawer
+              {...restProps}
+              destroyOnClose={props.destroyOnClose}
+              modelValue={visible.value}
+              onClose={close}
+              title={title.value}
+            >
+              {form({
+                loading: loading.value,
+                reference: formRef,
+                mode: mode.value,
+                ok,
+                close,
+                type: type.value,
+                record: toRaw(record.value),
+                data: toRaw(data.value),
+              })}
+            </ElDrawer>
+          </div>
+        );
+      };
+    },
+    {
+      name: "DrawerWithForm",
+      props: {
+        ...ElDrawer["props"],
+        destroyOnClose: {
+          type: Boolean,
+          default: true,
+        },
+        form: {
+          type: Function as PropType<
+            (props: WEFormBoxProps<FormValue, RecordValue, FormType>) => VNode
+          >,
+          required: true,
+        },
+      },
+    }
+  );
+
+  return [DrawerWithForm, DrawerRef] as [
+    typeof DrawerWithForm,
+    typeof DrawerRef
+  ];
 };
 
 export default withDrawer;

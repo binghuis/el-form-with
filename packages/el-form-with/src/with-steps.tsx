@@ -1,26 +1,29 @@
-import { defineComponent, ref } from "vue";
+import {
+  defineComponent,
+  ref,
+  type FunctionalComponent,
+  type VNode,
+} from "vue";
 import { ElSteps, type StepsProps } from "element-plus";
-import type { WEFormContainer, WEPlainObject } from "./types";
+import type { WEPlainObject } from "./types";
 import { getFormValueByFields } from "./utils";
 
-const withSteps = <
-  FormsValue extends object[] = WEPlainObject[],
-  RecordValue extends object = WEPlainObject,
-  FormType extends string = string
->() => {
-  return (FormsContainer: any) => {
+type StepsWithFormsProps = {
+  formsBox: (props: any) => VNode;
+};
+
+const withSteps = (params: { FormBoxs: FunctionalComponent[] }) => {
+  const { FormBoxs } = params;
+
+  return () => {
     const StepsWithFormsRef = ref();
     const hasPrev = ref(false);
     const hasNext = ref(true);
     const active = ref(1);
-    const formsCount = FormsContainer.length;
 
     const next = () => {
-      if (active.value < formsCount) {
-        active.value++;
-      } else {
-        hasNext.value = false;
-      }
+      active.value++;
+      hasNext.value = false;
     };
 
     const prev = () => {
@@ -31,13 +34,13 @@ const withSteps = <
       }
     };
 
-    const StepsWithForms = defineComponent(
+    const StepsWithForms = defineComponent<StepsWithFormsProps>(
       (props, { expose, slots }) => {
         return () => {
           return (
             <div>
               {slots["default"]?.()}
-              {slots["steps"]?.({
+              {props.formsBox({
                 prev,
                 next,
                 active: active.value,
@@ -46,7 +49,7 @@ const withSteps = <
           );
         };
       },
-      { name: "StepsWithForms" }
+      { name: "StepsWithForms", props: ["formsBox"] }
     );
 
     return [StepsWithForms, StepsWithFormsRef] as [

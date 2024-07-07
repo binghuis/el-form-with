@@ -1,11 +1,11 @@
-import { defineComponent, ref, toRaw } from "vue";
+import { defineComponent, ref, toRaw, type PropType, type VNode } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import type {
   WEFormMode,
-  WEFormContainer,
   WEOpenOverlayParams,
-  WEPlainObject,
-  WEWithDialogParams,
+  WEWithOverlaysParams,
+  WEFormBoxProps,
+  FormBoxOkHandle,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -13,130 +13,151 @@ type WithDialogOpen<FormValue, RecordValue, FormType> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
-export type WithDialogRef<
-  FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject,
+export type WithDialog<
+  FormValue extends object = object,
+  RecordValue extends object = object,
   FormType extends string = string
 > = {
   open: WithDialogOpen<FormValue, RecordValue, FormType>;
 };
 
 const withDialog = <
-  FormValue extends object = WEPlainObject,
-  RecordValue extends object = WEPlainObject,
-  FormType extends string = string
+  FormValue extends object,
+  RecordValue extends object = object,
+  FormType extends string = string,
+  OkType extends string = string
 >(
-  params?: WEWithDialogParams<FormValue, RecordValue>
+  params?: WEWithOverlaysParams<FormValue, RecordValue, FormType, OkType>
 ) => {
-  return (FormContainer: WEFormContainer<FormValue, RecordValue>) => {
-    const visible = ref<boolean>(false);
-    const formRef = ref<FormInstance>();
-    const title = ref<string>();
-    const mode = ref<WEFormMode>("add");
-    const data = ref<FormValue>();
-    const record = ref<RecordValue>();
-    const loading = ref<boolean>(false);
-    const type = ref<FormType>();
-    const DialogRef = ref<WithDialogRef<FormValue, RecordValue, FormType>>();
+  const visible = ref<boolean>(false);
+  const formRef = ref<FormInstance>();
+  const title = ref<string>();
+  const mode = ref<WEFormMode>("add");
+  const data = ref<FormValue>();
+  const record = ref<RecordValue>();
+  const loading = ref<boolean>(false);
+  const type = ref<FormType>();
+  const DialogRef = ref<WithDialog<FormValue, RecordValue, FormType>>();
 
-    const close = () => {
+  const close = () => {
+    function done() {
       visible.value = false;
       formRef.value?.resetFields();
-    };
-
-    const open: WithDialogOpen<FormValue, RecordValue, FormType> = (
-      openParams
-    ) => {
-      if (!openParams) {
-        return;
-      }
-      data.value = openParams.data;
-      record.value = openParams.record;
-      if (openParams.mode) {
-        mode.value = openParams.mode;
-      }
-      type.value = openParams.type;
-      title.value = openParams.title ?? "";
-      visible.value = true;
-    };
-
-    const ok = async (okParams?: { type?: string }) => {
-      if (!formRef.value) {
-        return;
-      }
-      const isValid = await formRef.value.validate().catch((error) => {});
-
-      if (!isValid) {
-        return;
-      }
-
-      const FormValue = getFormValueByFields<FormValue>(formRef.value.fields);
-      loading.value = true;
-
-      function done() {
-        data.value = FormValue;
-        loading.value = false;
-        close();
-      }
-      params?.submit?.(
-        {
-          mode: mode.value,
-          data: FormValue,
-          record: toRaw(record.value),
-          type: okParams?.type,
-        },
-        done
-      );
-    };
-
-    const DialogWithForm = defineComponent<Partial<DialogProps>>(
-      (props, { expose, attrs }) => {
-        expose({
-          open,
-        });
-
-        return () => {
-          return (
-            <div>
-              <ElDialog
-                {...props}
-                destroyOnClose={props.destroyOnClose}
-                modelValue={visible.value}
-                onClose={close}
-                title={title.value}
-              >
-                <FormContainer
-                  loading={loading.value}
-                  form={formRef}
-                  mode={mode.value}
-                  ok={ok}
-                  close={close}
-                  type={type.value}
-                  record={toRaw(record.value)}
-                  data={toRaw(data.value)}
-                />
-              </ElDialog>
-            </div>
-          );
-        };
-      },
-      {
-        name: "DialogWithForm",
-        props: {
-          ...ElDialog["props"],
-          destroyOnClose: {
-            type: Boolean,
-            default: true,
-          },
-        },
-      }
-    );
-
-    return [DialogWithForm, DialogRef] as [
-      typeof DialogWithForm,
-      typeof DialogRef
-    ];
+    }
+    if (params?.beforeClose) {
+      params.beforeClose(done);
+    } else {
+      done();
+    }
+    params?.afterClose?.();
   };
+
+  const open: WithDialogOpen<FormValue, RecordValue, FormType> = (
+    openParams
+  ) => {
+    if (!openParams) {
+      return;
+    }
+    data.value = openParams.data;
+    record.value = openParams.record;
+    if (openParams.mode) {
+      mode.value = openParams.mode;
+    }
+    type.value = openParams.type;
+    title.value = openParams.title ?? "";
+    visible.value = true;
+  };
+
+  const ok: FormBoxOkHandle<FormValue, OkType> = async (okParams) => {
+    if (!formRef.value) {
+      return;
+    }
+    const isValid = await formRef.value.validate().catch((error) => {});
+
+    if (!isValid) {
+      return;
+    }
+
+    const formValue =
+      okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+    loading.value = true;
+
+    function done() {
+      data.value = formValue;
+      loading.value = false;
+      close();
+    }
+    params?.submit?.(
+      {
+        mode: mode.value,
+        data: formValue,
+        record: toRaw(record.value),
+        okType: okParams?.type,
+        formType: type.value,
+      },
+      done
+    );
+  };
+
+  const DialogWithForm = defineComponent<
+    Partial<DialogProps> & {
+      form: (
+        props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
+      ) => VNode;
+    }
+  >(
+    (props, { expose, attrs }) => {
+      const { form, ...restProps } = props;
+      expose({
+        open,
+      });
+      return () => {
+        return (
+          <div>
+            <ElDialog
+              {...restProps}
+              destroyOnClose={props.destroyOnClose}
+              modelValue={visible.value}
+              onClose={close}
+              title={title.value}
+            >
+              {form({
+                loading: loading.value,
+                reference: formRef,
+                mode: mode.value,
+                ok,
+                close,
+                type: type.value,
+                record: toRaw(record.value),
+                data: toRaw(data.value),
+              })}
+            </ElDialog>
+          </div>
+        );
+      };
+    },
+    {
+      name: "DialogWithForm",
+      props: {
+        ...ElDialog["props"],
+        destroyOnClose: {
+          type: Boolean,
+          default: true,
+        },
+        form: {
+          type: Function as PropType<
+            (props: WEFormBoxProps<FormValue, RecordValue, FormType>) => VNode
+          >,
+          required: true,
+        },
+      },
+    }
+  );
+
+  return [DialogWithForm, DialogRef] as [
+    typeof DialogWithForm,
+    typeof DialogRef
+  ];
 };
 
 export default withDialog;
