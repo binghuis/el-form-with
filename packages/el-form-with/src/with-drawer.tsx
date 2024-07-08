@@ -13,7 +13,7 @@ type WithDrawerOpen<FormValue, RecordValue, FormType> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
-export type WithDrawer<
+export type WithDrawerRefValue<
   FormValue extends object = object,
   RecordValue extends object = object,
   FormType extends string = string
@@ -37,7 +37,7 @@ const withDrawer = <
   const record = ref<RecordValue>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
-  const DrawerRef = ref<WithDrawer<FormValue, RecordValue, FormType>>();
+  const DrawerRef = ref<WithDrawerRefValue<FormValue, RecordValue, FormType>>();
 
   const close = () => {
     function done() {
@@ -120,6 +120,8 @@ const withDrawer = <
               modelValue={visible.value}
               onClose={close}
               title={title.value}
+              closeOnClickModal={mode.value === "view" ? true : false}
+              closeOnPressEscape={mode.value === "view" ? true : false}
             >
               {form({
                 loading: loading.value,

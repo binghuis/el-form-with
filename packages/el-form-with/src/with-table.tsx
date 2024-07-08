@@ -83,6 +83,7 @@ const withTable = <
       pagination,
       filters,
     });
+
     pageinationRef.value = {
       ...pagination,
       total: res?.total,
@@ -123,31 +124,31 @@ const withTable = <
       onMounted(() => {
         search();
       });
-      const paginationParams = {
-        layout: "total, sizes, prev, pager, next, jumper",
-        pagination: pageinationRef.value,
-        isLoading: isLoading.value,
-        disabled: isLoading.value,
-        total: pageinationRef.value.total,
-        currentPage: pageinationRef.value.current,
-        pageSize: pageinationRef.value.pageSize,
-        "onUpdate:current-page": async (current: number) => {
-          loadings.value.search = true;
-          await request({
-            pagination: { ...DefaultPagination, current },
-          });
-          loadings.value.search = false;
-        },
-        "onUpdate:page-size": async (pageSize: number) => {
-          loadings.value.search = true;
-          await request({
-            pagination: { ...DefaultPagination, pageSize },
-          });
-          loadings.value.search = false;
-        },
-      };
 
       return () => {
+        const paginationParams = {
+          layout: "total, sizes, prev, pager, next, jumper",
+          pagination: pageinationRef.value,
+          isLoading: isLoading.value,
+          disabled: isLoading.value,
+          total: pageinationRef.value.total,
+          currentPage: pageinationRef.value.current,
+          pageSize: pageinationRef.value.pageSize,
+          "onUpdate:current-page": async (current: number) => {
+            loadings.value.search = true;
+            await request({
+              pagination: { ...DefaultPagination, current },
+            });
+            loadings.value.search = false;
+          },
+          "onUpdate:page-size": async (pageSize: number) => {
+            loadings.value.search = true;
+            await request({
+              pagination: { ...DefaultPagination, pageSize },
+            });
+            loadings.value.search = false;
+          },
+        };
         const SelectorBox = selector({
           reference: selectorRef,
           search,

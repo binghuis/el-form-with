@@ -1,4 +1,12 @@
-import { defineComponent, ref, toRaw, type PropType, type VNode } from "vue";
+import {
+  defineComponent,
+  ref,
+  toRaw,
+  type DefineSetupFnComponent,
+  type PropType,
+  type Ref,
+  type VNode,
+} from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import type {
   WEFormMode,
@@ -13,13 +21,31 @@ type WithDialogOpen<FormValue, RecordValue, FormType> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
-export type WithDialog<
+export type WithDialogRefValue<
   FormValue extends object = object,
   RecordValue extends object = object,
   FormType extends string = string
 > = {
   open: WithDialogOpen<FormValue, RecordValue, FormType>;
 };
+
+// export type WithDialog = <
+//   FormValue extends object,
+//   RecordValue extends object = object,
+//   FormType extends string = string,
+//   OkType extends string = string
+// >(
+//   params?: WEWithOverlaysParams<FormValue, RecordValue, FormType, OkType>
+// ) => [
+//   DefineSetupFnComponent<
+//     Partial<DialogProps> & {
+//       form: (
+//         props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
+//       ) => VNode;
+//     }
+//   >,
+//   Ref<WithDialogRefValue<FormValue, RecordValue, FormType>>
+// ];
 
 const withDialog = <
   FormValue extends object,
@@ -37,7 +63,7 @@ const withDialog = <
   const record = ref<RecordValue>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
-  const DialogRef = ref<WithDialog<FormValue, RecordValue, FormType>>();
+  const DialogRef = ref<WithDialogRefValue<FormValue, RecordValue, FormType>>();
 
   const close = () => {
     function done() {
@@ -120,6 +146,8 @@ const withDialog = <
               modelValue={visible.value}
               onClose={close}
               title={title.value}
+              closeOnClickModal={mode.value === "view" ? true : false}
+              closeOnPressEscape={mode.value === "view" ? true : false}
             >
               {form({
                 loading: loading.value,
