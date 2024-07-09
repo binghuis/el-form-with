@@ -1,15 +1,17 @@
 # el-form-with
 
+![vue](https://img.shields.io/badge/Vue_3-4FC08D?logo=vue.js&labelColor=263238)
+![tailwindcss](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&labelColor=263238)
+[![npm version](https://img.shields.io/npm/v/el-form-with)](https://www.npmjs.com/package/el-form-with)
+[![GitHub](https://img.shields.io/github/license/binghuis/el-form-with.svg)](https://github.com/binghuis/el-form-with/blob/main/LICENSE)
+![vue peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/vue?labelColor=263238)
+![element-plus peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/element-plus?labelColor=263238)
+
 [English](./README.md) · 简体中文
 
 <div align="left">
 
 `el-form-with` 是一个用于简化 `Form` 和其他组件结合使用的高阶组件库。
-
-[![npm version](https://img.shields.io/npm/v/el-form-with?style=flat-square)](https://www.npmjs.com/package/el-form-with)
-[![GitHub](https://img.shields.io/github/license/binghuis/el-form-with.svg?style=flat-square)](https://github.com/binghuis/el-form-with/blob/main/LICENSE)
-![vue peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/vue?style=flat-square)
-![element-plus peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/element-plus?style=flat-square)
 
 </div>
 
