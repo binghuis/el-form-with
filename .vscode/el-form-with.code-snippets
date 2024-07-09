@@ -14,7 +14,7 @@
       "export type OkType = string;",
       "",
       "const FormBox = defineComponent<",
-      "  WEFormBoxProps<FormValue, object, FormType, OkType>",
+      "  WEFormBoxProps<FormValue, FormType, OkType>",
       ">(",
       "  props => {",
       "    const formValue = reactive<FormValue>({",
