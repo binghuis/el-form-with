@@ -11,7 +11,7 @@ import type {
 import { DefaultMode, getFormValueByFields } from "./utils";
 
 type WithDrawerOpen<FormValue, RecordValue, FormType> = (
-  openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
+  openParams?: WEOpenOverlayParams<FormValue, RecordValue, FormType>
 ) => void;
 
 export type WithDrawerRefValue<
@@ -57,16 +57,15 @@ const withDrawer = <
   const open: WithDrawerOpen<FormValue, RecordValue, FormType> = (
     openParams
   ) => {
-    if (!openParams) {
-      return;
+    if (openParams) {
+      data.value = openParams.data;
+      record.value = openParams.record;
+      if (openParams.mode) {
+        mode.value = openParams.mode;
+      }
+      type.value = openParams.type;
+      title.value = openParams.title ?? "";
     }
-    data.value = openParams.data;
-    record.value = openParams.record;
-    if (openParams.mode) {
-      mode.value = openParams.mode;
-    }
-    type.value = openParams.type;
-    title.value = openParams.title ?? "";
     visible.value = true;
   };
 
