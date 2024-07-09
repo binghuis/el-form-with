@@ -13,9 +13,9 @@
 
 </div>
 
-ToB 业务中 `Form`、`Table`、弹层 UI `Dialog`、`Drawer` 等组件的联动非常常见。这类逻辑简单、重复性强、繁琐。
+<img src='https://raw.githubusercontent.com/binghuis/assets/main/el-form-with/with-dialog.avif' />
 
-`el-form-with` 实现的是封装组件的联动逻辑并返回组合组件。
+<img src='https://raw.githubusercontent.com/binghuis/assets/main/el-form-with/with-table.avif' />
 
 ## 安装
 
@@ -35,7 +35,7 @@ import FormContainer from "";
 const DialogWithForm = withDialog({
   async submit({ data, mode, record }) {
     return "success";
-  }
+  },
 })(FormContainer);
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
         <ElButton
           onClick={() => {
             DialogWithRef.value.open({
-              mode: "add"
+              mode: "add",
             });
           }}
         >
@@ -56,7 +56,7 @@ export default defineComponent({
         <DialogWithForm destroyOnClose ref={DialogWithRef} />
       </div>
     );
-  }
+  },
 });
 ```
 

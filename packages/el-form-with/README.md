@@ -16,6 +16,10 @@ English · [简体中文](./packages/el-form-with/README.zh-CN.md)
 
 </div>
 
+<img src='https://raw.githubusercontent.com/binghuis/assets/main/el-form-with/with-dialog.avif' />
+
+<img src='https://raw.githubusercontent.com/binghuis/assets/main/el-form-with/with-table.avif' />
+
 ## Installation
 
 You can use pnpm to install `el-form-with`:
