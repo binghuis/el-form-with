@@ -180,7 +180,7 @@ const withTable = <
     },
     {
       name: "TableWithOverlay",
-      props: ["table", "selector"],
+      props: ["table", "selector", "onRefresh", "onReset", "onSearch"],
     }
   );
 

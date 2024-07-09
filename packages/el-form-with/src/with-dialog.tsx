@@ -96,8 +96,10 @@ const withDialog = <
         return;
       }
 
-      formValue =
-        okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+      formValue = getFormValueByFields<FormValue>(formRef.value.fields);
+    }
+    if (okParams?.data) {
+      formValue = okParams.data;
     }
     loading.value = true;
 
