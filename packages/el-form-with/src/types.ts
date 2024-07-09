@@ -7,7 +7,7 @@ export interface WEPlainObject {
 
 export type WEFormMode = "view" | "copy" | "add" | "edit";
 
-export type EmptyFunction = () => void;
+export type EmptyFunction = () => void | Promise<void>;
 
 export type MaybeUndefined<T> = T | undefined;
 export type MaybeNull<T> = T | null;
@@ -50,7 +50,7 @@ export interface WEWithOverlaysParams<
   OkType extends string
 > {
   beforeClose?: (done: EmptyFunction) => Promise<void>;
-  afterClose?: EmptyFunction | Promise<void>;
+  afterClose?: EmptyFunction;
   submit: (
     params: {
       mode: WEFormMode;
@@ -84,8 +84,8 @@ export interface WESelectorBoxProps {
 }
 
 export interface WETableBoxProps<
-  SelectorFormValue extends object,
-  RecordValue extends object
+  SelectorFormValue extends object = object,
+  RecordValue extends object = object
 > {
   reference: Ref<MaybeUndefined<TableInstance>>;
   data?: MaybeNull<RecordValue[]>;

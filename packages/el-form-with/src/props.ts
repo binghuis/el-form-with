@@ -17,7 +17,9 @@ export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [
   "loadings",
 ];
 
-export const tableBoxDefaultProps: Array<keyof WETableBoxProps<object>> = [
+export const tableBoxDefaultProps: Array<
+  keyof WETableBoxProps<object, object>
+> = [
   "reference",
   "data",
   "reset",
