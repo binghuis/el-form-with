@@ -61,9 +61,9 @@ export interface WEWithOverlaysParams<
   ) => Promise<void>;
 }
 
-export interface WEWithTableParams<RecordValue, SelectorFormValue> {
+export interface WEWithTableParams<RecordValue, SelectorValue> {
   pageSize?: number;
-  requester: WERequester<RecordValue, SelectorFormValue>;
+  requester: WERequester<RecordValue, SelectorValue>;
 }
 
 export interface WELoadings {
@@ -83,13 +83,13 @@ export interface WESelectorBoxProps {
 
 export interface WETableBoxProps<
   RecordValue extends object,
-  SelectorFormValue extends object = object
+  SelectorValue extends object = object
 > {
   reference: Ref<MaybeUndefined<TableInstance>>;
   data?: MaybeNull<RecordValue[]>;
   reset: WETableReset;
   refresh: WETableRefresh;
-  search: WETableSearch<SelectorFormValue>;
+  search: WETableSearch<SelectorValue>;
   filters: MaybeNull<WETableFilters>;
   isLoading: boolean;
   loadings: WELoadings;
@@ -102,49 +102,48 @@ export interface WEPagination {
   total: number;
 }
 
+export interface WERequester<RecordValue, SelectorValue> {
+  (params: WERequesterParams<SelectorValue>): Promise<
+    WERequesterResponse<RecordValue>
+  >;
+}
+
+export interface WERequestParams<SelectorValue> {
+  pagination?: WEPagination;
+  filters?: MaybeNull<WETableFilters>;
+  data?: MaybeNull<SelectorValue>;
+}
+
+export type WERequest<SelectorValue> = (
+  params?: WERequestParams<SelectorValue>
+) => void;
+
+export interface WERequesterParams<SelectorValue> {
+  data?: MaybeNull<SelectorValue>;
+  pagination: WEPagination;
+  filters?: MaybeNull<WETableFilters>;
+}
+
 export interface WERequesterResponse<Item> {
   total: number;
   list: Item[];
 }
 
-export interface WERequesterParams<SelectorFormValue> {
-  data?: MaybeNull<SelectorFormValue>;
-  pagination: WEPagination;
-  filters?: MaybeNull<WETableFilters>;
-}
-
-export type WETableSearch<SelectorFormValue> = (params?: {
-  data?: MaybeNull<SelectorFormValue>;
+export type WETableSearch<SelectorValue> = (params?: {
+  data?: MaybeNull<SelectorValue>;
   filters?: MaybeNull<WETableFilters>;
 }) => Promise<void>;
+
 export type WETableReset = () => Promise<void>;
+
 export type WETableRefresh = () => Promise<void>;
 
-export type WETableOnHandle<SelectorFormValue> = (params: {
-  data?: MaybeNull<SelectorFormValue>;
+export type WETableOnHandle<SelectorValue> = (params: {
+  data?: MaybeNull<SelectorValue>;
 }) => Promise<void> | void;
 
-export type WETableOnSearch<SelectorFormValue> =
-  WETableOnHandle<SelectorFormValue>;
+export type WETableOnSearch<SelectorValue> = WETableOnHandle<SelectorValue>;
 
-export type WETableOnReset<SelectorFormValue> =
-  WETableOnHandle<SelectorFormValue>;
+export type WETableOnReset<SelectorValue> = WETableOnHandle<SelectorValue>;
 
-export type WETableOnRefresh<SelectorFormValue> =
-  WETableOnHandle<SelectorFormValue>;
-
-export interface WERequester<RecordValue, SelectorFormValue> {
-  (params: WERequesterParams<SelectorFormValue>): Promise<
-    WERequesterResponse<RecordValue>
-  >;
-}
-
-export interface WERequestParams<SelectorFormValue> {
-  pagination?: WEPagination;
-  filters?: MaybeNull<WETableFilters>;
-  data?: MaybeNull<SelectorFormValue>;
-}
-
-export type WERequest<SelectorFormValue> = (
-  params?: WERequestParams<SelectorFormValue>
-) => void;
+export type WETableOnRefresh<SelectorValue> = WETableOnHandle<SelectorValue>;
