@@ -1,12 +1,4 @@
-import {
-  defineComponent,
-  ref,
-  toRaw,
-  type DefineSetupFnComponent,
-  type PropType,
-  type Ref,
-  type VNode,
-} from "vue";
+import { defineComponent, ref, toRaw, type PropType, type VNode } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import type {
   WEFormMode,
@@ -14,8 +6,9 @@ import type {
   WEWithOverlaysParams,
   WEFormBoxProps,
   FormBoxOkHandle,
+  MaybeNull,
 } from "./types";
-import { getFormValueByFields } from "./utils";
+import { DefaultMode, getFormValueByFields } from "./utils";
 
 type WithDialogOpen<FormValue, RecordValue, FormType> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
@@ -58,9 +51,9 @@ const withDialog = <
   const visible = ref<boolean>(false);
   const formRef = ref<FormInstance>();
   const title = ref<string>();
-  const mode = ref<WEFormMode>("add");
-  const data = ref<FormValue>();
-  const record = ref<RecordValue>();
+  const mode = ref<WEFormMode>(DefaultMode);
+  const data = ref<MaybeNull<FormValue>>();
+  const record = ref<MaybeNull<RecordValue>>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
   const DialogRef = ref<WithDialogRefValue<FormValue, RecordValue, FormType>>();
@@ -69,6 +62,7 @@ const withDialog = <
     function done() {
       visible.value = false;
       formRef.value?.resetFields();
+      mode.value = DefaultMode;
     }
     if (params?.beforeClose) {
       params.beforeClose(done);
@@ -95,17 +89,17 @@ const withDialog = <
   };
 
   const ok: FormBoxOkHandle<FormValue, OkType> = async (okParams) => {
-    if (!formRef.value) {
-      return;
-    }
-    const isValid = await formRef.value.validate().catch((error) => {});
+    let formValue: FormValue | null = null;
+    if (formRef.value) {
+      const isValid = await formRef.value.validate().catch((error) => {});
 
-    if (!isValid) {
-      return;
-    }
+      if (!isValid) {
+        return;
+      }
 
-    const formValue =
-      okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+      formValue =
+        okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+    }
     loading.value = true;
 
     function done() {
@@ -113,6 +107,7 @@ const withDialog = <
       loading.value = false;
       close();
     }
+
     params?.submit?.(
       {
         mode: mode.value,
@@ -143,6 +138,7 @@ const withDialog = <
             <ElDialog
               {...restProps}
               destroyOnClose={props.destroyOnClose}
+              lockScroll
               modelValue={visible.value}
               onClose={close}
               title={title.value}
@@ -174,7 +170,9 @@ const withDialog = <
         },
         form: {
           type: Function as PropType<
-            (props: WEFormBoxProps<FormValue, RecordValue, FormType>) => VNode
+            (
+              props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
+            ) => VNode
           >,
           required: true,
         },

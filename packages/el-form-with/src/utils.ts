@@ -11,21 +11,15 @@ export function isInEnum<T extends {}>(enumObj: T, value: unknown): boolean {
   return Object.values(enumObj).includes(value);
 }
 
-export function getFormValueByFields<FormValue>(
-  fields?: FormItemContext[]
-): FormValue {
+export function getFormValueByFields<FormValue>(fields?: FormItemContext[]) {
   if (!fields || fields?.length === 0) {
-    return null as unknown as FormValue;
+    return null;
   }
-  return fields.reduce((acc, cur) => {
+  return fields.reduce<WEPlainObject>((acc, cur) => {
     let field = cur.fieldValue;
 
     if (isProxy(field)) {
       field = toRaw(field);
-    }
-
-    if (isDate(field)) {
-      field = field.valueOf();
     }
 
     if (Array.isArray(field)) {
@@ -33,17 +27,16 @@ export function getFormValueByFields<FormValue>(
         if (isProxy(item)) {
           return toRaw(item);
         }
-        if (isDate(item)) {
-          return item.valueOf();
-        }
         return item;
       });
     }
 
     if (cur.prop) {
-      (acc as WEPlainObject)[cur.prop.toString()] = field;
+      acc[cur.prop.toString()] = field;
     }
 
     return acc;
-  }, {} as FormValue);
+  }, {}) as FormValue;
 }
+
+export const DefaultMode = "add";

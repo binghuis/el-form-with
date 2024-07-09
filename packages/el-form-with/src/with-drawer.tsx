@@ -6,8 +6,9 @@ import type {
   WEWithOverlaysParams,
   WEFormBoxProps,
   FormBoxOkHandle,
+  MaybeNull,
 } from "./types";
-import { getFormValueByFields } from "./utils";
+import { DefaultMode, getFormValueByFields } from "./utils";
 
 type WithDrawerOpen<FormValue, RecordValue, FormType> = (
   openParams: WEOpenOverlayParams<FormValue, RecordValue, FormType>
@@ -32,9 +33,9 @@ const withDrawer = <
   const visible = ref<boolean>(false);
   const formRef = ref<FormInstance>();
   const title = ref<string>();
-  const mode = ref<WEFormMode>("add");
-  const data = ref<FormValue>();
-  const record = ref<RecordValue>();
+  const mode = ref<WEFormMode>(DefaultMode);
+  const data = ref<MaybeNull<FormValue>>();
+  const record = ref<MaybeNull<RecordValue>>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
   const DrawerRef = ref<WithDrawerRefValue<FormValue, RecordValue, FormType>>();
@@ -43,6 +44,7 @@ const withDrawer = <
     function done() {
       visible.value = false;
       formRef.value?.resetFields();
+      mode.value = DefaultMode;
     }
     if (params?.beforeClose) {
       params.beforeClose(done);
@@ -69,17 +71,17 @@ const withDrawer = <
   };
 
   const ok: FormBoxOkHandle<FormValue, OkType> = async (okParams) => {
-    if (!formRef.value) {
-      return;
-    }
-    const isValid = await formRef.value.validate().catch((error) => {});
+    let formValue: FormValue | null = null;
+    if (formRef.value) {
+      const isValid = await formRef.value.validate().catch((error) => {});
 
-    if (!isValid) {
-      return;
-    }
+      if (!isValid) {
+        return;
+      }
 
-    const formValue =
-      okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+      formValue =
+        okParams?.data ?? getFormValueByFields<FormValue>(formRef.value.fields);
+    }
     loading.value = true;
 
     function done() {
@@ -87,6 +89,7 @@ const withDrawer = <
       loading.value = false;
       close();
     }
+
     params?.submit?.(
       {
         mode: mode.value,
@@ -117,6 +120,7 @@ const withDrawer = <
             <ElDrawer
               {...restProps}
               destroyOnClose={props.destroyOnClose}
+              lockScroll
               modelValue={visible.value}
               onClose={close}
               title={title.value}
@@ -148,7 +152,9 @@ const withDrawer = <
         },
         form: {
           type: Function as PropType<
-            (props: WEFormBoxProps<FormValue, RecordValue, FormType>) => VNode
+            (
+              props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
+            ) => VNode
           >,
           required: true,
         },

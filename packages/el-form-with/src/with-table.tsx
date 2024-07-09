@@ -11,7 +11,6 @@ import {
   type TableInstance,
   ElPagination,
   ElRow,
-  ElCard,
 } from "element-plus";
 import type {
   WEPagination,
@@ -36,7 +35,7 @@ export type TableWithOverlayRef = {
 
 type TableWithOverlayProps<RecordValue extends object> = {
   table: (props: WETableBoxProps<RecordValue>) => VNode;
-  selector: (props: WESelectorBoxProps) => VNode;
+  selector?: (props: WESelectorBoxProps) => VNode;
   onSearch?: WETableSearch;
   onReset?: TableReset;
   onRefresh?: TableRefresh;
@@ -149,7 +148,7 @@ const withTable = <
             loadings.value.search = false;
           },
         };
-        const SelectorBox = selector({
+        const SelectorBox = selector?.({
           reference: selectorRef,
           search,
           reset,
@@ -169,15 +168,12 @@ const withTable = <
           pagination: pageinationRef.value,
         });
         return (
-          <div class="flex flex-col gap-2">
-            <ElCard shadow="never">{SelectorBox}</ElCard>
-            {slots["default"]?.()}
-            <ElCard shadow={"never"}>
-              {TableBox}
-              <ElRow justify="end" class={"py-4"}>
-                <ElPagination {...paginationParams} />
-              </ElRow>
-            </ElCard>
+          <div class="flex flex-col">
+            {selector && <div>{SelectorBox}</div>}
+            {TableBox}
+            <ElRow justify="end" class={"py-4"}>
+              <ElPagination {...paginationParams} />
+            </ElRow>
           </div>
         );
       };

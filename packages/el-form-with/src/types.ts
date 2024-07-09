@@ -8,12 +8,13 @@ export interface WEPlainObject {
 export type WEFormMode = "view" | "copy" | "add" | "edit";
 
 export type MaybeUndefined<T> = T | undefined;
+export type MaybeNull<T> = T | null;
 
 export type WETableFilters = Record<string, (string | number)[]>;
 
 export type FormBoxOkHandle<FormValue, OkType> = (params?: {
   type?: OkType;
-  data?: FormValue;
+  data?: MaybeNull<FormValue>;
 }) => void;
 
 export interface WEFormBoxProps<
@@ -24,8 +25,8 @@ export interface WEFormBoxProps<
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
-  data?: FormValue;
-  record?: RecordValue;
+  data?: MaybeNull<FormValue>;
+  record?: MaybeNull<RecordValue>;
   close: () => void;
   ok: FormBoxOkHandle<FormValue, OkType>;
   loading: boolean;
@@ -34,9 +35,9 @@ export interface WEFormBoxProps<
 
 export interface WEOpenOverlayParams<FormValue, RecordValue, FormType> {
   title?: string;
-  data?: FormValue;
   mode?: WEFormMode;
-  record?: RecordValue;
+  data?: MaybeNull<FormValue>;
+  record?: MaybeNull<RecordValue>;
   type?: FormType;
 }
 
@@ -51,8 +52,8 @@ export interface WEWithOverlaysParams<
   submit: (
     params: {
       mode: WEFormMode;
-      data?: FormValue;
-      record?: RecordValue;
+      data?: MaybeNull<FormValue>;
+      record?: MaybeNull<RecordValue>;
       okType?: OkType;
       formType?: FormType;
     },
@@ -106,7 +107,7 @@ export interface WERequesterResponse<Item> {
 }
 
 export interface WERequesterParams<FormValue> {
-  data?: FormValue;
+  data?: MaybeNull<FormValue>;
   pagination: WEPagination;
   filters?: WETableFilters;
 }
