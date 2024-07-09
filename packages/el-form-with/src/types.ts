@@ -7,6 +7,8 @@ export interface WEPlainObject {
 
 export type WEFormMode = "view" | "copy" | "add" | "edit";
 
+export type EmptyFunction = () => void;
+
 export type MaybeUndefined<T> = T | undefined;
 export type MaybeNull<T> = T | null;
 
@@ -27,7 +29,7 @@ export interface WEFormBoxProps<
   mode: WEFormMode;
   data?: MaybeNull<FormValue>;
   record?: MaybeNull<RecordValue>;
-  close: () => void;
+  close: EmptyFunction;
   ok: FormBoxOkHandle<FormValue, OkType>;
   loading: boolean;
   type?: FormType;
@@ -47,8 +49,8 @@ export interface WEWithOverlaysParams<
   FormType extends string,
   OkType extends string
 > {
-  beforeClose?: (done: () => void) => Promise<void>;
-  afterClose?: () => void | Promise<void>;
+  beforeClose?: (done: EmptyFunction) => Promise<void>;
+  afterClose?: EmptyFunction | Promise<void>;
   submit: (
     params: {
       mode: WEFormMode;
@@ -57,7 +59,7 @@ export interface WEWithOverlaysParams<
       okType?: OkType;
       formType?: FormType;
     },
-    done: () => void
+    done: EmptyFunction
   ) => Promise<void>;
 }
 
@@ -74,22 +76,23 @@ export interface WELoadings {
 
 export interface WESelectorBoxProps {
   reference: Ref<MaybeUndefined<FormInstance>>;
-  search: () => void;
-  reset: () => void;
-  refresh: () => void;
+  search: EmptyFunction;
+  reset: EmptyFunction;
+  refresh: EmptyFunction;
   isLoading: boolean;
   loadings: WELoadings;
 }
 
-export type WETableSearch = (params?: { filters?: WETableFilters }) => void;
-
-export interface WETableBoxProps<RecordValue extends object> {
+export interface WETableBoxProps<
+  SelectorFormValue extends object,
+  RecordValue extends object
+> {
   reference: Ref<MaybeUndefined<TableInstance>>;
-  data?: RecordValue[];
-  reset: () => void;
-  refresh: () => void;
-  search: WETableSearch;
-  filters: WETableFilters;
+  data?: MaybeNull<RecordValue[]>;
+  reset: WETableReset;
+  refresh: WETableRefresh;
+  search: WETableSearch<SelectorFormValue>;
+  filters: MaybeNull<WETableFilters>;
   isLoading: boolean;
   loadings: WELoadings;
   pagination: WEPagination;
@@ -106,21 +109,44 @@ export interface WERequesterResponse<Item> {
   list: Item[];
 }
 
-export interface WERequesterParams<FormValue> {
-  data?: MaybeNull<FormValue>;
+export interface WERequesterParams<SelectorFormValue> {
+  data?: MaybeNull<SelectorFormValue>;
   pagination: WEPagination;
-  filters?: WETableFilters;
+  filters?: MaybeNull<WETableFilters>;
 }
 
-export interface WERequester<FormValue, RecordValue> {
-  (params: WERequesterParams<FormValue>): Promise<
+export type WETableSearch<SelectorFormValue> = (params?: {
+  data?: MaybeNull<SelectorFormValue>;
+  filters?: MaybeNull<WETableFilters>;
+}) => Promise<void>;
+export type WETableReset = () => Promise<void>;
+export type WETableRefresh = () => Promise<void>;
+
+export type WETableOnHandle<SelectorFormValue> = (params: {
+  data?: MaybeNull<SelectorFormValue>;
+}) => Promise<void> | void;
+
+export type WETableOnSearch<SelectorFormValue> =
+  WETableOnHandle<SelectorFormValue>;
+
+export type WETableOnReset<SelectorFormValue> =
+  WETableOnHandle<SelectorFormValue>;
+
+export type WETableOnRefresh<SelectorFormValue> =
+  WETableOnHandle<SelectorFormValue>;
+
+export interface WERequester<SelectorFormValue, RecordValue> {
+  (params: WERequesterParams<SelectorFormValue>): Promise<
     WERequesterResponse<RecordValue>
   >;
 }
 
-export interface WERequestParams {
+export interface WERequestParams<SelectorFormValue> {
   pagination?: WEPagination;
-  filters?: WETableFilters;
+  filters?: MaybeNull<WETableFilters>;
+  data?: MaybeNull<SelectorFormValue>;
 }
 
-export type WERequest = (params?: WERequestParams) => void;
+export type WERequest<SelectorFormValue> = (
+  params?: WERequestParams<SelectorFormValue>
+) => void;

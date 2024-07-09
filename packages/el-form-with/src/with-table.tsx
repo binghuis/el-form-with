@@ -21,29 +21,35 @@ import type {
   WELoadings,
   WESelectorBoxProps,
   WETableBoxProps,
+  WETableReset,
+  WETableRefresh,
+  WETableOnSearch,
+  WETableOnReset,
+  WETableOnRefresh,
+  MaybeNull,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
-type TableReset = () => Promise<void>;
-type TableRefresh = () => Promise<void>;
-
-export type TableWithOverlayRef = {
-  search: WETableSearch;
-  reset: TableReset;
-  refresh: TableRefresh;
+export type TableWithOverlayRef<SelectorFormValue> = {
+  search: WETableSearch<SelectorFormValue>;
+  reset: WETableReset;
+  refresh: WETableRefresh;
 };
 
-type TableWithOverlayProps<RecordValue extends object> = {
-  table: (props: WETableBoxProps<RecordValue>) => VNode;
+type TableWithOverlayProps<
+  SelectorFormValue extends object,
+  RecordValue extends object
+> = {
+  table: (props: WETableBoxProps<SelectorFormValue, RecordValue>) => VNode;
   selector?: (props: WESelectorBoxProps) => VNode;
-  onSearch?: WETableSearch;
-  onReset?: TableReset;
-  onRefresh?: TableRefresh;
+  onSearch?: WETableOnSearch<SelectorFormValue>;
+  onReset?: WETableOnReset<SelectorFormValue>;
+  onRefresh?: WETableOnRefresh<SelectorFormValue>;
 };
 
 const withTable = <
-  RecordValue extends object,
-  SelectorFormValue extends object = object
+  SelectorFormValue extends object = object,
+  RecordValue extends object = object
 >(
   params: WEWithTableParams<SelectorFormValue, RecordValue>
 ) => {
@@ -54,8 +60,9 @@ const withTable = <
     total: 0,
   };
 
-  const TableWithOverlayRef = ref<TableWithOverlayRef>();
+  const TableWithOverlayRef = ref<TableWithOverlayRef<SelectorFormValue>>();
   const selectorRef = ref<FormInstance>();
+  const selectorFormValue = ref<MaybeNull<SelectorFormValue>>();
   const tableRef = ref<TableInstance>();
   const tableDataRef = ref<RecordValue[]>();
   const pageinationRef = ref<WEPagination>(DefaultPagination);
@@ -64,56 +71,68 @@ const withTable = <
     reset: false,
     refresh: false,
   });
-  const filtersRef = ref<WETableFilters>({});
+  const filtersRef = ref<MaybeNull<WETableFilters>>({});
 
   const isLoading = computed(() => {
     return Object.values(loadings.value).some((loading) => loading);
   });
 
-  const request: WERequest = async (params) => {
-    const { pagination = pageinationRef.value, filters = filtersRef.value } =
-      params ?? {};
+  const getFormValue = () =>
+    getFormValueByFields<SelectorFormValue>(selectorRef.value?.fields);
 
-    const SelectorFormValue = getFormValueByFields<SelectorFormValue>(
-      selectorRef.value?.fields
-    );
+  const request: WERequest<SelectorFormValue> = async (params) => {
+    const {
+      pagination = pageinationRef.value,
+      filters = filtersRef.value,
+      data = selectorFormValue.value,
+    } = params ?? {};
+
     const res = await requester({
-      data: SelectorFormValue,
+      data,
       pagination,
       filters,
     });
-
+    selectorFormValue.value = data;
     pageinationRef.value = {
       ...pagination,
-      total: res?.total,
+      total: res.total,
     };
+    tableDataRef.value = res.list;
     filtersRef.value = filters;
-    tableDataRef.value = res?.list;
   };
 
-  const TableWithOverlay = defineComponent<TableWithOverlayProps<RecordValue>>(
+  const TableWithOverlay = defineComponent<
+    TableWithOverlayProps<SelectorFormValue, RecordValue>
+  >(
     (props, { expose, slots, attrs }) => {
       const { onSearch, onReset, onRefresh } = props;
       const { selector, table } = props;
 
-      const search: WETableSearch = async (params) => {
-        onSearch?.(params);
-        const { filters } = params ?? {};
+      const search: WETableSearch<SelectorFormValue> = async (params) => {
+        const { filters, data = getFormValue() } = params ?? {};
+        onSearch?.({
+          data,
+        });
         loadings.value.search = true;
-        await request({ pagination: DefaultPagination, filters });
+        await request({ data, pagination: DefaultPagination, filters });
         loadings.value.search = false;
       };
 
-      const reset: TableReset = async () => {
-        onReset?.();
+      const reset: WETableReset = async () => {
         selectorRef.value?.resetFields();
+        const data = getFormValue();
+        onReset?.({
+          data,
+        });
         loadings.value.reset = true;
-        await request({ pagination: DefaultPagination, filters: {} });
+        await request({ data, pagination: DefaultPagination, filters: {} });
         loadings.value.reset = false;
       };
 
-      const refresh: TableRefresh = async () => {
-        onRefresh?.();
+      const refresh: WETableRefresh = async () => {
+        onRefresh?.({
+          data: toRaw(selectorFormValue.value),
+        });
         loadings.value.refresh = true;
         await request();
         loadings.value.refresh = false;
