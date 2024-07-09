@@ -4,9 +4,15 @@ import type {
   WESelectorBoxProps,
 } from "./types";
 
-export const formBoxDefaultProps: Array<
-  keyof WEFormBoxProps<object, object, string>
-> = ["reference", "mode", "data", "record", "close", "ok", "loading", "type"];
+export const formBoxDefaultProps: Array<keyof WEFormBoxProps<object>> = [
+  "reference",
+  "mode",
+  "data",
+  "close",
+  "ok",
+  "loading",
+  "type",
+];
 
 export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [
   "reference",
@@ -17,9 +23,7 @@ export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [
   "loadings",
 ];
 
-export const tableBoxDefaultProps: Array<
-  keyof WETableBoxProps<object, object>
-> = [
+export const tableBoxDefaultProps: Array<keyof WETableBoxProps<object>> = [
   "reference",
   "data",
   "reset",

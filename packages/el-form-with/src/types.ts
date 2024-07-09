@@ -10,6 +10,7 @@ export type WEFormMode = "view" | "copy" | "add" | "edit";
 export type EmptyFunction = () => void | Promise<void>;
 
 export type MaybeUndefined<T> = T | undefined;
+
 export type MaybeNull<T> = T | null;
 
 export type WETableFilters = Record<string, (string | number)[]>;
@@ -21,31 +22,28 @@ export type FormBoxOkHandle<FormValue, OkType> = (params?: {
 
 export interface WEFormBoxProps<
   FormValue extends object,
-  RecordValue extends object = object,
   FormType extends string = string,
   OkType extends string = string
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
   data?: MaybeNull<FormValue>;
-  record?: MaybeNull<RecordValue>;
   close: EmptyFunction;
   ok: FormBoxOkHandle<FormValue, OkType>;
   loading: boolean;
   type?: FormType;
 }
 
-export interface WEOpenOverlayParams<FormValue, RecordValue, FormType> {
+export interface WEOpenOverlayParams<FormValue, FormType> {
   title?: string;
   mode?: WEFormMode;
   data?: MaybeNull<FormValue>;
-  record?: MaybeNull<RecordValue>;
   type?: FormType;
+  id?: string | number;
 }
 
 export interface WEWithOverlaysParams<
   FormValue extends object,
-  RecordValue extends object,
   FormType extends string,
   OkType extends string
 > {
@@ -54,18 +52,18 @@ export interface WEWithOverlaysParams<
   submit: (
     params: {
       mode: WEFormMode;
-      data?: MaybeNull<FormValue>;
-      record?: MaybeNull<RecordValue>;
+      data: MaybeNull<FormValue>;
       okType?: OkType;
       formType?: FormType;
+      id?: string | number;
     },
     done: EmptyFunction
   ) => Promise<void>;
 }
 
-export interface WEWithTableParams<SelectorFormValue, RecordValue> {
+export interface WEWithTableParams<RecordValue, SelectorFormValue> {
   pageSize?: number;
-  requester: WERequester<SelectorFormValue, RecordValue>;
+  requester: WERequester<RecordValue, SelectorFormValue>;
 }
 
 export interface WELoadings {
@@ -84,8 +82,8 @@ export interface WESelectorBoxProps {
 }
 
 export interface WETableBoxProps<
-  SelectorFormValue extends object = object,
-  RecordValue extends object = object
+  RecordValue extends object,
+  SelectorFormValue extends object = object
 > {
   reference: Ref<MaybeUndefined<TableInstance>>;
   data?: MaybeNull<RecordValue[]>;
@@ -135,7 +133,7 @@ export type WETableOnReset<SelectorFormValue> =
 export type WETableOnRefresh<SelectorFormValue> =
   WETableOnHandle<SelectorFormValue>;
 
-export interface WERequester<SelectorFormValue, RecordValue> {
+export interface WERequester<RecordValue, SelectorFormValue> {
   (params: WERequesterParams<SelectorFormValue>): Promise<
     WERequesterResponse<RecordValue>
   >;

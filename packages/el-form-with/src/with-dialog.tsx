@@ -10,53 +10,33 @@ import type {
 } from "./types";
 import { DefaultMode, getFormValueByFields } from "./utils";
 
-type WithDialogOpen<FormValue, RecordValue, FormType> = (
-  openParams?: WEOpenOverlayParams<FormValue, RecordValue, FormType>
+type WithDialogOpen<FormValue, FormType> = (
+  openParams?: WEOpenOverlayParams<FormValue, FormType>
 ) => void;
 
 export type WithDialogRefValue<
   FormValue extends object = object,
-  RecordValue extends object = object,
   FormType extends string = string
 > = {
-  open: WithDialogOpen<FormValue, RecordValue, FormType>;
+  open: WithDialogOpen<FormValue, FormType>;
 };
-
-// export type WithDialog = <
-//   FormValue extends object,
-//   RecordValue extends object = object,
-//   FormType extends string = string,
-//   OkType extends string = string
-// >(
-//   params?: WEWithOverlaysParams<FormValue, RecordValue, FormType, OkType>
-// ) => [
-//   DefineSetupFnComponent<
-//     Partial<DialogProps> & {
-//       form: (
-//         props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
-//       ) => VNode;
-//     }
-//   >,
-//   Ref<WithDialogRefValue<FormValue, RecordValue, FormType>>
-// ];
 
 const withDialog = <
   FormValue extends object,
-  RecordValue extends object = object,
   FormType extends string = string,
   OkType extends string = string
 >(
-  params?: WEWithOverlaysParams<FormValue, RecordValue, FormType, OkType>
+  params: WEWithOverlaysParams<FormValue, FormType, OkType>
 ) => {
   const visible = ref<boolean>(false);
   const formRef = ref<FormInstance>();
   const title = ref<string>();
+  const id = ref<string | number>();
   const mode = ref<WEFormMode>(DefaultMode);
   const data = ref<MaybeNull<FormValue>>();
-  const record = ref<MaybeNull<RecordValue>>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
-  const DialogRef = ref<WithDialogRefValue<FormValue, RecordValue, FormType>>();
+  const DialogRef = ref<WithDialogRefValue<FormValue, FormType>>();
 
   const close = () => {
     function done() {
@@ -72,17 +52,15 @@ const withDialog = <
     params?.afterClose?.();
   };
 
-  const open: WithDialogOpen<FormValue, RecordValue, FormType> = (
-    openParams
-  ) => {
+  const open: WithDialogOpen<FormValue, FormType> = (openParams) => {
     if (openParams) {
       data.value = openParams.data;
-      record.value = openParams.record;
       if (openParams.mode) {
         mode.value = openParams.mode;
       }
       type.value = openParams.type;
       title.value = openParams.title ?? "";
+      id.value = openParams.id ?? "";
     }
     visible.value = true;
   };
@@ -109,13 +87,13 @@ const withDialog = <
       close();
     }
 
-    params?.submit?.(
+    params.submit?.(
       {
         mode: mode.value,
         data: formValue,
-        record: toRaw(record.value),
         okType: okParams?.type,
         formType: type.value,
+        id: id.value,
       },
       done
     );
@@ -123,9 +101,7 @@ const withDialog = <
 
   const DialogWithForm = defineComponent<
     Partial<DialogProps> & {
-      form: (
-        props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
-      ) => VNode;
+      form: (props: WEFormBoxProps<FormValue, FormType, OkType>) => VNode;
     }
   >(
     (props, { expose, attrs }) => {
@@ -153,7 +129,6 @@ const withDialog = <
                 ok,
                 close,
                 type: type.value,
-                record: toRaw(record.value),
                 data: toRaw(data.value),
               })}
             </ElDialog>
@@ -171,9 +146,7 @@ const withDialog = <
         },
         form: {
           type: Function as PropType<
-            (
-              props: WEFormBoxProps<FormValue, RecordValue, FormType, OkType>
-            ) => VNode
+            (props: WEFormBoxProps<FormValue, FormType, OkType>) => VNode
           >,
           required: true,
         },

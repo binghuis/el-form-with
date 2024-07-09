@@ -37,10 +37,10 @@ export type TableWithOverlayRef<SelectorFormValue> = {
 };
 
 type TableWithOverlayProps<
-  SelectorFormValue extends object,
-  RecordValue extends object
+  RecordValue extends object,
+  SelectorFormValue extends object
 > = {
-  table: (props: WETableBoxProps<SelectorFormValue, RecordValue>) => VNode;
+  table: (props: WETableBoxProps<RecordValue, SelectorFormValue>) => VNode;
   selector?: (props: WESelectorBoxProps) => VNode;
   onSearch?: WETableOnSearch<SelectorFormValue>;
   onReset?: WETableOnReset<SelectorFormValue>;
@@ -48,10 +48,10 @@ type TableWithOverlayProps<
 };
 
 const withTable = <
-  SelectorFormValue extends object = object,
-  RecordValue extends object = object
+  RecordValue extends object,
+  SelectorFormValue extends object = object
 >(
-  params: WEWithTableParams<SelectorFormValue, RecordValue>
+  params: WEWithTableParams<RecordValue, SelectorFormValue>
 ) => {
   const { pageSize = 10, requester } = params ?? {};
   const DefaultPagination: WEPagination = {
@@ -102,7 +102,7 @@ const withTable = <
   };
 
   const TableWithOverlay = defineComponent<
-    TableWithOverlayProps<SelectorFormValue, RecordValue>
+    TableWithOverlayProps<RecordValue, SelectorFormValue>
   >(
     (props, { expose, slots, attrs }) => {
       const { onSearch, onReset, onRefresh } = props;
