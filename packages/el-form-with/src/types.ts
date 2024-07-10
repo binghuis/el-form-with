@@ -81,15 +81,12 @@ export interface WESelectorBoxProps {
   loadings: WELoadings;
 }
 
-export interface WETableBoxProps<
-  RecordValue extends object,
-  SelectorValue extends object = object
-> {
+export interface WETableBoxProps<RecordValue extends object> {
   reference: Ref<MaybeUndefined<TableInstance>>;
   data?: MaybeNull<RecordValue[]>;
   reset: WETableReset;
   refresh: WETableRefresh;
-  search: WETableSearch<SelectorValue>;
+  search: WETableSearch;
   filters: MaybeNull<WETableFilters>;
   isLoading: boolean;
   loadings: WELoadings;
@@ -112,6 +109,7 @@ export interface WERequestParams<SelectorValue> {
   pagination?: WEPagination;
   filters?: MaybeNull<WETableFilters>;
   data?: MaybeNull<SelectorValue>;
+  extra?: MaybeNull<object>;
 }
 
 export type WERequest<SelectorValue> = (
@@ -122,6 +120,7 @@ export interface WERequesterParams<SelectorValue> {
   data?: MaybeNull<SelectorValue>;
   pagination: WEPagination;
   filters?: MaybeNull<WETableFilters>;
+  extra?: MaybeNull<object>;
 }
 
 export interface WERequesterResponse<Item> {
@@ -129,9 +128,9 @@ export interface WERequesterResponse<Item> {
   list: Item[];
 }
 
-export type WETableSearch<SelectorValue> = (params?: {
-  data?: MaybeNull<SelectorValue>;
+export type WETableSearch = (params?: {
   filters?: MaybeNull<WETableFilters>;
+  extra?: MaybeNull<object>;
 }) => Promise<void>;
 
 export type WETableReset = () => Promise<void>;

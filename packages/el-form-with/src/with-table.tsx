@@ -30,8 +30,8 @@ import type {
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
-export type TableWithOverlayRef<SelectorValue> = {
-  search: WETableSearch<SelectorValue>;
+export type TableWithOverlayRef = {
+  search: WETableSearch;
   reset: WETableReset;
   refresh: WETableRefresh;
 };
@@ -40,7 +40,7 @@ type TableWithOverlayProps<
   RecordValue extends object,
   SelectorValue extends object
 > = {
-  table: (props: WETableBoxProps<RecordValue, SelectorValue>) => VNode;
+  table: (props: WETableBoxProps<RecordValue>) => VNode;
   selector?: (props: WESelectorBoxProps) => VNode;
   onSearch?: WETableOnSearch<SelectorValue>;
   onReset?: WETableOnReset<SelectorValue>;
@@ -77,9 +77,10 @@ const withTable = <
     total: 0,
   };
 
-  const TableWithOverlayRef = ref<TableWithOverlayRef<SelectorValue>>();
+  const TableWithOverlayRef = ref<TableWithOverlayRef>();
   const selectorRef = ref<FormInstance>();
   const selectorValueRef = ref<MaybeNull<SelectorValue>>();
+  const extraValueRef = ref<MaybeNull<object>>();
   const tableRef = ref<TableInstance>();
   const tableValueRef = ref<RecordValue[]>();
   const pageinationRef = ref<WEPagination>(DefaultPagination);
@@ -102,12 +103,14 @@ const withTable = <
       pagination = pageinationRef.value,
       filters = filtersRef.value,
       data = selectorValueRef.value,
+      extra = extraValueRef.value,
     } = params ?? {};
 
     const res = await requester({
       data,
       pagination,
       filters,
+      extra,
     });
     selectorValueRef.value = data;
     pageinationRef.value = {
@@ -115,6 +118,7 @@ const withTable = <
       total: res.total,
     };
     tableValueRef.value = res.list;
+    extraValueRef.value = extra;
     filtersRef.value = filters;
   };
 
@@ -133,17 +137,19 @@ const withTable = <
 
       const { boxClass, ...restPaginationOpts } = paginationOpts;
 
-      const search: WETableSearch<SelectorValue> = async (params) => {
-        const { filters, data = getFormValue() } = params ?? {};
+      const search: WETableSearch = async (params) => {
+        const { filters, extra } = params ?? {};
+        const data = getFormValue();
         onSearch?.({
           data,
         });
         loadingsRef.value.search = true;
-        await request({ data, pagination: DefaultPagination, filters });
+        await request({ data, pagination: DefaultPagination, filters, extra });
         loadingsRef.value.search = false;
       };
 
       const reset: WETableReset = async () => {
+        extraValueRef.value = null;
         selectorRef.value?.resetFields();
         const data = getFormValue();
         onReset?.({
