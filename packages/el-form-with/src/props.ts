@@ -32,5 +32,4 @@ export const tableBoxDefaultProps: Array<keyof WETableBoxProps<object>> = [
   "filters",
   "isLoading",
   "loadings",
-  "pagination",
 ];
