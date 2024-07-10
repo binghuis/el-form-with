@@ -39,7 +39,7 @@ export interface WEOpenOverlayParams<FormValue, FormType> {
   mode?: WEFormMode;
   data?: MaybeNull<FormValue>;
   type?: FormType;
-  id?: string | number;
+  id?: string;
 }
 
 export interface WEWithOverlaysParams<
