@@ -8,9 +8,9 @@ import {
 } from "vue";
 import {
   type FormInstance,
+  type PaginationProps,
   type TableInstance,
   ElPagination,
-  ElRow,
 } from "element-plus";
 import type {
   WEPagination,
@@ -45,6 +45,23 @@ type TableWithOverlayProps<
   onSearch?: WETableOnSearch<SelectorValue>;
   onReset?: WETableOnReset<SelectorValue>;
   onRefresh?: WETableOnRefresh<SelectorValue>;
+  paginationOpts?: { boxClass?: string } & Partial<
+    Pick<
+      PaginationProps,
+      | "size"
+      | "background"
+      | "pagerCount"
+      | "layout"
+      | "pageSizes"
+      | "popperClass"
+      | "prevText"
+      | "prevIcon"
+      | "nextText"
+      | "nextIcon"
+      | "teleported"
+      | "hideOnSinglePage"
+    >
+  >;
 };
 
 const withTable = <
@@ -105,8 +122,16 @@ const withTable = <
     TableWithOverlayProps<RecordValue, SelectorValue>
   >(
     (props, { expose, slots, attrs }) => {
-      const { onSearch, onReset, onRefresh } = props;
-      const { selector, table } = props;
+      const {
+        onSearch,
+        onReset,
+        onRefresh,
+        selector,
+        table,
+        paginationOpts = {},
+      } = props;
+
+      const { boxClass, ...restPaginationOpts } = paginationOpts;
 
       const search: WETableSearch<SelectorValue> = async (params) => {
         const { filters, data = getFormValue() } = params ?? {};
@@ -191,16 +216,25 @@ const withTable = <
           <div class="flex flex-col">
             {selector && <div>{SelectorBox}</div>}
             {TableBox}
-            <ElRow justify="end" class={"py-4"}>
-              <ElPagination {...paginationParams} />
-            </ElRow>
+            <div
+              class={`w-full flex justify-end p-4 ${paginationOpts.boxClass}`}
+            >
+              <ElPagination {...paginationParams} {...restPaginationOpts} />
+            </div>
           </div>
         );
       };
     },
     {
       name: "TableWithOverlay",
-      props: ["table", "selector", "onRefresh", "onReset", "onSearch"],
+      props: [
+        "table",
+        "selector",
+        "onRefresh",
+        "onReset",
+        "onSearch",
+        "paginationOpts",
+      ],
     }
   );
 

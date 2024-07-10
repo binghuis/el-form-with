@@ -27,12 +27,16 @@
     "build": "tsup"
   },
   "peerDependencies": {
-    "element-plus": ">=2.0.0",
+    "element-plus": ">=2.7.6",
     "vue": ">=3.0.0"
   },
   "devDependencies": {
     "tsup": "^8.1.0",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.3",
     "unplugin-vue-jsx": "^0.4.0"
+  },
+  "dependencies": {
+    "element-plus": "^2.7.6",
+    "vue": "^3.4.31"
   }
 }
