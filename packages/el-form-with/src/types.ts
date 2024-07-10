@@ -45,6 +45,7 @@ export interface WEOpenOverlayParams<FormValue, FormType> {
   data?: MaybeNull<FormValue>;
   type?: FormType;
   id?: string;
+  extra?: MaybeNull<object>;
 }
 
 export interface WEWithOverlaysParams<
@@ -61,6 +62,7 @@ export interface WEWithOverlaysParams<
       okType?: OkType;
       formType?: FormType;
       id?: string | number;
+      extra?: MaybeNull<object>;
     },
     done: EmptyFunction
   ) => Promise<void>;

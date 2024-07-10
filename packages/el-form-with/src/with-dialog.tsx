@@ -34,15 +34,14 @@ const withDialog = <
   const id = ref<string | number>();
   const mode = ref<WEFormMode>(DefaultMode);
   const data = ref<MaybeNull<FormValue>>();
+  const extra = ref<MaybeNull<object>>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
   const DialogRef = ref<WithDialogRefValue<FormValue, FormType>>();
 
   const close = () => {
     function done() {
-      visible.value = false;
       formRef.value?.resetFields();
-      mode.value = DefaultMode;
     }
     if (params?.beforeClose) {
       params.beforeClose(done);
@@ -53,15 +52,12 @@ const withDialog = <
   };
 
   const open: WithDialogOpen<FormValue, FormType> = (openParams) => {
-    if (openParams) {
-      data.value = openParams.data;
-      if (openParams.mode) {
-        mode.value = openParams.mode;
-      }
-      type.value = openParams.type;
-      title.value = openParams.title ?? "";
-      id.value = openParams.id ?? "";
-    }
+    data.value = openParams?.data;
+    mode.value = openParams?.mode ?? DefaultMode;
+    type.value = openParams?.type;
+    title.value = openParams?.title;
+    id.value = openParams?.id;
+    extra.value = openParams?.extra;
     visible.value = true;
   };
 
@@ -94,6 +90,7 @@ const withDialog = <
         okType: okParams?.type,
         formType: type.value,
         id: id.value,
+        extra: extra.value,
       },
       done
     );
