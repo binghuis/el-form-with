@@ -1,4 +1,9 @@
-import type { FormInstance, TableInstance } from "element-plus";
+import type {
+  ElPagination,
+  FormInstance,
+  PaginationProps,
+  TableInstance,
+} from "element-plus";
 import type { Ref } from "vue";
 
 export interface WEPlainObject {
@@ -81,6 +86,17 @@ export interface WESelectorBoxProps {
   loadings: WELoadings;
 }
 
+export type PaginationPropsInj = Pick<
+  typeof ElPagination,
+  | "layout"
+  | "disabled"
+  | "total"
+  | "currentPage"
+  | "pageSize"
+  | "onUpdate:current-page"
+  | "onUpdate:page-size"
+>;
+
 export interface WETableBoxProps<RecordValue extends object> {
   reference: Ref<MaybeUndefined<TableInstance>>;
   data?: MaybeNull<RecordValue[]>;
@@ -90,7 +106,7 @@ export interface WETableBoxProps<RecordValue extends object> {
   filters: MaybeNull<WETableFilters>;
   isLoading: boolean;
   loadings: WELoadings;
-  pagination: WEPagination;
+  paginationPropsInj?: PaginationPropsInj;
 }
 
 export interface WEPagination {

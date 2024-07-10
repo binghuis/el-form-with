@@ -27,6 +27,7 @@ import type {
   WETableOnReset,
   WETableOnRefresh,
   MaybeNull,
+  PaginationPropsInj,
 } from "./types";
 import { getFormValueByFields } from "./utils";
 
@@ -35,6 +36,24 @@ export type TableWithOverlayRef = {
   reset: WETableReset;
   refresh: WETableRefresh;
 };
+
+type PaginationOpts = { boxClass?: string } & Partial<
+  Pick<
+    PaginationProps,
+    | "size"
+    | "background"
+    | "pagerCount"
+    | "layout"
+    | "pageSizes"
+    | "popperClass"
+    | "prevText"
+    | "prevIcon"
+    | "nextText"
+    | "nextIcon"
+    | "teleported"
+    | "hideOnSinglePage"
+  >
+>;
 
 type TableWithOverlayProps<
   RecordValue extends object,
@@ -45,23 +64,8 @@ type TableWithOverlayProps<
   onSearch?: WETableOnSearch<SelectorValue>;
   onReset?: WETableOnReset<SelectorValue>;
   onRefresh?: WETableOnRefresh<SelectorValue>;
-  paginationOpts?: { boxClass?: string } & Partial<
-    Pick<
-      PaginationProps,
-      | "size"
-      | "background"
-      | "pagerCount"
-      | "layout"
-      | "pageSizes"
-      | "popperClass"
-      | "prevText"
-      | "prevIcon"
-      | "nextText"
-      | "nextIcon"
-      | "teleported"
-      | "hideOnSinglePage"
-    >
-  >;
+  hidePagination?: boolean;
+  paginationOpts?: PaginationOpts;
 };
 
 const withTable = <
@@ -132,9 +136,9 @@ const withTable = <
         onRefresh,
         selector,
         table,
+        hidePagination = false,
         paginationOpts = {},
       } = props;
-
       const { boxClass, ...restPaginationOpts } = paginationOpts;
 
       const search: WETableSearch = async (params) => {
@@ -176,10 +180,8 @@ const withTable = <
       });
 
       return () => {
-        const paginationParams = {
+        const paginationPropsInj: PaginationPropsInj = {
           layout: "total, sizes, prev, pager, next, jumper",
-          pagination: pageinationRef.value,
-          isLoading: isLoadingRef.value,
           disabled: isLoadingRef.value,
           total: pageinationRef.value.total,
           currentPage: pageinationRef.value.current,
@@ -216,17 +218,19 @@ const withTable = <
           filters: toRaw(filtersRef.value),
           isLoading: isLoadingRef.value,
           loadings: loadingsRef.value,
-          pagination: pageinationRef.value,
+          paginationPropsInj,
         });
         return (
           <div class="flex flex-col">
             {selector && <div>{SelectorBox}</div>}
             {TableBox}
-            <div
-              class={`w-full flex justify-end p-4 ${paginationOpts.boxClass}`}
-            >
-              <ElPagination {...paginationParams} {...restPaginationOpts} />
-            </div>
+            {!hidePagination && (
+              <div
+                class={`w-full flex justify-end p-4 ${paginationOpts.boxClass}`}
+              >
+                <ElPagination {...paginationPropsInj} {...restPaginationOpts} />
+              </div>
+            )}
           </div>
         );
       };
@@ -240,6 +244,7 @@ const withTable = <
         "onReset",
         "onSearch",
         "paginationOpts",
+        "hidePagination",
       ],
     }
   );
