@@ -132,6 +132,7 @@
       "      return (",
       "        <div class=\"bg-bg_color px-4 pt-4\">",
       "          <ElTable",
+      "            maxHeight={\"calc(100vh - 360px)\"}",
       "            ref={toRef(props.reference)}",
       "            data={props.data}",
       "            v-loading={props.isLoading}",
