@@ -16,7 +16,6 @@ const CommonView = defineComponent(
         return { total: 0, list: [] };
       },
     });
-
     return () => {
       return (
         <div>
@@ -28,6 +27,7 @@ const CommonView = defineComponent(
           />
           <CommonSelectorTable
             ref={CommonSelectorTableRef}
+            paginationOpts={{ boxClass: "bg-white dark:bg-[#141414] p-4" }}
             selector={(props) => {
               return <CommonSelectorBox {...props} />;
             }}

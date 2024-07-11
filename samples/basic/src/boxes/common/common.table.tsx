@@ -11,10 +11,10 @@ const CommonTableBox = defineComponent<TableBoxProps>(
 
     return () => {
       return (
-        <div class="bg-bg_color px-4 pt-4">
+        <div class="p-2 pb-0 bg-white dark:bg-[#141414]">
           <ElTable
             header-cell-style={() => {
-              return { background: isDark.value ? "#262727" : "#f5f7fa" };
+              return { background: isDark.value ? "#262727" : "#f8fafc" };
             }}
             maxHeight={"calc(100vh - 360px)"}
             ref={toRef(props.reference)}
@@ -25,6 +25,7 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             }}
           >
             <ElTableColumn type="index" label="序号" width={60} />
+            <ElTableColumn type="id" label="ID" />
 
             <ElTableColumn label="操作" width={160} fixed="right">
               {{

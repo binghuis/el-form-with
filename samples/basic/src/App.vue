@@ -6,16 +6,20 @@ const toggleDark = useToggle(isDark);
 </script>
 
 <template>
-  <div id="app" class="dark:bg-black">
-    <el-button
-      @click="
-        () => {
-          toggleDark();
-        }
-      "
-      >Toggle Dark Mode</el-button
-    >
-    <router-view />
+  <div id="app" class="dark:bg-black bg-slate-50 p-4">
+    <header class="flex justify-center">
+      <el-button
+        @click="
+          () => {
+            toggleDark();
+          }
+        "
+        >Toggle Dark Mode</el-button
+      >
+    </header>
+    <main class="p-4">
+      <router-view />
+    </main>
   </div>
 </template>
 

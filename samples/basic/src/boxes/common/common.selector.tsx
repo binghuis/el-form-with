@@ -12,7 +12,7 @@ const CommonSelectorBox = defineComponent<SelectorBoxProps>(
 
     return () => {
       return (
-        <div class="bg-bg_color p-4 mb-2">
+        <div class="mb-2 bg-white dark:bg-[#141414] p-4">
           <ElForm ref={toRef(props.reference)} model={model}>
             <ElRow gutter={16}></ElRow>
             <ElRow justify="end">

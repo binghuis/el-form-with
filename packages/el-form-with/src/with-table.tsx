@@ -221,7 +221,7 @@ const withTable = <
           paginationPropsInj,
         });
         return (
-          <div class="flex flex-col">
+          <div>
             {selector && <div>{SelectorBox}</div>}
             {TableBox}
             {!hidePagination && (
