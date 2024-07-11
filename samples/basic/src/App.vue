@@ -6,7 +6,7 @@ const toggleDark = useToggle(isDark);
 </script>
 
 <template>
-  <div id="app">
+  <div id="app" class="dark:bg-black">
     <el-button
       @click="
         () => {
