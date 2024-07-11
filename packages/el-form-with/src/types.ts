@@ -37,6 +37,7 @@ export interface WEFormBoxProps<
   ok: FormBoxOkHandle<FormValue, OkType>;
   loading: boolean;
   type?: FormType;
+  extra?: MaybeNull<object>;
 }
 
 export interface WEOpenOverlayParams<FormValue, FormType> {

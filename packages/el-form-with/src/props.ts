@@ -12,6 +12,7 @@ export const formBoxDefaultProps: Array<keyof WEFormBoxProps<object>> = [
   "ok",
   "loading",
   "type",
+  "extra",
 ];
 
 export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [

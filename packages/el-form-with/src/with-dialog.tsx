@@ -128,6 +128,7 @@ const withDialog = <
                 close,
                 type: type.value,
                 data: toRaw(data.value),
+                extra: toRaw(extra.value),
               })}
             </ElDialog>
           </div>
