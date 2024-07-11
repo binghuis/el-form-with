@@ -41,6 +41,7 @@ const withDrawer = <
 
   const close = () => {
     function done() {
+      visible.value = false;
       formRef.value?.resetFields();
     }
     if (params?.beforeClose) {
