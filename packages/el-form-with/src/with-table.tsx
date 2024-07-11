@@ -221,13 +221,11 @@ const withTable = <
           paginationPropsInj,
         });
         return (
-          <div>
+          <div class="flex flex-col items-stretch h-full">
             {selector && <div>{SelectorBox}</div>}
-            {TableBox}
+            <div class="flex-1">{TableBox}</div>
             {!hidePagination && (
-              <div
-                class={`w-full flex justify-end p-4 ${paginationOpts.boxClass}`}
-              >
+              <div class={`flex justify-end p-4 ${paginationOpts.boxClass}`}>
                 <ElPagination {...paginationPropsInj} {...restPaginationOpts} />
               </div>
             )}
