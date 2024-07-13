@@ -3,10 +3,13 @@
     "oxlint": "^0.4.4"
   },
   "scripts": {
+    "dev": "pnpm --prefix $npm_package_config_dir dev",
     "dev:lib": "pnpm --prefix $npm_package_config_libdir dev",
+    "build": "pnpm --prefix $npm_package_config_dir build",
     "build:lib": "pnpm --prefix $npm_package_config_libdir build"
   },
   "config": {
+    "dir": "./samples/basic",
     "libdir": "./packages/el-form-with"
   }
 }
