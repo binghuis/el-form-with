@@ -3,11 +3,23 @@ import { defineComponent } from "vue";
 import CommonFormBox from "../boxes/common/common.form";
 import CommonSelectorBox from "../boxes/common/common.selector";
 import CommonTableBox from "../boxes/common/common.table";
+import { createLeaveApplication } from "../api/leave";
+import { LeaveType } from "../api/leave.type";
+import { ElButton } from "element-plus";
 
 const CommonView = defineComponent(
   () => {
     const [CommonFormDialog, CommonFormDialogRef] = withDialog({
       async submit(params, done) {
+        const leave = await createLeaveApplication({
+          employeeName: "test",
+          startDate: +new Date(),
+          endDate: +new Date(),
+          type: LeaveType["PERSONAL"],
+          reason: "test",
+        });
+        console.log(leave);
+
         done();
       },
     });
@@ -19,6 +31,13 @@ const CommonView = defineComponent(
     return () => {
       return (
         <div>
+          <ElButton
+            onClick={() => {
+              CommonFormDialogRef.value?.open();
+            }}
+          >
+            Create
+          </ElButton>
           <CommonFormDialog
             ref={CommonFormDialogRef}
             form={(props) => {
