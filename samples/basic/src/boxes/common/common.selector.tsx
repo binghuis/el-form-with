@@ -12,7 +12,7 @@ const CommonSelectorBox = defineComponent<SelectorBoxProps>(
 
     return () => {
       return (
-        <div class="mb-2 bg-white dark:bg-[#141414] p-4">
+        <div class="bg-white dark:bg-[#141414]">
           <ElForm ref={toRef(props.reference)} model={model}>
             <ElRow gutter={16}></ElRow>
             <ElRow justify="end">
@@ -22,14 +22,14 @@ const CommonSelectorBox = defineComponent<SelectorBoxProps>(
                 type="primary"
                 onClick={props.search}
               >
-                查找
+                Search
               </ElButton>
               <ElButton
                 onClick={props.reset}
                 loading={props.loadings.reset}
                 disabled={props.isLoading}
               >
-                重置
+                Reset
               </ElButton>
             </ElRow>
           </ElForm>

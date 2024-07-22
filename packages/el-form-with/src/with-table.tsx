@@ -10,7 +10,11 @@ import {
   type FormInstance,
   type PaginationProps,
   type TableInstance,
+  ElContainer,
+  ElFooter,
+  ElHeader,
   ElPagination,
+  ElRow,
 } from "element-plus";
 import type {
   WEPagination,
@@ -111,10 +115,10 @@ const withTable = <
     } = params ?? {};
 
     const res = await requester({
-      data,
+      data: toRaw(data),
       pagination,
-      filters,
-      extra,
+      filters: toRaw(filters),
+      extra: toRaw(extra),
     });
     selectorValueRef.value = data;
     pageinationRef.value = {
@@ -221,11 +225,12 @@ const withTable = <
           paginationPropsInj,
         });
         return (
-          <div class="flex flex-col items-stretch h-full">
+          <div>
             {selector && <div>{SelectorBox}</div>}
+            {slots["default"]?.()}
             <div class="flex-1">{TableBox}</div>
             {!hidePagination && (
-              <div class={`flex justify-end p-4 ${paginationOpts.boxClass}`}>
+              <div class={`${paginationOpts.boxClass}`}>
                 <ElPagination {...paginationPropsInj} {...restPaginationOpts} />
               </div>
             )}

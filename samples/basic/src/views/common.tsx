@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import CommonFormBox from "../boxes/common/common.form";
 import CommonSelectorBox from "../boxes/common/common.selector";
 import CommonTableBox from "../boxes/common/common.table";
-import { createLeaveApplication } from "../api/leave";
+import { createLeaveApplication, getLeaveApplicationList } from "../api/leave";
 import { LeaveType } from "../api/leave.type";
 import { ElButton } from "element-plus";
 
@@ -18,26 +18,22 @@ const CommonView = defineComponent(
           type: LeaveType["PERSONAL"],
           reason: "test",
         });
-        console.log(leave);
 
         done();
       },
     });
     const [CommonSelectorTable, CommonSelectorTableRef] = withTable({
       async requester(params) {
-        return { total: 0, list: [] };
+        const res = await getLeaveApplicationList({
+          pageSize: params.pagination.pageSize,
+          pageNum: params.pagination.current,
+        });
+        return { total: res.data.total, list: res.data.list };
       },
     });
     return () => {
       return (
         <div>
-          <ElButton
-            onClick={() => {
-              CommonFormDialogRef.value?.open();
-            }}
-          >
-            Create
-          </ElButton>
           <CommonFormDialog
             ref={CommonFormDialogRef}
             form={(props) => {
@@ -53,7 +49,15 @@ const CommonView = defineComponent(
             table={(props) => {
               return <CommonTableBox {...props} />;
             }}
-          />
+          >
+            <ElButton
+              onClick={() => {
+                CommonFormDialogRef.value?.open();
+              }}
+            >
+              Create
+            </ElButton>
+          </CommonSelectorTable>
         </div>
       );
     };

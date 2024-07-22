@@ -102,7 +102,7 @@ export type PaginationPropsInj = Pick<
 
 export interface WETableBoxProps<RecordValue extends object> {
   reference: Ref<MaybeUndefined<TableInstance>>;
-  data?: MaybeNull<RecordValue[]>;
+  data?: RecordValue[];
   reset: WETableReset;
   refresh: WETableRefresh;
   search: WETableSearch;

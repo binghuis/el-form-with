@@ -1,7 +1,6 @@
 # el-form-with
 
 ![vue](https://img.shields.io/badge/Vue_3-4FC08D?logo=vue.js&labelColor=263238)
-![tailwindcss](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&labelColor=263238)
 [![npm version](https://img.shields.io/npm/v/el-form-with)](https://www.npmjs.com/package/el-form-with)
 [![GitHub](https://img.shields.io/github/license/binghuis/el-form-with.svg)](https://github.com/binghuis/el-form-with/blob/main/LICENSE)
 ![vue peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/vue?labelColor=263238)

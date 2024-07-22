@@ -1,4 +1,4 @@
-import type { CommonResponse } from "./type";
+import type { CommonResponse, PaginationResponse } from "./type";
 
 export enum LeaveType {
   SICK = "Sick",
@@ -42,9 +42,8 @@ export interface GetLeaveApplicationRequest {
 
 export type GetLeaveApplicationResponse = CommonResponse<LeaveApplication>;
 
-export type GetLeaveApplicationListResponse = CommonResponse<
-  LeaveApplication[]
->;
+export type GetLeaveApplicationListResponse =
+  PaginationResponse<LeaveApplication>;
 
 export interface UpdateLeaveApplicationRequest
   extends CreateLeaveApplicationRequest {

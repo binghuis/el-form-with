@@ -1,9 +1,10 @@
 import { defineComponent, toRef } from "vue";
-import { ElTable, ElTableColumn } from "element-plus";
+import { ElLink, ElRow, ElTable, ElTableColumn } from "element-plus";
 import { tableBoxDefaultProps, type WETableBoxProps } from "el-form-with";
 import { useDark } from "@vueuse/core";
+import type { LeaveApplication } from "../../api/leave.type";
 
-export interface TableBoxProps extends WETableBoxProps<any> {}
+export interface TableBoxProps extends WETableBoxProps<LeaveApplication> {}
 
 const CommonTableBox = defineComponent<TableBoxProps>(
   (props) => {
@@ -24,12 +25,27 @@ const CommonTableBox = defineComponent<TableBoxProps>(
               props.search({ filters: params });
             }}
           >
-            <ElTableColumn type="index" label="序号" width={60} />
-            <ElTableColumn type="id" label="ID" />
+            <ElTableColumn type="index" label="Index" width={80} />
+            <ElTableColumn prop="id" label="Id" />
+            <ElTableColumn prop="employeeName" label="Name" />
+            <ElTableColumn prop="startDate" label="startDate" />
+            <ElTableColumn prop="endDate" label="endDate" />
+            <ElTableColumn prop="type" label="type" />
+            <ElTableColumn prop="status" label="status" />
+            <ElTableColumn prop="reason" label="reason" width={180} />
 
             <ElTableColumn label="操作" width={160} fixed="right">
               {{
-                default: () => <div></div>,
+                default: () => (
+                  <ElRow justify="start" gutter={8}>
+                    <ElLink type="primary" underline={false}>
+                      Edit
+                    </ElLink>
+                    <ElLink type="primary" underline={false}>
+                      View
+                    </ElLink>
+                  </ElRow>
+                ),
               }}
             </ElTableColumn>
           </ElTable>

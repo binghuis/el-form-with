@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import {
   LeaveStatus,
+  LeaveType,
   type CreateLeaveApplicationRequest,
   type CreateLeaveApplicationResponse,
   type DeleteLeaveApplicationResponse,
@@ -10,10 +11,30 @@ import {
   type UpdateLeaveApplicationRequest,
   type UpdateLeaveApplicationResponse,
 } from "./leave.type";
-import { sendResponse } from "../constants/response-handler";
+import {
+  sendPaginationResponse,
+  sendResponse,
+} from "../constants/response-handler";
 import { StatusCodes } from "../constants/status-code";
 
-const leaveApplications: LeaveApplication[] = [];
+const leaveApplications: LeaveApplication[] = faker.helpers.multiple(
+  () => {
+    const endDate = +faker.date.recent();
+    return {
+      id: faker.number.int({ max: 1000 }).toString(),
+      employeeId: faker.string.uuid(),
+      employeeName: faker.person.fullName(),
+      startDate:
+        endDate - faker.number.int({ min: 86400000, max: 86400000 * 5 }),
+      endDate,
+      type: faker.helpers.enumValue(LeaveType),
+      status: faker.helpers.enumValue(LeaveStatus),
+      reason: faker.word.words({ count: { min: 5, max: 10 } }),
+      createdAt: +new Date(),
+    };
+  },
+  { count: 24 }
+);
 
 export async function createLeaveApplication(
   request: CreateLeaveApplicationRequest
@@ -31,18 +52,25 @@ export async function createLeaveApplication(
   };
 
   leaveApplications.push(application);
-  return sendResponse(StatusCodes.OK);
+  return await sendResponse(StatusCodes.OK);
 }
 
 export async function getLeaveApplication(
   id: string
 ): Promise<GetLeaveApplicationResponse> {
   const data = leaveApplications.find((app) => app.id === id);
-  return sendResponse(StatusCodes.OK, data);
+  return await sendResponse(StatusCodes.OK, data);
 }
 
-export async function getLeaveApplicationList(): Promise<GetLeaveApplicationListResponse> {
-  return sendResponse(StatusCodes.OK, leaveApplications);
+export async function getLeaveApplicationList(request?: {
+  pageSize: number;
+  pageNum: number;
+}): Promise<GetLeaveApplicationListResponse> {
+  const { pageSize = 10, pageNum = 1 } = request ?? {};
+  return await sendPaginationResponse(StatusCodes.OK, {
+    list: leaveApplications.slice((pageNum - 1) * pageSize, pageNum * pageSize),
+    total: leaveApplications.length,
+  });
 }
 
 export async function updateLeaveApplication(
@@ -50,11 +78,11 @@ export async function updateLeaveApplication(
 ): Promise<UpdateLeaveApplicationResponse> {
   const index = leaveApplications.findIndex((app) => app.id === request.id);
   if (index === -1) {
-    return sendResponse(StatusCodes.NOT_FOUND);
+    return await sendResponse(StatusCodes.NOT_FOUND);
   }
   leaveApplications[index] = { ...leaveApplications[index], ...request };
 
-  return sendResponse(StatusCodes.OK);
+  return await sendResponse(StatusCodes.OK);
 }
 
 export async function deleteLeaveApplication(
@@ -62,8 +90,8 @@ export async function deleteLeaveApplication(
 ): Promise<DeleteLeaveApplicationResponse> {
   const index = leaveApplications.findIndex((app) => app.id === id);
   if (index === -1) {
-    return sendResponse(StatusCodes.NOT_FOUND);
+    return await sendResponse(StatusCodes.NOT_FOUND);
   }
   leaveApplications.splice(index, 1);
-  return sendResponse(StatusCodes.OK);
+  return await sendResponse(StatusCodes.OK);
 }
