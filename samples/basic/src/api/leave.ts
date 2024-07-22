@@ -4,12 +4,14 @@ import {
   type CreateLeaveApplicationRequest,
   type CreateLeaveApplicationResponse,
   type DeleteLeaveApplicationResponse,
+  type GetLeaveApplicationListResponse,
   type GetLeaveApplicationResponse,
   type LeaveApplication,
   type UpdateLeaveApplicationRequest,
   type UpdateLeaveApplicationResponse,
 } from "./leave.type";
-import { sendResponse, StatusCodes } from "../constants/response-handler";
+import { sendResponse } from "../constants/response-handler";
+import { StatusCodes } from "../constants/status-code";
 
 const leaveApplications: LeaveApplication[] = [];
 
@@ -37,6 +39,10 @@ export async function getLeaveApplication(
 ): Promise<GetLeaveApplicationResponse> {
   const data = leaveApplications.find((app) => app.id === id);
   return sendResponse(StatusCodes.OK, data);
+}
+
+export async function getLeaveApplicationList(): Promise<GetLeaveApplicationListResponse> {
+  return sendResponse(StatusCodes.OK, leaveApplications);
 }
 
 export async function updateLeaveApplication(

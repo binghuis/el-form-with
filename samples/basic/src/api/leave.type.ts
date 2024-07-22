@@ -42,6 +42,10 @@ export interface GetLeaveApplicationRequest {
 
 export type GetLeaveApplicationResponse = CommonResponse<LeaveApplication>;
 
+export type GetLeaveApplicationListResponse = CommonResponse<
+  LeaveApplication[]
+>;
+
 export interface UpdateLeaveApplicationRequest
   extends CreateLeaveApplicationRequest {
   id: string;

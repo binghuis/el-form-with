@@ -10,4 +10,4 @@ function sendResponse<Data extends object>(
   return { code, message, data };
 }
 
-export { StatusCodes, sendResponse };
+export { sendResponse };
