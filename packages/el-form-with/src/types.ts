@@ -1,9 +1,4 @@
-import type {
-  ElPagination,
-  FormInstance,
-  PaginationProps,
-  TableInstance,
-} from "element-plus";
+import type { ElPagination, FormInstance, TableInstance } from "element-plus";
 import type { Ref } from "vue";
 
 export interface WEPlainObject {

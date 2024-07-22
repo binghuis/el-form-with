@@ -1,11 +1,15 @@
 export * from "./types";
 export * from "./props";
-export type * from "./with-dialog";
-export type * from "./with-drawer";
-export type * from "./with-table";
 
-import withDialog from "./with-dialog";
-import withDrawer from "./with-drawer";
-import withTable from "./with-table";
+import withDialog, { type WithDialogRefValue } from "./with-dialog";
+import withDrawer, { type WithDrawerRefValue } from "./with-drawer";
+import withTable, { type TableWithOverlayRef } from "./with-table";
 
-export { withDialog, withDrawer, withTable };
+export {
+  withDialog,
+  WithDialogRefValue,
+  withDrawer,
+  WithDrawerRefValue,
+  withTable,
+  TableWithOverlayRef,
+};
