@@ -17,6 +17,9 @@ importers:
       element-plus:
         specifier: '>=2.7.6'
         version: 2.7.6(vue@3.4.31(typescript@5.5.3))
+      klona:
+        specifier: ^2.0.6
+        version: 2.0.6
       vue:
         specifier: '>=3.0.0'
         version: 3.4.31(typescript@5.5.3)
@@ -1231,6 +1234,10 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+
+  klona@2.0.6:
+    resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
+    engines: {node: '>= 8'}
 
   lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
@@ -2729,6 +2736,8 @@ snapshots:
   jsesc@2.5.2: {}
 
   json5@2.2.3: {}
+
+  klona@2.0.6: {}
 
   lilconfig@2.1.0: {}
 

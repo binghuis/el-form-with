@@ -30,6 +30,7 @@ import type {
   PaginationPropsInj,
 } from "./types";
 import { getFormValueByFields } from "./utils";
+import { klona } from "klona";
 
 export type TableWithOverlayRef = {
   search: WETableSearch;
@@ -145,7 +146,7 @@ const withTable = <
         const { filters, extra } = params ?? {};
         const data = getFormValue();
         onSearch?.({
-          data,
+          data: klona(data),
         });
         loadingsRef.value.search = true;
         await request({ data, pagination: DefaultPagination, filters, extra });
@@ -157,7 +158,7 @@ const withTable = <
         selectorRef.value?.resetFields();
         const data = getFormValue();
         onReset?.({
-          data,
+          data: klona(data),
         });
         loadingsRef.value.reset = true;
         await request({ data, pagination: DefaultPagination, filters: {} });
@@ -166,7 +167,7 @@ const withTable = <
 
       const refresh: WETableRefresh = async () => {
         onRefresh?.({
-          data: toRaw(selectorValueRef.value),
+          data: klona(toRaw(selectorValueRef.value)),
         });
         loadingsRef.value.refresh = true;
         await request();
