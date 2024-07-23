@@ -5,6 +5,7 @@
 [![GitHub](https://img.shields.io/github/license/binghuis/el-form-with.svg)](https://github.com/binghuis/el-form-with/blob/main/LICENSE)
 ![vue peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/vue?labelColor=263238)
 ![element-plus peer dependency version](https://img.shields.io/npm/dependency-version/el-form-with/peer/element-plus?labelColor=263238)
+![rollup](https://img.shields.io/badge/rollup.js-EC4A3F?logo=rollupdotjs&labelColor=263238)
 
 English · [简体中文](./packages/el-form-with/README.zh-CN.md)
 
