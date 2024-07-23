@@ -1,6 +1,10 @@
 import type { ElPagination, FormInstance, TableInstance } from "element-plus";
 import type { Ref } from "vue";
 
+export { type WithDialogRefValue } from "./with-dialog";
+export { type WithDrawerRefValue } from "./with-drawer";
+export { type TableWithOverlayRef } from "./with-table";
+
 export interface WEPlainObject {
   [key: string]: unknown;
 }

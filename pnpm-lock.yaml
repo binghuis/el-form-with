@@ -36,12 +36,18 @@ importers:
       rollup:
         specifier: ^4.19.0
         version: 4.19.0
+      rollup-plugin-css-only:
+        specifier: ^4.5.2
+        version: 4.5.2(rollup@4.19.0)
       rollup-plugin-dts:
         specifier: ^6.1.1
         version: 6.1.1(rollup@4.19.0)(typescript@5.5.3)
       rollup-plugin-esbuild:
         specifier: ^6.1.1
         version: 6.1.1(esbuild@0.23.0)(rollup@4.19.0)
+      rollup-plugin-import-css:
+        specifier: ^3.5.0
+        version: 3.5.0(rollup@4.19.0)
       type-fest:
         specifier: ^4.23.0
         version: 4.23.0
@@ -1444,6 +1450,12 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  rollup-plugin-css-only@4.5.2:
+    resolution: {integrity: sha512-7rj9+jB17Pz8LNcPgtMUb16JcgD8lxQMK9HcGfAVhMK3na/WXes3oGIo5QsrQQVqtgAU6q6KnQNXJrYunaUIQQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      rollup: <5
+
   rollup-plugin-dts@6.1.1:
     resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
     engines: {node: '>=16'}
@@ -1457,6 +1469,12 @@ packages:
     peerDependencies:
       esbuild: '>=0.18.0'
       rollup: ^1.20.0 || ^2.0.0 || ^3.0.0 || ^4.0.0
+
+  rollup-plugin-import-css@3.5.0:
+    resolution: {integrity: sha512-JOVow6n00qt2C/NnsqPmIjFOfxIAudwWqC5SaC84CodMGiMFaP1gPAdgnJ8g8hcG+P85TCYp2kI98grYCEt5pg==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      rollup: ^2.x.x || ^3.x.x || ^4.x.x
 
   rollup@4.18.0:
     resolution: {integrity: sha512-QmJz14PX3rzbJCN1SG4Xe/bAAX2a6NpCP8ab2vfu2GiUr8AQcr2nCV/oEO3yneFarB67zk8ShlIyWb2LGTb3Sg==}
@@ -2909,6 +2927,11 @@ snapshots:
       glob: 11.0.0
       package-json-from-dist: 1.0.0
 
+  rollup-plugin-css-only@4.5.2(rollup@4.19.0):
+    dependencies:
+      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
+      rollup: 4.19.0
+
   rollup-plugin-dts@6.1.1(rollup@4.19.0)(typescript@5.5.3):
     dependencies:
       magic-string: 0.30.10
@@ -2927,6 +2950,11 @@ snapshots:
       rollup: 4.19.0
     transitivePeerDependencies:
       - supports-color
+
+  rollup-plugin-import-css@3.5.0(rollup@4.19.0):
+    dependencies:
+      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
+      rollup: 4.19.0
 
   rollup@4.18.0:
     dependencies:

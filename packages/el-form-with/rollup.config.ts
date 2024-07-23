@@ -4,8 +4,8 @@ import { dts } from "rollup-plugin-dts";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import { PackageJson } from "type-fest";
 import { readFileSync } from "node:fs";
-import { rimraf } from "rimraf";
-
+import { rimrafSync } from "rimraf";
+import css from "rollup-plugin-import-css";
 const { dependencies, peerDependencies } = JSON.parse(
   readFileSync("./package.json", "utf8")
 ) as PackageJson;
@@ -15,7 +15,7 @@ const external = [
   ...Object.keys(peerDependencies || {}),
 ];
 
-rimraf.rimrafSync("dist");
+rimrafSync("dist");
 
 export default defineConfig([
   {
@@ -24,19 +24,28 @@ export default defineConfig([
       dir: "dist",
       format: "esm",
     },
-    plugins: [vueJsx(), esbuild({ minify: true })],
+    plugins: [
+      vueJsx(),
+      esbuild({ minify: true }),
+      css({
+        output: "style.css",
+      }),
+    ],
     external,
   },
   {
     input: "src/index.ts",
     output: {
-      file: "dist/index.d.ts",
+      dir: "dist",
       format: "esm",
     },
     plugins: [
       dts({
         // https://github.com/Swatinem/rollup-plugin-dts/issues/143
         compilerOptions: { preserveSymlinks: false },
+      }),
+      css({
+        output: "style.css",
       }),
     ],
     external,

@@ -222,7 +222,7 @@ const withTable = <
           paginationPropsInj,
         });
         return (
-          <div>
+          <div class={"we-table"}>
             {selector && <div>{SelectorBox}</div>}
             {slots["default"]?.()}
             <div class="flex-1">{TableBox}</div>
