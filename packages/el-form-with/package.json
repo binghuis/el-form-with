@@ -23,15 +23,20 @@
     "dist"
   ],
   "scripts": {
-    "dev": "unbuild --stub",
-    "build": "unbuild"
+    "build": "rollup -c --configPlugin esbuild",
+    "dev": "rollup -c --configPlugin esbuild -w"
   },
   "peerDependencies": {
     "element-plus": ">=2.7.6",
     "vue": ">=3.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.3",
-    "unbuild": "^2.0.0"
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "rollup": "^4.19.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "typescript": "^5.5.3"
   }
 }
