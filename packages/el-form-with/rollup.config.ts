@@ -25,11 +25,11 @@ export default defineConfig([
       format: "esm",
     },
     plugins: [
-      vueJsx(),
-      esbuild({ minify: true }),
       css({
         output: "style.css",
       }),
+      vueJsx(),
+      esbuild({ minify: true }),
     ],
     external,
   },
@@ -40,12 +40,12 @@ export default defineConfig([
       format: "esm",
     },
     plugins: [
+      css({
+        output: "style.css",
+      }),
       dts({
         // https://github.com/Swatinem/rollup-plugin-dts/issues/143
         compilerOptions: { preserveSymlinks: false },
-      }),
-      css({
-        output: "style.css",
       }),
     ],
     external,
