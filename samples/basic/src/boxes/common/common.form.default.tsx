@@ -1,5 +1,10 @@
-import { reactive } from "vue";
+import { LeaveStatus, LeaveType } from "../../api/leave.type";
+import type { FormValue } from "./common.form.type";
 
-export function createDefault() {
-  return reactive({});
-}
+export const defaultFormValue: FormValue = {
+  name: "",
+  date: [new Date(), new Date()],
+  type: LeaveType.SICK,
+  status: LeaveStatus.PENDING,
+  reason: "",
+};

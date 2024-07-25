@@ -6,20 +6,26 @@ import CommonTableBox from "../boxes/common/common.table";
 import { createLeaveApplication, getLeaveApplicationList } from "../api/leave";
 import { LeaveType } from "../api/leave.type";
 import { ElButton } from "element-plus";
+import { StatusCodes } from "../constants/status-code";
+import type { FormValue } from "../boxes/common/common.form.type";
 
 const CommonView = defineComponent(
   () => {
-    const [CommonFormDialog, CommonFormDialogRef] = withDialog({
+    const [CommonFormDialog, CommonFormDialogRef] = withDialog<FormValue>({
       async submit(params, done) {
-        const leave = await createLeaveApplication({
+        console.log(params);
+
+        const { code } = await createLeaveApplication({
           employeeName: "test",
           startDate: +new Date(),
           endDate: +new Date(),
           type: LeaveType["PERSONAL"],
           reason: "test",
         });
-
-        done();
+        if (code === StatusCodes.OK) {
+          CommonSelectorTableRef.value?.search();
+          done();
+        }
       },
     });
     const [CommonSelectorTable, CommonSelectorTableRef] = withTable({
@@ -42,7 +48,6 @@ const CommonView = defineComponent(
           />
           <CommonSelectorTable
             ref={CommonSelectorTableRef}
-            paginationOpts={{ boxClass: "bg-white dark:bg-[#141414] p-4" }}
             selector={(props) => {
               return <CommonSelectorBox {...props} />;
             }}
@@ -52,7 +57,7 @@ const CommonView = defineComponent(
           >
             <ElButton
               onClick={() => {
-                CommonFormDialogRef.value?.open();
+                CommonFormDialogRef.value?.open({ title: "Create" });
               }}
             >
               Create

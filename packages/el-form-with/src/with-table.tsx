@@ -38,7 +38,7 @@ export type TableWithOverlayRef = {
   refresh: WETableRefresh;
 };
 
-type PaginationOpts = { boxClass?: string } & Partial<
+type PaginationOpts = Partial<
   Pick<
     PaginationProps,
     | "size"
@@ -140,7 +140,7 @@ const withTable = <
         hidePagination = false,
         paginationOpts = {},
       } = props;
-      const { boxClass, ...restPaginationOpts } = paginationOpts;
+      const { ...restPaginationOpts } = paginationOpts;
 
       const search: WETableSearch = async (params) => {
         const { filters, extra } = params ?? {};
@@ -222,12 +222,12 @@ const withTable = <
           paginationPropsInj,
         });
         return (
-          <div class={"we-table"}>
-            {selector && <div>{SelectorBox}</div>}
-            {slots["default"]?.()}
-            <div class="flex-1">{TableBox}</div>
+          <div class={"we-table-container"}>
+            {selector && <div class={"we-selector"}>{SelectorBox}</div>}
+            <div class="we-table-header">{slots["default"]?.()}</div>
+            <div class="we-table">{TableBox}</div>
             {!hidePagination && (
-              <div class={`${paginationOpts.boxClass}`}>
+              <div class={`we-pagination`}>
                 <ElPagination {...paginationPropsInj} {...restPaginationOpts} />
               </div>
             )}
