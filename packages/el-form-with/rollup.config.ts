@@ -26,6 +26,7 @@ export default defineConfig([
     },
     plugins: [
       css({
+        minify: true,
         output: "style.css",
       }),
       vueJsx(),
@@ -41,6 +42,7 @@ export default defineConfig([
     },
     plugins: [
       css({
+        minify: true,
         output: "style.css",
       }),
       dts({
