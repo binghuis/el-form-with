@@ -1,4 +1,4 @@
-import { defineComponent, ref, toRaw, type PropType, type VNode } from "vue";
+import { defineComponent, ref, type PropType, type VNode } from "vue";
 import type {
   MaybeNull,
   WEFormMode,
@@ -7,7 +7,7 @@ import type {
   WEMultiWithOverlaysParams,
 } from "./types";
 import { ElDialog, type DialogProps, type FormInstance } from "element-plus";
-import { DefaultMode } from "./utils";
+import { DefaultMode, raw } from "./utils";
 
 type MulitWithDialogOpen<FormsValue, FormsType> = (
   openParams?: WEMultiOpenOverlayParams<FormsValue, FormsType>
@@ -70,8 +70,8 @@ const multiWithDialog = <
                 ok: () => {},
                 close,
                 type: type.value,
-                data: toRaw(data.value),
-                extra: toRaw(extra.value),
+                data: raw(data.value),
+                extra: raw(extra.value),
               })}
             </ElDialog>
           </div>

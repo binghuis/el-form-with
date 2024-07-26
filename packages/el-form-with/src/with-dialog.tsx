@@ -1,4 +1,4 @@
-import { defineComponent, ref, toRaw, type PropType, type VNode } from "vue";
+import { defineComponent, ref, type PropType, type VNode } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import type {
   WEFormMode,
@@ -8,7 +8,7 @@ import type {
   FormBoxOkHandle,
   MaybeNull,
 } from "./types";
-import { DefaultMode, getFormValueByFields } from "./utils";
+import { DefaultMode, getFormValueByFields, raw } from "./utils";
 
 type WithDialogOpen<FormValue, FormType> = (
   openParams?: WEOpenOverlayParams<FormValue, FormType>
@@ -127,8 +127,8 @@ const withDialog = <
                 ok,
                 close,
                 type: type.value,
-                data: toRaw(data.value),
-                extra: toRaw(extra.value),
+                data: raw(data.value),
+                extra: raw(extra.value),
               })}
             </ElDialog>
           </div>

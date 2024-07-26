@@ -1,6 +1,7 @@
 import type { FormItemContext } from "element-plus";
 import { isProxy, toRaw } from "vue";
 import type { WEPlainObject } from "./types";
+import { klona } from "klona";
 
 export const isDate = (val: any) => val instanceof Date;
 
@@ -18,16 +19,11 @@ export function getFormValueByFields<FormValue>(fields?: FormItemContext[]) {
   return fields.reduce<WEPlainObject>((acc, cur) => {
     let field = cur.fieldValue;
 
-    if (isProxy(field)) {
-      field = toRaw(field);
-    }
+    field = raw(field);
 
     if (Array.isArray(field)) {
       field = field.map((item) => {
-        if (isProxy(item)) {
-          return toRaw(item);
-        }
-        return item;
+        return raw(item);
       });
     }
 
@@ -40,3 +36,7 @@ export function getFormValueByFields<FormValue>(fields?: FormItemContext[]) {
 }
 
 export const DefaultMode = "add";
+
+export function raw(value: any) {
+  return klona(isProxy(value) ? toRaw(value) : value);
+}

@@ -1,11 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  ref,
-  toRaw,
-  type VNode,
-  onMounted,
-} from "vue";
+import { computed, defineComponent, ref, type VNode, onMounted } from "vue";
 import {
   type FormInstance,
   type PaginationProps,
@@ -29,8 +22,7 @@ import type {
   MaybeNull,
   PaginationPropsInj,
 } from "./types";
-import { getFormValueByFields } from "./utils";
-import { klona } from "klona";
+import { getFormValueByFields, raw } from "./utils";
 
 export type TableWithOverlayRef = {
   search: WETableSearch;
@@ -112,10 +104,10 @@ const withTable = <
     } = params ?? {};
 
     const res = await requester({
-      data: toRaw(data),
-      pagination,
-      filters: toRaw(filters),
-      extra: toRaw(extra),
+      data: raw(data),
+      pagination: raw(pagination),
+      filters: raw(filters),
+      extra: raw(extra),
     });
     selectorValueRef.value = data;
     pageinationRef.value = {
@@ -146,7 +138,7 @@ const withTable = <
         const { filters, extra } = params ?? {};
         const data = getFormValue();
         onSearch?.({
-          data: klona(data),
+          data: raw(data),
         });
         loadingsRef.value.search = true;
         await request({ data, pagination: DefaultPagination, filters, extra });
@@ -158,7 +150,7 @@ const withTable = <
         selectorRef.value?.resetFields();
         const data = getFormValue();
         onReset?.({
-          data: klona(data),
+          data: raw(data),
         });
         loadingsRef.value.reset = true;
         await request({ data, pagination: DefaultPagination, filters: {} });
@@ -167,7 +159,7 @@ const withTable = <
 
       const refresh: WETableRefresh = async () => {
         onRefresh?.({
-          data: klona(toRaw(selectorValueRef.value)),
+          data: raw(selectorValueRef.value),
         });
         loadingsRef.value.refresh = true;
         await request();
@@ -212,11 +204,11 @@ const withTable = <
         });
         const TableBox = table({
           reference: tableRef,
-          data: tableValueRef.value,
+          data: raw(tableValueRef.value),
           reset,
           refresh,
           search,
-          filters: toRaw(filtersRef.value),
+          filters: raw(filtersRef.value),
           isLoading: isLoadingRef.value,
           loadings: loadingsRef.value,
           paginationPropsInj,
