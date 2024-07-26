@@ -39,6 +39,21 @@ export interface WEFormBoxProps<
   extra?: MaybeNull<object>;
 }
 
+export interface WEMultiFormBoxProps<
+  FormValue extends object[],
+  FormType extends string[] = [],
+  OkType extends string = string
+> {
+  reference: Ref<MaybeUndefined<FormInstance>>;
+  mode: WEFormMode;
+  data?: MaybeNull<FormValue>;
+  close: EmptyFunction;
+  ok: FormBoxOkHandle<FormValue, OkType>;
+  loading: boolean;
+  type?: FormType;
+  extra?: MaybeNull<object>;
+}
+
 export interface WEOpenOverlayParams<FormValue, FormType> {
   title?: string;
   mode?: WEFormMode;
@@ -66,6 +81,35 @@ export interface WEWithOverlaysParams<
     },
     done: EmptyFunction
   ) => Promise<void>;
+}
+
+export interface WEMultiOpenOverlayParams<FormValue, FormType> {
+  title?: string;
+  mode?: WEFormMode;
+  data?: MaybeNull<FormValue>;
+  type?: FormType;
+  id?: string;
+  extra?: MaybeNull<object>;
+}
+
+export interface WEMultiWithOverlaysParams<
+  FormValue extends object[],
+  FormType extends string[],
+  OkType extends string
+> {
+  beforeClose?: (done: EmptyFunction) => Promise<void>;
+  afterClose?: EmptyFunction;
+  submits: ((
+    params: {
+      mode: WEFormMode;
+      data: MaybeNull<FormValue[number]>;
+      okType?: OkType;
+      formType?: FormType[number];
+      id?: string | number;
+      extra?: MaybeNull<object>;
+    },
+    done: EmptyFunction
+  ) => Promise<void>)[];
 }
 
 export interface WEWithTableParams<RecordValue, SelectorValue> {
