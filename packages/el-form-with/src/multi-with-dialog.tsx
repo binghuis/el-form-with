@@ -1,6 +1,5 @@
 import { defineComponent, ref, type PropType, type VNode } from "vue";
 import type {
-  MaybeNull,
   WEFormMode,
   WEMultiFormBoxProps,
   WEMultiOpenOverlayParams,
@@ -31,8 +30,8 @@ const multiWithDialog = <
   const title = ref<string>();
   const id = ref<string | number>();
   const mode = ref<WEFormMode>(DefaultMode);
-  const data = ref<MaybeNull<FormsValue>>();
-  const extra = ref<MaybeNull<object>>();
+  const data = ref<FormsValue>();
+  const extra = ref<object>();
   const loading = ref<boolean>(false);
   const type = ref<FormsType>();
   const formRef = ref<FormInstance>();

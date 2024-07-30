@@ -15,13 +15,11 @@ export type EmptyFunction = () => void | Promise<void>;
 
 export type MaybeUndefined<T> = T | undefined;
 
-export type MaybeNull<T> = T | null;
-
 export type WETableFilters = Record<string, (string | number)[]>;
 
 export type FormBoxOkHandle<FormValue, FormOkType> = (params?: {
   type?: FormOkType;
-  data?: MaybeNull<FormValue>;
+  data?: FormValue;
 }) => void;
 
 export interface WEFormBoxProps<
@@ -31,12 +29,12 @@ export interface WEFormBoxProps<
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
-  data?: MaybeNull<FormValue>;
+  data?: FormValue;
   close: EmptyFunction;
   ok: FormBoxOkHandle<FormValue, FormOkType>;
   loading: boolean;
   type?: FormType;
-  extra?: MaybeNull<object>;
+  extra?: object;
 }
 
 export interface WEMultiFormBoxProps<
@@ -46,21 +44,21 @@ export interface WEMultiFormBoxProps<
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
-  data?: MaybeNull<FormValue>;
+  data?: FormValue;
   close: EmptyFunction;
   ok: FormBoxOkHandle<FormValue, FormOkType>;
   loading: boolean;
   type?: FormType;
-  extra?: MaybeNull<object>;
+  extra?: object;
 }
 
 export interface WEOpenOverlayParams<FormValue, FormType> {
   title?: string;
   mode?: WEFormMode;
-  data?: MaybeNull<FormValue>;
+  data?: FormValue;
   type?: FormType;
   id?: string;
-  extra?: MaybeNull<object>;
+  extra?: object;
 }
 
 export interface WEWithOverlaysParams<
@@ -73,11 +71,11 @@ export interface WEWithOverlaysParams<
   submit: (
     params: {
       mode: WEFormMode;
-      data: MaybeNull<FormValue>;
+      data?: FormValue;
       FormokType?: FormOkType;
       formType?: FormType;
       id?: string | number;
-      extra?: MaybeNull<object>;
+      extra?: object;
     },
     done: EmptyFunction
   ) => Promise<void>;
@@ -86,10 +84,10 @@ export interface WEWithOverlaysParams<
 export interface WEMultiOpenOverlayParams<FormValue, FormType> {
   title?: string;
   mode?: WEFormMode;
-  data?: MaybeNull<FormValue>;
+  data?: FormValue;
   type?: FormType;
   id?: string;
-  extra?: MaybeNull<object>;
+  extra?: object;
 }
 
 export interface WEMultiWithOverlaysParams<
@@ -102,11 +100,11 @@ export interface WEMultiWithOverlaysParams<
   submits: ((
     params: {
       mode: WEFormMode;
-      data: MaybeNull<FormValue[number]>;
+      data: FormValue[number];
       FormokType?: FormOkType;
       formType?: FormType[number];
       id?: string | number;
-      extra?: MaybeNull<object>;
+      extra?: object;
     },
     done: EmptyFunction
   ) => Promise<void>)[];
@@ -149,7 +147,7 @@ export interface WETableBoxProps<RecordValue extends object> {
   reset: WETableReset;
   refresh: WETableRefresh;
   search: WETableSearch;
-  filters: MaybeNull<WETableFilters>;
+  filters: WETableFilters;
   isLoading: boolean;
   loadings: WELoadings;
   paginationPropsInj?: PaginationPropsInj;
@@ -169,9 +167,9 @@ export interface WERequester<RecordValue, SelectorValue> {
 
 export interface WERequestParams<SelectorValue> {
   pagination?: WEPagination;
-  filters?: MaybeNull<WETableFilters>;
-  data?: MaybeNull<SelectorValue>;
-  extra?: MaybeNull<object>;
+  filters?: WETableFilters;
+  data?: SelectorValue;
+  extra?: object;
 }
 
 export type WERequest<SelectorValue> = (
@@ -179,10 +177,10 @@ export type WERequest<SelectorValue> = (
 ) => void;
 
 export interface WERequesterParams<SelectorValue> {
-  data?: MaybeNull<SelectorValue>;
+  data?: SelectorValue;
   pagination: WEPagination;
-  filters?: MaybeNull<WETableFilters>;
-  extra?: MaybeNull<object>;
+  filters?: WETableFilters;
+  extra?: object;
 }
 
 export interface WERequesterResponse<Item> {
@@ -191,8 +189,8 @@ export interface WERequesterResponse<Item> {
 }
 
 export type WETableSearch = (params?: {
-  filters?: MaybeNull<WETableFilters>;
-  extra?: MaybeNull<object>;
+  filters?: WETableFilters;
+  extra?: object;
 }) => Promise<void>;
 
 export type WETableReset = () => Promise<void>;
@@ -200,7 +198,7 @@ export type WETableReset = () => Promise<void>;
 export type WETableRefresh = () => Promise<void>;
 
 export type WETableOnHandle<SelectorValue> = (params: {
-  data?: MaybeNull<SelectorValue>;
+  data?: SelectorValue;
 }) => Promise<void> | void;
 
 export type WETableOnSearch<SelectorValue> = WETableOnHandle<SelectorValue>;

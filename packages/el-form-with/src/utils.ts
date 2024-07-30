@@ -14,7 +14,7 @@ export function isInEnum<T extends {}>(enumObj: T, value: unknown): boolean {
 
 export function getFormValueByFields<FormValue>(fields?: FormItemContext[]) {
   if (!fields || fields?.length === 0) {
-    return null;
+    return;
   }
   return fields.reduce<WEPlainObject>((acc, cur) => {
     let field = cur.fieldValue;

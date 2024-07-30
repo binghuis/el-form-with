@@ -7,23 +7,22 @@ import {
   createLeaveApplication,
   getLeaveApplicationList,
 } from "../api/leave-application";
-import { LeaveApplicationType } from "../api/leave-application.type";
 import { ElButton } from "element-plus";
 import { StatusCodes } from "../constants/status-code";
 import type { LeaveApplicationFormValue } from "../boxes/leave-application/leave.form.type";
+import { leaveApplicationFormValue2CreateLeaveApplicationRequest } from "../boxes/leave-application/leave.form.helpers";
 
 const LeaveApplicationView = defineComponent(
   () => {
     const [LeaveApplicationFormDialog, LeaveApplicationFormDialogRef] =
       withDialog<LeaveApplicationFormValue>({
         async submit(params, done) {
-          const { code } = await createLeaveApplication({
-            employeeName: params.data?.name ?? "",
-            startDate: +new Date(),
-            endDate: +new Date(),
-            type: LeaveApplicationType["PERSONAL"],
-            reason: "test",
-          });
+          if (!params.data) {
+            return;
+          }
+          const { code } = await createLeaveApplication(
+            leaveApplicationFormValue2CreateLeaveApplicationRequest(params.data)
+          );
           if (code === StatusCodes.OK) {
             LeaveApplicationSelectorTableRef.value?.search();
             done();

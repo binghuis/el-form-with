@@ -6,7 +6,6 @@ import type {
   WEWithOverlaysParams,
   WEFormBoxProps,
   FormBoxOkHandle,
-  MaybeNull,
 } from "./types";
 import { DefaultMode, getFormValueByFields, raw } from "./utils";
 
@@ -33,8 +32,8 @@ const withDialog = <
   const title = ref<string>();
   const id = ref<string | number>();
   const mode = ref<WEFormMode>(DefaultMode);
-  const data = ref<MaybeNull<FormValue>>();
-  const extra = ref<MaybeNull<object>>();
+  const data = ref<FormValue>();
+  const extra = ref<object>();
   const loading = ref<boolean>(false);
   const type = ref<FormType>();
   const DialogRef = ref<WithDialogRefValue<FormValue, FormType>>();
@@ -63,7 +62,7 @@ const withDialog = <
   };
 
   const ok: FormBoxOkHandle<FormValue, FormOkType> = async (okParams) => {
-    let formValue: FormValue | null = null;
+    let formValue: FormValue | undefined = undefined;
     if (formRef.value) {
       const isValid = await formRef.value.validate().catch((error) => {});
 

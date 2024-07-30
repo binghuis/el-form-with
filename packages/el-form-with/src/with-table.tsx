@@ -19,7 +19,6 @@ import type {
   WETableOnSearch,
   WETableOnReset,
   WETableOnRefresh,
-  MaybeNull,
   PaginationPropsInj,
 } from "./types";
 import { getFormValueByFields, raw } from "./utils";
@@ -76,8 +75,8 @@ const withTable = <
 
   const TableWithOverlayRef = ref<TableWithOverlayRef>();
   const selectorRef = ref<FormInstance>();
-  const selectorValueRef = ref<MaybeNull<SelectorValue>>();
-  const extraValueRef = ref<MaybeNull<object>>();
+  const selectorValueRef = ref<SelectorValue>();
+  const extraValueRef = ref<object>();
   const tableRef = ref<TableInstance>();
   const tableValueRef = ref<RecordValue[]>();
   const pageinationRef = ref<WEPagination>(DefaultPagination);
@@ -86,7 +85,7 @@ const withTable = <
     reset: false,
     refresh: false,
   });
-  const filtersRef = ref<MaybeNull<WETableFilters>>({});
+  const filtersRef = ref<WETableFilters>({});
 
   const isLoadingRef = computed(() => {
     return Object.values(loadingsRef.value).some((loading) => loading);
@@ -146,7 +145,7 @@ const withTable = <
       };
 
       const reset: WETableReset = async () => {
-        extraValueRef.value = null;
+        extraValueRef.value = undefined;
         selectorRef.value?.resetFields();
         const data = getFormValue();
         onReset?.({
