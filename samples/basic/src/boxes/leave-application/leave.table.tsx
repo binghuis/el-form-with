@@ -2,7 +2,7 @@ import { defineComponent, toRef } from "vue";
 import { ElLink, ElRow, ElTable, ElTableColumn } from "element-plus";
 import { tableBoxDefaultProps, type WETableBoxProps } from "el-form-with";
 import { useDark } from "@vueuse/core";
-import type { LeaveApplication } from "../../api/leave.type";
+import type { LeaveApplication } from "../../api/leave-application.type";
 
 export interface TableBoxProps extends WETableBoxProps<LeaveApplication> {}
 

@@ -1,7 +1,7 @@
 import type { FormRules } from "element-plus";
-import type { FormValue } from "./common.form.type";
+import type { LeaveApplicationFormValue } from "./leave.form.type";
 
-export const rules: FormRules<FormValue> = {
+export const rules: FormRules<LeaveApplicationFormValue> = {
   name: {
     required: true,
     message: "Please input name",

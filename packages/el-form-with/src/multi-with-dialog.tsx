@@ -23,9 +23,9 @@ export type MulitWithDialogRefValue<
 const multiWithDialog = <
   FormsValue extends object[],
   FormsType extends string[] = [],
-  OkType extends string = string
+  FormOkType extends string = string
 >(
-  params: WEMultiWithOverlaysParams<FormsValue, FormsType, OkType>
+  params: WEMultiWithOverlaysParams<FormsValue, FormsType, FormOkType>
 ) => {
   const visible = ref<boolean>(false);
   const title = ref<string>();
@@ -41,7 +41,7 @@ const multiWithDialog = <
   const DialogWithForms = defineComponent<
     Partial<DialogProps> & {
       forms: (
-        props: WEMultiFormBoxProps<FormsValue, FormsType, OkType>
+        props: WEMultiFormBoxProps<FormsValue, FormsType, FormOkType>
       ) => VNode;
     }
   >(
@@ -88,7 +88,9 @@ const multiWithDialog = <
         },
         forms: {
           type: Function as PropType<
-            (props: WEMultiFormBoxProps<FormsValue, FormsType, OkType>) => VNode
+            (
+              props: WEMultiFormBoxProps<FormsValue, FormsType, FormOkType>
+            ) => VNode
           >,
           required: true,
         },

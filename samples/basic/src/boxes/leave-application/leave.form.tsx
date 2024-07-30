@@ -10,21 +10,32 @@ import {
   ElSelect,
 } from "element-plus";
 import { formBoxDefaultProps, type WEFormBoxProps } from "el-form-with";
-import { LeaveStatus, LeaveType } from "../../api/leave.type";
-import type { FormType, FormValue, OkType } from "./common.form.type";
-import { defaultFormValue } from "./common.form.default";
-import { rules } from "./common.form.rules";
+import {
+  LeaveApplicationStatus,
+  LeaveApplicationType,
+} from "../../api/leave-application.type";
+import type {
+  LeaveApplicationFormType,
+  LeaveApplicationFormValue,
+  LeaveApplicationFormOkType,
+} from "./leave.form.type";
+import { rules } from "./leave.form.rules";
+import { defaultLeaveApplicationFormValue } from "./leave.form.helpers";
 
-const CommonFormBox = defineComponent<
-  WEFormBoxProps<FormValue, FormType, OkType>
+const LeaveApplicationFormBox = defineComponent<
+  WEFormBoxProps<
+    LeaveApplicationFormValue,
+    LeaveApplicationFormType,
+    LeaveApplicationFormOkType
+  >
 >(
   (props) => {
-    const formValue = reactive<FormValue>({
-      ...defaultFormValue,
+    const formValue = reactive<LeaveApplicationFormValue>({
+      ...defaultLeaveApplicationFormValue,
       ...props.data,
     });
 
-    const formRules = reactive<FormRules<FormValue>>(rules);
+    const formRules = reactive<FormRules<LeaveApplicationFormValue>>(rules);
 
     return () => {
       return (
@@ -47,20 +58,28 @@ const CommonFormBox = defineComponent<
             </ElFormItem>
             <ElFormItem prop={"type"} label="Type">
               <ElSelect v-model={formValue.type}>
-                {Object.keys(LeaveType).map((key) => (
+                {Object.keys(LeaveApplicationType).map((key) => (
                   <ElSelect.Option
                     value={key.toLowerCase()}
-                    label={LeaveType[key as keyof typeof LeaveType]}
+                    label={
+                      LeaveApplicationType[
+                        key as keyof typeof LeaveApplicationType
+                      ]
+                    }
                   />
                 ))}
               </ElSelect>
             </ElFormItem>
             <ElFormItem prop={"status"} label="Status">
               <ElSelect v-model={formValue.status}>
-                {Object.keys(LeaveStatus).map((key) => (
+                {Object.keys(LeaveApplicationStatus).map((key) => (
                   <ElSelect.Option
                     value={key.toLowerCase()}
-                    label={LeaveStatus[key as keyof typeof LeaveStatus]}
+                    label={
+                      LeaveApplicationStatus[
+                        key as keyof typeof LeaveApplicationStatus
+                      ]
+                    }
                   />
                 ))}
               </ElSelect>
@@ -101,4 +120,4 @@ const CommonFormBox = defineComponent<
   { props: [...formBoxDefaultProps] }
 );
 
-export default CommonFormBox;
+export default LeaveApplicationFormBox;

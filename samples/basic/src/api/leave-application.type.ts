@@ -1,26 +1,26 @@
 import type { CommonResponse, PaginationResponse } from "./type";
 
-export enum LeaveType {
+export enum LeaveApplicationType {
   SICK = "Sick",
   VACATION = "Vacation",
   PERSONAL = "Personal",
   OTHER = "Other",
 }
 
-export enum LeaveStatus {
+export enum LeaveApplicationStatus {
   PENDING = "Pending",
   APPROVED = "Approved",
   REJECTED = "Rejected",
 }
 
-export interface LeaveApplication {
+export interface LeaveApplicationDetail {
   id: string;
   employeeId: string;
   employeeName: string;
   startDate: number;
   endDate: number;
-  type: LeaveType;
-  status: LeaveStatus;
+  type: LeaveApplicationType;
+  status: LeaveApplicationStatus;
   reason?: string;
   createdAt: number;
   updatedAt?: number;
@@ -30,7 +30,7 @@ export interface CreateLeaveApplicationRequest {
   employeeName: string;
   startDate: number;
   endDate: number;
-  type: LeaveType;
+  type: LeaveApplicationType;
   reason?: string;
 }
 
@@ -40,10 +40,11 @@ export interface GetLeaveApplicationRequest {
   id: string;
 }
 
-export type GetLeaveApplicationResponse = CommonResponse<LeaveApplication>;
+export type GetLeaveApplicationResponse =
+  CommonResponse<LeaveApplicationDetail>;
 
 export type GetLeaveApplicationListResponse =
-  PaginationResponse<LeaveApplication>;
+  PaginationResponse<LeaveApplicationDetail>;
 
 export interface UpdateLeaveApplicationRequest
   extends CreateLeaveApplicationRequest {

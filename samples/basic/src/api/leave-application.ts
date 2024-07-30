@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import {
-  LeaveStatus,
-  LeaveType,
+  LeaveApplicationStatus,
+  LeaveApplicationType,
   type CreateLeaveApplicationRequest,
   type CreateLeaveApplicationResponse,
   type DeleteLeaveApplicationResponse,
@@ -10,7 +10,7 @@ import {
   type LeaveApplication,
   type UpdateLeaveApplicationRequest,
   type UpdateLeaveApplicationResponse,
-} from "./leave.type";
+} from "./leave-application.type";
 import {
   sendPaginationResponse,
   sendResponse,
@@ -27,8 +27,8 @@ const leaveApplications: LeaveApplication[] = faker.helpers.multiple(
       startDate:
         endDate - faker.number.int({ min: 86400000, max: 86400000 * 5 }),
       endDate,
-      type: faker.helpers.enumValue(LeaveType),
-      status: faker.helpers.enumValue(LeaveStatus),
+      type: faker.helpers.enumValue(LeaveApplicationType),
+      status: faker.helpers.enumValue(LeaveApplicationStatus),
       reason: faker.word.words({ count: { min: 5, max: 10 } }),
       createdAt: +new Date(),
     };
@@ -46,7 +46,7 @@ export async function createLeaveApplication(
     startDate: request.startDate,
     endDate: request.endDate,
     type: request.type,
-    status: LeaveStatus.PENDING,
+    status: LeaveApplicationStatus.PENDING,
     reason: request.reason,
     createdAt: +new Date(),
   };

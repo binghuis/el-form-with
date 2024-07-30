@@ -1,3 +1,3 @@
-import CommonView from "./views/common";
+import LeaveApplicationView from "./views/leave-application";
 
-export default [{ path: "/", component: CommonView }];
+export default [{ path: "/", component: LeaveApplicationView }];
