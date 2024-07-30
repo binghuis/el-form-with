@@ -19,8 +19,10 @@ import type {
   LeaveApplicationFormValue,
   LeaveApplicationFormOkType,
 } from "./leave.form.type";
-import { rules } from "./leave.form.rules";
-import { defaultLeaveApplicationFormValue } from "./leave.form.helpers";
+import {
+  defaultLeaveApplicationFormValue,
+  leaveApplicationFormRules,
+} from "./leave.form.helpers";
 
 const LeaveApplicationFormBox = defineComponent<
   WEFormBoxProps<
@@ -35,7 +37,9 @@ const LeaveApplicationFormBox = defineComponent<
       ...props.data,
     });
 
-    const formRules = reactive<FormRules<LeaveApplicationFormValue>>(rules);
+    const formRules = reactive<FormRules<LeaveApplicationFormValue>>(
+      leaveApplicationFormRules
+    );
 
     return () => {
       return (

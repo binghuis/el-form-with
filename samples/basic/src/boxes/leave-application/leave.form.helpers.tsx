@@ -1,3 +1,4 @@
+import type { FormRules } from "element-plus";
 import {
   LeaveApplicationStatus,
   LeaveApplicationType,
@@ -14,7 +15,35 @@ export const defaultLeaveApplicationFormValue: LeaveApplicationFormValue = {
   reason: "",
 };
 
-export function LeaveApplicationFormValue2CreateLeaveApplicationRequest(
+export const leaveApplicationFormRules: FormRules<LeaveApplicationFormValue> = {
+  name: {
+    required: true,
+    message: "Please input name",
+    trigger: "blur",
+  },
+  date: {
+    required: true,
+    message: "Please input date",
+    trigger: "blur",
+  },
+  type: {
+    required: true,
+    message: "Please select type",
+    trigger: "change",
+  },
+  status: {
+    required: true,
+    message: "Please select status",
+    trigger: "change",
+  },
+  reason: {
+    required: false,
+    message: "Please input reason",
+    trigger: "blur",
+  },
+};
+
+export function leaveApplicationFormValue2CreateLeaveApplicationRequest(
   data: LeaveApplicationFormValue
 ): CreateLeaveApplicationRequest {
   const { date, name, ...rest } = data;
@@ -26,7 +55,7 @@ export function LeaveApplicationFormValue2CreateLeaveApplicationRequest(
   };
 }
 
-export function LeaveApplicationDetail2LeaveApplicationFormValue(
+export function leaveApplicationDetail2LeaveApplicationFormValue(
   data: LeaveApplicationDetail
 ): LeaveApplicationFormValue {
   const { startDate, employeeName, endDate, reason = "", ...rest } = data;
