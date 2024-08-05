@@ -169,7 +169,7 @@ export interface WERequester<RecordValue, SelectorValue> {
 export interface WERequestParams<SelectorValue> {
   pagination?: WEPagination;
   filters?: WETableFilters;
-  sorts?: Record<string, string>;
+  sorts?: WETableSorts;
   data?: SelectorValue;
   extra?: object;
 }
@@ -182,7 +182,7 @@ export interface WERequesterParams<SelectorValue> {
   data?: SelectorValue;
   pagination: WEPagination;
   filters?: WETableFilters;
-  sorts?: Record<string, string>;
+  sorts?: WETableSorts;
   extra?: object;
 }
 
@@ -197,6 +197,8 @@ export type WETableSort = (params: {
   prop: string;
   order: string;
 }) => Promise<void>;
+
+export type WETableSorts = Record<string, string>;
 
 export type WETableFilter = (params?: WETableFilters) => Promise<void>;
 
@@ -218,6 +220,4 @@ export type WETableOnFilter = (params: {
   filters?: WETableFilters;
 }) => Promise<void>;
 
-export type WETableOnSort = (params: {
-  sorts?: Record<string, string>;
-}) => Promise<void>;
+export type WETableOnSort = (params: { sorts?: WETableSorts }) => Promise<void>;

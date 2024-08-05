@@ -1,20 +1,28 @@
 import { defineComponent, reactive, toRef } from "vue";
-import { ElButton, ElForm, ElRow } from "element-plus";
+import { ElButton, ElForm, ElFormItem, ElInput, ElRow } from "element-plus";
 import { selectorBoxDefaultProps, type WESelectorBoxProps } from "el-form-with";
 
-export interface SelectorValue {}
+export interface LeaveApplicationSelectorValue {
+  name: string;
+}
 
-export interface SelectorBoxProps extends WESelectorBoxProps {}
+export interface LeaveApplicationSelectorBoxProps extends WESelectorBoxProps {}
 
-const CommonSelectorBox = defineComponent<SelectorBoxProps>(
+const CommonSelectorBox = defineComponent<LeaveApplicationSelectorBoxProps>(
   (props) => {
-    const model = reactive<SelectorValue>({});
+    const selectorValue = reactive<LeaveApplicationSelectorValue>({
+      name: "",
+    });
 
     return () => {
       return (
         <div class="bg-white dark:bg-[#141414] p-2">
-          <ElForm ref={toRef(props.reference)} model={model}>
-            <ElRow gutter={16}></ElRow>
+          <ElForm ref={toRef(props.reference)} model={selectorValue}>
+            <ElRow>
+              <ElFormItem label="Name" prop="name">
+                <ElInput v-model={selectorValue.name} />
+              </ElFormItem>
+            </ElRow>
             <ElRow justify="end">
               <ElButton
                 loading={props.loadings.search}
