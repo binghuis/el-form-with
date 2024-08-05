@@ -127,6 +127,7 @@ const withDrawer = <
                 close,
                 type: type.value,
                 data: raw(data.value),
+                extra: raw(extra.value),
               })}
             </ElDrawer>
           </div>

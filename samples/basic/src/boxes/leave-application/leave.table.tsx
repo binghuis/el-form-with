@@ -7,11 +7,16 @@ import {
   LeaveApplicationType,
   type LeaveApplicationDetail,
 } from "../../api/leave-application.type";
-import { LeaveApplicationFormDialogRef } from "../../views/leave-application";
+import {
+  LeaveApplicationFormDialogRef,
+  type LeaveApplicationFormDrawerRef,
+} from "../../views/leave-application";
 import { leaveApplicationDetail2LeaveApplicationFormValue } from "./leave.form.helpers";
 import { Edit, View } from "@element-plus/icons-vue";
 export interface TableBoxProps extends WETableBoxProps<LeaveApplicationDetail> {
   LeaveApplicationFormDialogRef: typeof LeaveApplicationFormDialogRef;
+  LeaveApplicationFormDrawerRef: typeof LeaveApplicationFormDrawerRef;
+  overlay: string;
 }
 
 const CommonTableBox = defineComponent<TableBoxProps>(
@@ -89,13 +94,24 @@ const CommonTableBox = defineComponent<TableBoxProps>(
                       icon={Edit}
                       underline={false}
                       onClick={() => {
-                        props.LeaveApplicationFormDialogRef.value?.open({
-                          mode: "edit",
-                          id: row.id,
-                          data: leaveApplicationDetail2LeaveApplicationFormValue(
-                            row
-                          ),
-                        });
+                        if (props.overlay === "dialog") {
+                          props.LeaveApplicationFormDialogRef.value?.open({
+                            mode: "edit",
+                            id: row.id,
+                            data: leaveApplicationDetail2LeaveApplicationFormValue(
+                              row
+                            ),
+                          });
+                        }
+                        if (props.overlay === "drawer") {
+                          props.LeaveApplicationFormDrawerRef.value?.open({
+                            mode: "edit",
+                            id: row.id,
+                            data: leaveApplicationDetail2LeaveApplicationFormValue(
+                              row
+                            ),
+                          });
+                        }
                       }}
                     >
                       Edit
@@ -105,12 +121,22 @@ const CommonTableBox = defineComponent<TableBoxProps>(
                       icon={View}
                       underline={false}
                       onClick={() => {
-                        props.LeaveApplicationFormDialogRef.value?.open({
-                          mode: "view",
-                          data: leaveApplicationDetail2LeaveApplicationFormValue(
-                            row
-                          ),
-                        });
+                        if (props.overlay == "dialog") {
+                          props.LeaveApplicationFormDialogRef.value?.open({
+                            mode: "view",
+                            data: leaveApplicationDetail2LeaveApplicationFormValue(
+                              row
+                            ),
+                          });
+                        }
+                        if (props.overlay == "drawer") {
+                          props.LeaveApplicationFormDrawerRef.value?.open({
+                            mode: "view",
+                            data: leaveApplicationDetail2LeaveApplicationFormValue(
+                              row
+                            ),
+                          });
+                        }
                       }}
                     >
                       View
@@ -125,7 +151,12 @@ const CommonTableBox = defineComponent<TableBoxProps>(
     };
   },
   {
-    props: [...tableBoxDefaultProps, "LeaveApplicationFormDialogRef"],
+    props: [
+      ...tableBoxDefaultProps,
+      "LeaveApplicationFormDialogRef",
+      "LeaveApplicationFormDrawerRef",
+      "overlay",
+    ],
   }
 );
 
