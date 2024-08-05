@@ -33,4 +33,5 @@ export const tableBoxDefaultProps: Array<keyof WETableBoxProps<object>> = [
   "filter",
   "isLoading",
   "loadings",
+  "sort",
 ];

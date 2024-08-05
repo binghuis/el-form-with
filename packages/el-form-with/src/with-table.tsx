@@ -22,6 +22,8 @@ import type {
   PaginationPropsInj,
   WETableFilter,
   WETableOnFilter,
+  WETableSort,
+  WETableOnSort,
 } from "./types";
 import { getFormValueByFields, raw } from "./utils";
 
@@ -56,6 +58,7 @@ type TableWithOverlayProps<
   table: (props: WETableBoxProps<RecordValue>) => VNode;
   selector?: (props: WESelectorBoxProps) => VNode;
   onSearch?: WETableOnSearch<SelectorValue>;
+  onSort?: WETableOnSort;
   onReset?: WETableOnReset<SelectorValue>;
   onRefresh?: WETableOnRefresh<SelectorValue>;
   onFilter?: WETableOnFilter;
@@ -89,6 +92,7 @@ const withTable = <
     refresh: false,
   });
   const filtersRef = ref<WETableFilters>({});
+  const sortsRef = ref<Record<string, string>>({});
 
   const isLoadingRef = computed(() => {
     return Object.values(loadingsRef.value).some((loading) => loading);
@@ -103,6 +107,7 @@ const withTable = <
       filters = filtersRef.value,
       data = selectorValueRef.value,
       extra = extraValueRef.value,
+      sorts = sortsRef.value,
     } = params ?? {};
 
     const res = await requester({
@@ -110,6 +115,7 @@ const withTable = <
       pagination: raw(pagination),
       filters: raw(filters),
       extra: raw(extra),
+      sorts: raw(sorts),
     });
     selectorValueRef.value = data;
     pageinationRef.value = {
@@ -119,6 +125,7 @@ const withTable = <
     tableValueRef.value = res.list;
     extraValueRef.value = extra;
     filtersRef.value = filters;
+    sortsRef.value = sorts;
   };
 
   const TableWithOverlay = defineComponent<
@@ -127,6 +134,7 @@ const withTable = <
     (props, { expose, slots, attrs }) => {
       const {
         onSearch,
+        onSort,
         onReset,
         onRefresh,
         onFilter,
@@ -159,6 +167,19 @@ const withTable = <
         loadingsRef.value.search = false;
       };
 
+      const sort: WETableSort = async (params) => {
+        const data = getFormValue();
+        sortsRef.value = {
+          [params.prop]: params.order,
+        };
+        onSort?.({
+          sorts: raw(sortsRef.value),
+        });
+        loadingsRef.value.search = true;
+        await request({ data, pagination: DefaultPagination });
+        loadingsRef.value.search = false;
+      };
+
       const reset: WETableReset = async () => {
         extraValueRef.value = undefined;
         selectorRef.value?.resetFields();
@@ -167,7 +188,12 @@ const withTable = <
           data: raw(data),
         });
         loadingsRef.value.reset = true;
-        await request({ data, pagination: DefaultPagination, filters: {} });
+        await request({
+          data,
+          pagination: DefaultPagination,
+          filters: {},
+          sorts: {},
+        });
         loadingsRef.value.reset = false;
       };
 
@@ -221,6 +247,7 @@ const withTable = <
           refresh,
           search,
           filter,
+          sort,
           isLoading: isLoadingRef.value,
           loadings: loadingsRef.value,
           paginationPropsInj,
@@ -249,6 +276,8 @@ const withTable = <
         "onSearch",
         "paginationOpts",
         "hidePagination",
+        "onFilter",
+        "onSort",
       ],
     }
   );

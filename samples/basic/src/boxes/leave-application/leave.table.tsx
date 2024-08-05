@@ -35,6 +35,7 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             data={props.data}
             v-loading={props.isLoading}
             onFilter-change={props.filter}
+            onSort-change={props.sort}
           >
             <ElTableColumn type="index" label="Index" width={70} />
             <ElTableColumn prop="id" label="Id" width={70} />
@@ -42,6 +43,7 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             <ElTableColumn
               prop="startDate"
               label="startDate"
+              sortable
               width={160}
               formatter={(row) => {
                 return dayjs(row.startDate).format("YYYY-MM-DD HH:mm");
@@ -50,6 +52,7 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             <ElTableColumn
               prop="endDate"
               label="endDate"
+              sortable
               width={160}
               formatter={(row) => {
                 return dayjs(row.endDate).format("YYYY-MM-DD HH:mm");
