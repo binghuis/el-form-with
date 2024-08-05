@@ -72,9 +72,9 @@ export interface WEWithOverlaysParams<
     params: {
       mode: WEFormMode;
       data?: FormValue;
-      FormokType?: FormOkType;
+      formOkType?: FormOkType;
       formType?: FormType;
-      id?: string | number;
+      id?: string;
       extra?: object;
     },
     done: EmptyFunction
@@ -101,9 +101,9 @@ export interface WEMultiWithOverlaysParams<
     params: {
       mode: WEFormMode;
       data: FormValue[number];
-      FormokType?: FormOkType;
+      FormOkType?: FormOkType;
       formType?: FormType[number];
-      id?: string | number;
+      id?: string;
       extra?: object;
     },
     done: EmptyFunction

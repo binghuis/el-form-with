@@ -30,7 +30,7 @@ const withDrawer = <
   const visible = ref<boolean>(false);
   const formRef = ref<FormInstance>();
   const title = ref<string>();
-  const id = ref<string | number>();
+  const id = ref<string>();
   const mode = ref<WEFormMode>(DefaultMode);
   const data = ref<FormValue>();
   const extra = ref<object>();
@@ -87,7 +87,7 @@ const withDrawer = <
       {
         mode: mode.value,
         data: formValue,
-        FormokType: okParams?.type,
+        formOkType: okParams?.type,
         formType: type.value,
         id: id.value,
         extra: extra.value,

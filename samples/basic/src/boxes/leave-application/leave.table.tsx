@@ -1,11 +1,18 @@
 import { defineComponent, toRef } from "vue";
-import { ElLink, ElRow, ElTable, ElTableColumn } from "element-plus";
+import { dayjs, ElLink, ElSpace, ElTable, ElTableColumn } from "element-plus";
 import { tableBoxDefaultProps, type WETableBoxProps } from "el-form-with";
 import { useDark } from "@vueuse/core";
-import type { LeaveApplicationDetail } from "../../api/leave-application.type";
-
-export interface TableBoxProps
-  extends WETableBoxProps<LeaveApplicationDetail> {}
+import {
+  LeaveApplicationStatus,
+  LeaveApplicationType,
+  type LeaveApplicationDetail,
+} from "../../api/leave-application.type";
+import { LeaveApplicationFormDialogRef } from "../../views/leave-application";
+import { leaveApplicationDetail2LeaveApplicationFormValue } from "./leave.form.helpers";
+import { Edit, View } from "@element-plus/icons-vue";
+export interface TableBoxProps extends WETableBoxProps<LeaveApplicationDetail> {
+  LeaveApplicationFormDialogRef: typeof LeaveApplicationFormDialogRef;
+}
 
 const CommonTableBox = defineComponent<TableBoxProps>(
   (props) => {
@@ -26,36 +33,99 @@ const CommonTableBox = defineComponent<TableBoxProps>(
               props.search({ filters: params });
             }}
           >
-            <ElTableColumn type="index" label="Index" width={80} />
-            <ElTableColumn prop="id" label="Id" />
+            <ElTableColumn type="index" label="Index" width={70} />
+            <ElTableColumn prop="id" label="Id" width={70} />
             <ElTableColumn prop="employeeName" label="Name" />
-            <ElTableColumn prop="startDate" label="startDate" />
-            <ElTableColumn prop="endDate" label="endDate" />
-            <ElTableColumn prop="type" label="type" />
-            <ElTableColumn prop="status" label="status" />
-            <ElTableColumn prop="reason" label="reason" width={180} />
+            <ElTableColumn
+              prop="startDate"
+              label="startDate"
+              width={160}
+              formatter={(row) => {
+                return dayjs(row.startDate).format("YYYY-MM-DD HH:mm");
+              }}
+            />
+            <ElTableColumn
+              prop="endDate"
+              label="endDate"
+              width={160}
+              formatter={(row) => {
+                return dayjs(row.endDate).format("YYYY-MM-DD HH:mm");
+              }}
+            />
+            <ElTableColumn
+              prop="type"
+              label="type"
+              formatter={(row: LeaveApplicationDetail) => {
+                return LeaveApplicationType[
+                  row.type.toLocaleUpperCase() as keyof typeof LeaveApplicationType
+                ];
+              }}
+            />
+            <ElTableColumn
+              prop="status"
+              label="status"
+              formatter={(row: LeaveApplicationDetail) => {
+                return LeaveApplicationStatus[
+                  row.status.toLocaleUpperCase() as keyof typeof LeaveApplicationStatus
+                ];
+              }}
+            />
+            <ElTableColumn
+              prop="reason"
+              label="reason"
+              width={250}
+              showOverflowTooltip
+            />
 
-            <ElTableColumn label="操作" width={160} fixed="right">
-              {{
-                default: () => (
-                  <ElRow justify="start" gutter={8}>
-                    <ElLink type="primary" underline={false}>
+            <ElTableColumn
+              label="opts"
+              width={160}
+              fixed="right"
+              formatter={(row) => {
+                return (
+                  <ElSpace>
+                    <ElLink
+                      type="primary"
+                      icon={Edit}
+                      underline={false}
+                      onClick={() => {
+                        props.LeaveApplicationFormDialogRef.value?.open({
+                          mode: "edit",
+                          id: row.id,
+                          data: leaveApplicationDetail2LeaveApplicationFormValue(
+                            row
+                          ),
+                        });
+                      }}
+                    >
                       Edit
                     </ElLink>
-                    <ElLink type="primary" underline={false}>
+                    <ElLink
+                      type="primary"
+                      icon={View}
+                      underline={false}
+                      onClick={() => {
+                        props.LeaveApplicationFormDialogRef.value?.open({
+                          mode: "view",
+                          data: leaveApplicationDetail2LeaveApplicationFormValue(
+                            row
+                          ),
+                        });
+                      }}
+                    >
                       View
                     </ElLink>
-                  </ElRow>
-                ),
+                  </ElSpace>
+                );
               }}
-            </ElTableColumn>
+            />
           </ElTable>
         </div>
       );
     };
   },
   {
-    props: [...tableBoxDefaultProps],
+    props: [...tableBoxDefaultProps, "LeaveApplicationFormDialogRef"],
   }
 );
 

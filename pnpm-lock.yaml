@@ -36,9 +36,6 @@ importers:
       rollup:
         specifier: ^4.19.0
         version: 4.19.0
-      rollup-plugin-css-only:
-        specifier: ^4.5.2
-        version: 4.5.2(rollup@4.19.0)
       rollup-plugin-dts:
         specifier: ^6.1.1
         version: 6.1.1(rollup@4.19.0)(typescript@5.5.3)
@@ -57,6 +54,9 @@ importers:
 
   samples/basic:
     dependencies:
+      '@element-plus/icons-vue':
+        specifier: ^2.3.1
+        version: 2.3.1(vue@3.4.31(typescript@5.5.3))
       '@vueuse/core':
         specifier: ^10.11.0
         version: 10.11.0(vue@3.4.31(typescript@5.5.3))
@@ -1449,12 +1449,6 @@ packages:
     resolution: {integrity: sha512-9dkvaxAsk/xNXSJzMgFqqMCuFgt2+KsOFek3TMLfo8NCPfWpBmqwyNn5Y+NX56QUYfCtsyhF3ayiboEoUmJk/A==}
     engines: {node: 20 || >=22}
     hasBin: true
-
-  rollup-plugin-css-only@4.5.2:
-    resolution: {integrity: sha512-7rj9+jB17Pz8LNcPgtMUb16JcgD8lxQMK9HcGfAVhMK3na/WXes3oGIo5QsrQQVqtgAU6q6KnQNXJrYunaUIQQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      rollup: <5
 
   rollup-plugin-dts@6.1.1:
     resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
@@ -2926,11 +2920,6 @@ snapshots:
     dependencies:
       glob: 11.0.0
       package-json-from-dist: 1.0.0
-
-  rollup-plugin-css-only@4.5.2(rollup@4.19.0):
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
-      rollup: 4.19.0
 
   rollup-plugin-dts@6.1.1(rollup@4.19.0)(typescript@5.5.3):
     dependencies:

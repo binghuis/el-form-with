@@ -7,7 +7,7 @@ import {
   type DeleteLeaveApplicationResponse,
   type GetLeaveApplicationListResponse,
   type GetLeaveApplicationResponse,
-  type LeaveApplication,
+  type LeaveApplicationDetail,
   type UpdateLeaveApplicationRequest,
   type UpdateLeaveApplicationResponse,
 } from "./leave-application.type";
@@ -17,7 +17,7 @@ import {
 } from "../constants/response-handler";
 import { StatusCodes } from "../constants/status-code";
 
-const leaveApplications: LeaveApplication[] = faker.helpers.multiple(
+const leaveApplications: LeaveApplicationDetail[] = faker.helpers.multiple(
   () => {
     const endDate = +faker.date.recent();
     return {

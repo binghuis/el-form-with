@@ -6,6 +6,7 @@ import {
   type LeaveApplicationDetail,
 } from "../../api/leave-application.type";
 import type { LeaveApplicationFormValue } from "./leave.form.type";
+import { toRaw } from "vue";
 
 export const defaultLeaveApplicationFormValue: LeaveApplicationFormValue = {
   name: "",
@@ -46,7 +47,7 @@ export const leaveApplicationFormRules: FormRules<LeaveApplicationFormValue> = {
 export function leaveApplicationFormValue2CreateLeaveApplicationRequest(
   data: LeaveApplicationFormValue
 ): CreateLeaveApplicationRequest {
-  const { date, name, ...rest } = data;
+  const { date, name, ...rest } = toRaw(data);
   return {
     ...rest,
     employeeName: name,
@@ -58,7 +59,13 @@ export function leaveApplicationFormValue2CreateLeaveApplicationRequest(
 export function leaveApplicationDetail2LeaveApplicationFormValue(
   data: LeaveApplicationDetail
 ): LeaveApplicationFormValue {
-  const { startDate, employeeName, endDate, reason = "", ...rest } = data;
+  const {
+    startDate,
+    employeeName,
+    endDate,
+    reason = "",
+    ...rest
+  } = toRaw(data);
   return {
     ...rest,
     reason,

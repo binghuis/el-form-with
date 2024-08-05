@@ -1,4 +1,4 @@
-import { computed, defineComponent, ref, type VNode, onMounted } from "vue";
+import { computed, defineComponent, ref, type VNode } from "vue";
 import {
   type FormInstance,
   type PaginationProps,
@@ -167,9 +167,7 @@ const withTable = <
 
       expose({ search, reset, refresh });
 
-      onMounted(() => {
-        search();
-      });
+      search();
 
       return () => {
         const paginationPropsInj: PaginationPropsInj = {
