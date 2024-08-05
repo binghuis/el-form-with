@@ -30,7 +30,7 @@ export const tableBoxDefaultProps: Array<keyof WETableBoxProps<object>> = [
   "reset",
   "refresh",
   "search",
-  "filters",
+  "filter",
   "isLoading",
   "loadings",
 ];

@@ -34,9 +34,7 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             ref={toRef(props.reference)}
             data={props.data}
             v-loading={props.isLoading}
-            onFilter-change={(params) => {
-              props.search({ filters: params });
-            }}
+            onFilter-change={props.filter}
           >
             <ElTableColumn type="index" label="Index" width={70} />
             <ElTableColumn prop="id" label="Id" width={70} />
@@ -60,6 +58,15 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             <ElTableColumn
               prop="type"
               label="type"
+              columnKey="type"
+              filters={Object.keys(LeaveApplicationType).map((key) => {
+                return {
+                  text: LeaveApplicationType[
+                    key as keyof typeof LeaveApplicationType
+                  ],
+                  value: key.toLocaleLowerCase(),
+                };
+              })}
               formatter={(row: LeaveApplicationDetail) => {
                 return LeaveApplicationType[
                   row.type.toLocaleUpperCase() as keyof typeof LeaveApplicationType
@@ -69,6 +76,15 @@ const CommonTableBox = defineComponent<TableBoxProps>(
             <ElTableColumn
               prop="status"
               label="status"
+              columnKey="status"
+              filters={Object.keys(LeaveApplicationStatus).map((key) => {
+                return {
+                  text: LeaveApplicationStatus[
+                    key as keyof typeof LeaveApplicationStatus
+                  ],
+                  value: key.toLocaleLowerCase(),
+                };
+              })}
               formatter={(row: LeaveApplicationDetail) => {
                 return LeaveApplicationStatus[
                   row.status.toLocaleUpperCase() as keyof typeof LeaveApplicationStatus

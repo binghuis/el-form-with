@@ -20,6 +20,8 @@ import type {
   WETableOnReset,
   WETableOnRefresh,
   PaginationPropsInj,
+  WETableFilter,
+  WETableOnFilter,
 } from "./types";
 import { getFormValueByFields, raw } from "./utils";
 
@@ -56,6 +58,7 @@ type TableWithOverlayProps<
   onSearch?: WETableOnSearch<SelectorValue>;
   onReset?: WETableOnReset<SelectorValue>;
   onRefresh?: WETableOnRefresh<SelectorValue>;
+  onFilter?: WETableOnFilter;
   hidePagination?: boolean;
   paginationOpts?: PaginationOpts;
 };
@@ -126,6 +129,7 @@ const withTable = <
         onSearch,
         onReset,
         onRefresh,
+        onFilter,
         selector,
         table,
         hidePagination = false,
@@ -134,13 +138,24 @@ const withTable = <
       const { ...restPaginationOpts } = paginationOpts;
 
       const search: WETableSearch = async (params) => {
-        const { filters, extra } = params ?? {};
+        const { extra } = params ?? {};
         const data = getFormValue();
         onSearch?.({
           data: raw(data),
         });
         loadingsRef.value.search = true;
-        await request({ data, pagination: DefaultPagination, filters, extra });
+        await request({ data, pagination: DefaultPagination, extra });
+        loadingsRef.value.search = false;
+      };
+
+      const filter: WETableFilter = async (params) => {
+        filtersRef.value = { ...filtersRef.value, ...params };
+        const data = getFormValue();
+        onFilter?.({
+          filters: raw(filtersRef.value),
+        });
+        loadingsRef.value.search = true;
+        await request({ data, pagination: DefaultPagination });
         loadingsRef.value.search = false;
       };
 
@@ -205,7 +220,7 @@ const withTable = <
           reset,
           refresh,
           search,
-          filters: raw(filtersRef.value),
+          filter,
           isLoading: isLoadingRef.value,
           loadings: loadingsRef.value,
           paginationPropsInj,

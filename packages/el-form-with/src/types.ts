@@ -147,7 +147,7 @@ export interface WETableBoxProps<RecordValue extends object> {
   reset: WETableReset;
   refresh: WETableRefresh;
   search: WETableSearch;
-  filters: WETableFilters;
+  filter: WETableFilter;
   isLoading: boolean;
   loadings: WELoadings;
   paginationPropsInj?: PaginationPropsInj;
@@ -188,10 +188,9 @@ export interface WERequesterResponse<Item> {
   list: Item[];
 }
 
-export type WETableSearch = (params?: {
-  filters?: WETableFilters;
-  extra?: object;
-}) => Promise<void>;
+export type WETableSearch = (params?: { extra?: object }) => Promise<void>;
+
+export type WETableFilter = (params?: WETableFilters) => Promise<void>;
 
 export type WETableReset = () => Promise<void>;
 
@@ -206,3 +205,7 @@ export type WETableOnSearch<SelectorValue> = WETableOnHandle<SelectorValue>;
 export type WETableOnReset<SelectorValue> = WETableOnHandle<SelectorValue>;
 
 export type WETableOnRefresh<SelectorValue> = WETableOnHandle<SelectorValue>;
+
+export type WETableOnFilter = (params: {
+  filters?: WETableFilters;
+}) => Promise<void>;
