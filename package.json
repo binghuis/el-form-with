@@ -6,11 +6,11 @@
     "vitest": "^2.0.5"
   },
   "scripts": {
-    "dev": "pnpm --prefix $npm_package_config_dir dev",
-    "build": "pnpm --prefix $npm_package_config_dir build",
+    "dev": "pnpm --prefix $npm_package_config_libdir dev",
+    "build": "pnpm --prefix $npm_package_config_libdir build",
     "test": "vitest",
-    "lib:dev": "pnpm --prefix $npm_package_config_libdir dev",
-    "lib:build": "pnpm --prefix $npm_package_config_libdir build",
+    "sample:dev": "pnpm --prefix $npm_package_config_dir dev",
+    "sample:build": "pnpm --prefix $npm_package_config_dir build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
