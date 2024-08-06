@@ -5,6 +5,7 @@ import { ElButton } from "element-plus";
 
 const [Com, ComRef] = withStepDialog({
   submit: async () => {},
+  steps: 3,
 });
 
 const TestView = defineComponent(

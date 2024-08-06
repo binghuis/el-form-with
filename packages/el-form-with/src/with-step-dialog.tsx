@@ -1,16 +1,19 @@
 import { defineComponent, ref, type PropType, type VNode } from "vue";
 import type {
+  FormBoxOkHandle,
   WEFormMode,
   WEStepFormBoxProps,
+  WEStepFormBoxPropsForms,
   WEStepOpenOverlayParams,
   WEStepWithOverlaysParams,
 } from "./types";
-import { ElDialog, type DialogProps, type FormInstance } from "element-plus";
-import { DefaultMode, raw } from "./utils";
+import { ElDialog, type DialogProps } from "element-plus";
+import { DefaultMode } from "./utils";
 
-type MulitWithDialogOpen<FormsValue, FormsType> = (
-  openParams?: WEStepOpenOverlayParams<FormsValue, FormsType>
-) => void;
+type MulitWithDialogOpen<
+  FormsValue extends object[],
+  FormsType extends string[]
+> = (openParams?: WEStepOpenOverlayParams<FormsValue, FormsType>) => void;
 
 export type MulitWithDialogRefValue<
   FormsValue extends object[] = [],
@@ -26,27 +29,49 @@ const withStepDialog = <
 >(
   params: WEStepWithOverlaysParams<FormsValue, FormsType, OverlayOkType>
 ) => {
-  const visible = ref<boolean>(false);
-  const title = ref<string>();
-  const id = ref<string>();
-  const mode = ref<WEFormMode>(DefaultMode);
-  const data = ref<FormsValue>();
-  const extra = ref<object>();
-  const loading = ref<boolean>(false);
-  const type = ref<FormsType>();
-  const formRef = ref<FormInstance>();
+  const visibleRef = ref<boolean>(false);
+  const titleRef = ref<string>();
+  const modeRef = ref<WEFormMode>(DefaultMode);
+  const loadingRef = ref<boolean>(false);
+  const formsRef = ref<WEStepFormBoxPropsForms<FormsValue, FormsType>[]>();
+  const hasPrevRef = ref<boolean>(false);
+  const hasNextRef = ref<boolean>(false);
+  const activeRef = ref<number>(0);
 
   const StepDialogStepRef =
     ref<MulitWithDialogRefValue<FormsValue, FormsType>>();
-  const { submit } = params;
 
-  function setTitle(val: string) {
-    title.value = val;
-  }
+  const { submit, steps } = params;
 
-  function open() {
-    visible.value = true;
-  }
+  const setTitle = (val?: string) => {
+    if (val) {
+      titleRef.value = val;
+    }
+  };
+
+  const next = () => {};
+  const prev = () => {};
+  const close = () => {
+    visibleRef.value = false;
+  };
+
+  const ok: FormBoxOkHandle<OverlayOkType> = async () => {};
+
+  const open: MulitWithDialogOpen<FormsValue, FormsType> = (params) => {
+    const { title, mode, forms } = params || {};
+    setTitle(title);
+    modeRef.value = mode || DefaultMode;
+    if (forms?.length && formsRef.value?.length) {
+      if (forms.length !== steps || formsRef.value.length !== steps) {
+        return;
+      }
+      forms.forEach((form, index) => {
+        formsRef.value![index]!["data"] = form.data;
+        formsRef.value![index]!["type"] = form.type;
+      });
+    }
+    visibleRef.value = true;
+  };
 
   const StepDialogWithForms = defineComponent<
     Partial<DialogProps> & {
@@ -56,33 +81,37 @@ const withStepDialog = <
     }
   >(
     (props, { expose, attrs }) => {
-      const { stepform, ...restProps } = props;
+      const { stepform, destroyOnClose, ...restProps } = props;
+
       expose({
         open,
         setTitle,
       });
+
       return () => {
         return (
           <div>
             <ElDialog
               {...restProps}
-              destroyOnClose={props.destroyOnClose}
+              destroyOnClose={destroyOnClose}
               lockScroll
-              modelValue={visible.value}
+              modelValue={visibleRef.value}
               onClose={close}
-              title={title.value}
-              closeOnClickModal={mode.value === "view" ? true : false}
-              closeOnPressEscape={mode.value === "view" ? true : false}
+              title={titleRef.value}
+              closeOnClickModal={modeRef.value === "view" ? true : false}
+              closeOnPressEscape={modeRef.value === "view" ? true : false}
             >
               {stepform({
-                loading: loading.value,
-                reference: formRef,
-                mode: mode.value,
-                ok: () => {},
+                loading: loadingRef.value,
+                mode: modeRef.value,
+                ok,
                 close,
-                type: type.value?.[index],
-                data: raw(data.value?.[index]),
-                extra: raw(extra.value),
+                hasNext: hasNextRef.value,
+                hasPrev: hasPrevRef.value,
+                next,
+                prev,
+                active: activeRef.value,
+                forms: formsRef.value,
               })}
             </ElDialog>
           </div>

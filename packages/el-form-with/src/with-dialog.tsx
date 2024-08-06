@@ -10,7 +10,7 @@ import type {
 import { DefaultMode, getFormValueByFields, raw } from "./utils";
 
 type WithDialogOpen<FormValue, FormType> = (
-  openParams?: WEOpenOverlayParams<FormValue, FormType>
+  params?: WEOpenOverlayParams<FormValue, FormType>
 ) => void;
 
 export type WithDialogRefValue<
@@ -27,41 +27,43 @@ const withDialog = <
 >(
   params: WEWithOverlaysParams<FormValue, FormType, OverlayOkType>
 ) => {
-  const visible = ref<boolean>(false);
+  const visibleRef = ref<boolean>(false);
   const formRef = ref<FormInstance>();
-  const title = ref<string>();
-  const id = ref<string>();
-  const mode = ref<WEFormMode>(DefaultMode);
-  const data = ref<FormValue>();
-  const extra = ref<object>();
-  const loading = ref<boolean>(false);
-  const type = ref<FormType>();
+  const titleRef = ref<string>();
+  const idRef = ref<string>();
+  const modeRef = ref<WEFormMode>(DefaultMode);
+  const dataRef = ref<FormValue>();
+  const extraRef = ref<object>();
+  const loadingRef = ref<boolean>(false);
+  const typeRef = ref<FormType>();
   const DialogRef = ref<WithDialogRefValue<FormValue, FormType>>();
-
+  const { submit, beforeClose, afterClose } = params ?? {};
   const close = () => {
     function done() {
-      visible.value = false;
+      visibleRef.value = false;
       formRef.value?.resetFields();
     }
-    if (params?.beforeClose) {
-      params.beforeClose(done);
+    if (beforeClose) {
+      beforeClose(done);
     } else {
       done();
     }
-    params?.afterClose?.();
+    afterClose?.();
   };
 
-  const open: WithDialogOpen<FormValue, FormType> = (openParams) => {
-    data.value = openParams?.data;
-    mode.value = openParams?.mode ?? DefaultMode;
-    type.value = openParams?.type;
-    title.value = openParams?.title;
-    id.value = openParams?.id;
-    extra.value = openParams?.extra;
-    visible.value = true;
+  const open: WithDialogOpen<FormValue, FormType> = (params) => {
+    const { mode, data, type, title, id, extra } = params || {};
+    dataRef.value = data;
+    modeRef.value = mode ?? DefaultMode;
+    typeRef.value = type;
+    titleRef.value = title;
+    idRef.value = id;
+    extraRef.value = extra;
+    visibleRef.value = true;
   };
 
-  const ok: FormBoxOkHandle<OverlayOkType> = async (okParams) => {
+  const ok: FormBoxOkHandle<OverlayOkType> = async (params) => {
+    const { type } = params ?? {};
     let formValue: FormValue | undefined = undefined;
     if (formRef.value) {
       const isValid = await formRef.value.validate().catch((error) => {});
@@ -72,22 +74,22 @@ const withDialog = <
 
       formValue = getFormValueByFields<FormValue>(formRef.value.fields);
     }
-    loading.value = true;
+    loadingRef.value = true;
 
     function done() {
-      data.value = formValue;
-      loading.value = false;
+      dataRef.value = formValue;
+      loadingRef.value = false;
       close();
     }
 
-    params.submit?.(
+    submit?.(
       {
-        mode: mode.value,
+        mode: modeRef.value,
         data: formValue,
-        overlayOkType: okParams?.type,
-        formType: type.value,
-        id: id.value,
-        extra: extra.value,
+        overlayOkType: type,
+        formType: typeRef.value,
+        id: idRef.value,
+        extra: extraRef.value,
       },
       done
     );
@@ -112,21 +114,21 @@ const withDialog = <
               {...restProps}
               destroyOnClose={props.destroyOnClose}
               lockScroll
-              modelValue={visible.value}
+              modelValue={visibleRef.value}
               onClose={close}
-              title={title.value}
-              closeOnClickModal={mode.value === "view" ? true : false}
-              closeOnPressEscape={mode.value === "view" ? true : false}
+              title={titleRef.value}
+              closeOnClickModal={modeRef.value === "view" ? true : false}
+              closeOnPressEscape={modeRef.value === "view" ? true : false}
             >
               {form({
-                loading: loading.value,
+                loading: loadingRef.value,
                 reference: formRef,
-                mode: mode.value,
+                mode: modeRef.value,
                 ok,
                 close,
-                type: type.value,
-                data: raw(data.value),
-                extra: raw(extra.value),
+                type: typeRef.value,
+                data: raw(dataRef.value),
+                extra: raw(extraRef.value),
               })}
             </ElDialog>
           </div>
