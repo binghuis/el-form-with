@@ -1,15 +1,15 @@
 import { defineComponent, ref, type PropType, type VNode } from "vue";
 import type {
   WEFormMode,
-  WEMultiFormBoxProps,
-  WEMultiOpenOverlayParams,
-  WEMultiWithOverlaysParams,
+  WEStepFormBoxProps,
+  WEStepOpenOverlayParams,
+  WEStepWithOverlaysParams,
 } from "./types";
 import { ElDialog, type DialogProps, type FormInstance } from "element-plus";
 import { DefaultMode, raw } from "./utils";
 
 type MulitWithDialogOpen<FormsValue, FormsType> = (
-  openParams?: WEMultiOpenOverlayParams<FormsValue, FormsType>
+  openParams?: WEStepOpenOverlayParams<FormsValue, FormsType>
 ) => void;
 
 export type MulitWithDialogRefValue<
@@ -19,12 +19,12 @@ export type MulitWithDialogRefValue<
   open: MulitWithDialogOpen<FormsValue, FormsType>;
 };
 
-const multiWithDialog = <
+const withStepDialog = <
   FormsValue extends object[],
   FormsType extends string[] = [],
-  FormOkType extends string = string
+  OverlayOkType extends string = string
 >(
-  params: WEMultiWithOverlaysParams<FormsValue, FormsType, FormOkType>
+  params: WEStepWithOverlaysParams<FormsValue, FormsType, OverlayOkType>
 ) => {
   const visible = ref<boolean>(false);
   const title = ref<string>();
@@ -35,19 +35,31 @@ const multiWithDialog = <
   const loading = ref<boolean>(false);
   const type = ref<FormsType>();
   const formRef = ref<FormInstance>();
-  const DialogMultiRef = ref<MulitWithDialogRefValue<FormsValue, FormsType>>();
-  const { submits } = params;
-  const DialogWithForms = defineComponent<
+
+  const StepDialogStepRef =
+    ref<MulitWithDialogRefValue<FormsValue, FormsType>>();
+  const { submit } = params;
+
+  function setTitle(val: string) {
+    title.value = val;
+  }
+
+  function open() {
+    visible.value = true;
+  }
+
+  const StepDialogWithForms = defineComponent<
     Partial<DialogProps> & {
-      forms: (
-        props: WEMultiFormBoxProps<FormsValue, FormsType, FormOkType>
+      stepform: (
+        props: WEStepFormBoxProps<FormsValue, FormsType, OverlayOkType>
       ) => VNode;
     }
   >(
     (props, { expose, attrs }) => {
-      const { forms, ...restProps } = props;
+      const { stepform, ...restProps } = props;
       expose({
         open,
+        setTitle,
       });
       return () => {
         return (
@@ -62,14 +74,14 @@ const multiWithDialog = <
               closeOnClickModal={mode.value === "view" ? true : false}
               closeOnPressEscape={mode.value === "view" ? true : false}
             >
-              {forms({
+              {stepform({
                 loading: loading.value,
                 reference: formRef,
                 mode: mode.value,
                 ok: () => {},
                 close,
-                type: type.value,
-                data: raw(data.value),
+                type: type.value?.[index],
+                data: raw(data.value?.[index]),
                 extra: raw(extra.value),
               })}
             </ElDialog>
@@ -78,17 +90,17 @@ const multiWithDialog = <
       };
     },
     {
-      name: "DialogWithForms",
+      name: "StepDialogWithForms",
       props: {
         ...ElDialog["props"],
         destroyOnClose: {
           type: Boolean,
           default: true,
         },
-        forms: {
+        stepform: {
           type: Function as PropType<
             (
-              props: WEMultiFormBoxProps<FormsValue, FormsType, FormOkType>
+              props: WEStepFormBoxProps<FormsValue, FormsType, OverlayOkType>
             ) => VNode
           >,
           required: true,
@@ -97,10 +109,10 @@ const multiWithDialog = <
     }
   );
 
-  return [DialogWithForms, DialogMultiRef] as [
-    typeof DialogWithForms,
-    typeof DialogMultiRef
+  return [StepDialogWithForms, StepDialogStepRef] as [
+    typeof StepDialogWithForms,
+    typeof StepDialogStepRef
   ];
 };
 
-export default multiWithDialog;
+export default withStepDialog;

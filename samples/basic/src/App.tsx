@@ -32,10 +32,10 @@ const App = defineComponent(
                     <div>
                       <ElDropdownMenu>
                         <ElDropdownItem>
-                          <RouterLink to="/">base</RouterLink>
+                          <RouterLink to="/">Base</RouterLink>
                         </ElDropdownItem>
                         <ElDropdownItem>
-                          <RouterLink to="/multi">multi</RouterLink>
+                          <RouterLink to="/multi">Multi</RouterLink>
                         </ElDropdownItem>
                       </ElDropdownMenu>
                     </div>

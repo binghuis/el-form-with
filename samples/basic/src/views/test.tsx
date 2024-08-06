@@ -1,8 +1,10 @@
-import { multiWithDialog } from "el-form-with";
+import { withStepDialog } from "el-form-with";
 import { defineComponent } from "vue";
+import TestFormBox from "../boxes/test/test.forms";
+import { ElButton } from "element-plus";
 
-const [Com, ComRef] = multiWithDialog({
-  submits: [],
+const [Com, ComRef] = withStepDialog({
+  submit: async () => {},
 });
 
 const TestView = defineComponent(
@@ -10,7 +12,19 @@ const TestView = defineComponent(
     return () => {
       return (
         <div>
-          <Com ref={ComRef} forms={[]}></Com>
+          <ElButton
+            onClick={() => {
+              ComRef.value?.open();
+            }}
+          >
+            open
+          </ElButton>
+          <Com
+            ref={ComRef}
+            stepform={(props) => {
+              return <TestFormBox {...props} />;
+            }}
+          ></Com>
         </div>
       );
     };

@@ -24,5 +24,10 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  // https://github.com/vuejs/language-tools/issues/3962
+  // 解决 vscode 语言初始化崩溃问题
+  "vue.server.maxOldSpaceSize": 4096,
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.nodePath": "node"
 }

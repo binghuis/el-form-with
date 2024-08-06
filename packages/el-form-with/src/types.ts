@@ -17,39 +17,44 @@ export type MaybeUndefined<T> = T | undefined;
 
 export type WETableFilters = Record<string, (string | number)[]>;
 
-export type FormBoxOkHandle<FormValue, FormOkType> = (params?: {
-  type?: FormOkType;
-  data?: FormValue;
+export type FormBoxOkHandle<OverlayOkType> = (params?: {
+  type?: OverlayOkType;
 }) => void;
 
 export interface WEFormBoxProps<
   FormValue extends object,
   FormType extends string = string,
-  FormOkType extends string = string
+  OverlayOkType extends string = string
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
   data?: FormValue;
   close: EmptyFunction;
-  ok: FormBoxOkHandle<FormValue, FormOkType>;
+  ok: FormBoxOkHandle<OverlayOkType>;
   loading: boolean;
   type?: FormType;
   extra?: object;
 }
 
-export interface WEMultiFormBoxProps<
-  FormValue extends object[],
-  FormType extends string[] = [],
-  FormOkType extends string = string
+export interface WEStepFormBoxProps<
+  FormsValue extends object[],
+  FormsType extends string[] = [],
+  OverlayOkType extends string = string
 > {
-  reference: Ref<MaybeUndefined<FormInstance>>;
   mode: WEFormMode;
-  data?: FormValue;
+  ok: FormBoxOkHandle<OverlayOkType>;
   close: EmptyFunction;
-  ok: FormBoxOkHandle<FormValue, FormOkType>;
+  prev: EmptyFunction;
+  hasPrev: boolean;
+  next: EmptyFunction;
+  hasNext: boolean;
   loading: boolean;
-  type?: FormType;
-  extra?: object;
+  step: number;
+  forms: {
+    reference: Ref<MaybeUndefined<FormInstance>>;
+    data?: FormsValue[number];
+    type?: FormsType[number];
+  }[];
 }
 
 export interface WEOpenOverlayParams<FormValue, FormType> {
@@ -64,7 +69,7 @@ export interface WEOpenOverlayParams<FormValue, FormType> {
 export interface WEWithOverlaysParams<
   FormValue extends object,
   FormType extends string,
-  FormOkType extends string
+  OverlayOkType extends string
 > {
   beforeClose?: (done: EmptyFunction) => Promise<void>;
   afterClose?: EmptyFunction;
@@ -72,7 +77,7 @@ export interface WEWithOverlaysParams<
     params: {
       mode: WEFormMode;
       data?: FormValue;
-      formOkType?: FormOkType;
+      overlayOkType?: OverlayOkType;
       formType?: FormType;
       id?: string;
       extra?: object;
@@ -81,33 +86,33 @@ export interface WEWithOverlaysParams<
   ) => Promise<void>;
 }
 
-export interface WEMultiOpenOverlayParams<FormValue, FormType> {
+export interface WEStepOpenOverlayParams<FormsValue, FormsType> {
   title?: string;
   mode?: WEFormMode;
-  data?: FormValue;
-  type?: FormType;
+  data?: FormsValue;
+  type?: FormsType;
   id?: string;
   extra?: object;
 }
 
-export interface WEMultiWithOverlaysParams<
-  FormValue extends object[],
-  FormType extends string[],
-  FormOkType extends string
+export interface WEStepWithOverlaysParams<
+  FormsValue extends object[],
+  FormsType extends string[],
+  OverlayOkType extends string
 > {
   beforeClose?: (done: EmptyFunction) => Promise<void>;
   afterClose?: EmptyFunction;
-  submits: ((
+  submit: (
     params: {
       mode: WEFormMode;
-      data: FormValue[number];
-      FormOkType?: FormOkType;
-      formType?: FormType[number];
+      data: FormsValue;
+      OverlayOkType?: OverlayOkType;
+      formType?: FormsType;
       id?: string;
       extra?: object;
     },
     done: EmptyFunction
-  ) => Promise<void>)[];
+  ) => Promise<void>;
 }
 
 export interface WEWithTableParams<RecordValue, SelectorValue> {

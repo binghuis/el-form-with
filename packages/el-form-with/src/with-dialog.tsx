@@ -23,9 +23,9 @@ export type WithDialogRefValue<
 const withDialog = <
   FormValue extends object,
   FormType extends string = string,
-  FormOkType extends string = string
+  OverlayOkType extends string = string
 >(
-  params: WEWithOverlaysParams<FormValue, FormType, FormOkType>
+  params: WEWithOverlaysParams<FormValue, FormType, OverlayOkType>
 ) => {
   const visible = ref<boolean>(false);
   const formRef = ref<FormInstance>();
@@ -61,7 +61,7 @@ const withDialog = <
     visible.value = true;
   };
 
-  const ok: FormBoxOkHandle<FormValue, FormOkType> = async (okParams) => {
+  const ok: FormBoxOkHandle<OverlayOkType> = async (okParams) => {
     let formValue: FormValue | undefined = undefined;
     if (formRef.value) {
       const isValid = await formRef.value.validate().catch((error) => {});
@@ -71,9 +71,6 @@ const withDialog = <
       }
 
       formValue = getFormValueByFields<FormValue>(formRef.value.fields);
-    }
-    if (okParams?.data) {
-      formValue = okParams.data;
     }
     loading.value = true;
 
@@ -87,7 +84,7 @@ const withDialog = <
       {
         mode: mode.value,
         data: formValue,
-        formOkType: okParams?.type,
+        overlayOkType: okParams?.type,
         formType: type.value,
         id: id.value,
         extra: extra.value,
@@ -98,7 +95,9 @@ const withDialog = <
 
   const DialogWithForm = defineComponent<
     Partial<DialogProps> & {
-      form: (props: WEFormBoxProps<FormValue, FormType, FormOkType>) => VNode;
+      form: (
+        props: WEFormBoxProps<FormValue, FormType, OverlayOkType>
+      ) => VNode;
     }
   >(
     (props, { expose, attrs }) => {
@@ -144,7 +143,7 @@ const withDialog = <
         },
         form: {
           type: Function as PropType<
-            (props: WEFormBoxProps<FormValue, FormType, FormOkType>) => VNode
+            (props: WEFormBoxProps<FormValue, FormType, OverlayOkType>) => VNode
           >,
           required: true,
         },

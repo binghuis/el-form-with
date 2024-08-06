@@ -6,6 +6,6 @@ import "./style.css";
 import withDialog from "./with-dialog";
 import withDrawer from "./with-drawer";
 import withTable from "./with-table";
-import multiWithDialog from "./multi-with-dialog";
+import withStepDialog from "./with-step-dialog";
 
-export { withDialog, withDrawer, withTable, multiWithDialog };
+export { withDialog, withDrawer, withTable, withStepDialog };
