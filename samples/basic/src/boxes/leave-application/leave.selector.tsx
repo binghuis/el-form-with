@@ -1,4 +1,4 @@
-import { defineComponent, reactive, toRef } from "vue";
+import { defineComponent, reactive } from "vue";
 import { ElButton, ElForm, ElFormItem, ElInput, ElRow } from "element-plus";
 import { selectorBoxDefaultProps, type WESelectorBoxProps } from "el-form-with";
 
@@ -17,7 +17,7 @@ const CommonSelectorBox = defineComponent<LeaveApplicationSelectorBoxProps>(
     return () => {
       return (
         <div class="bg-white dark:bg-[#141414] p-2">
-          <ElForm ref={toRef(props.reference)} model={selectorValue}>
+          <ElForm ref={props.reference} model={selectorValue}>
             <ElRow>
               <ElFormItem label="Name" prop="name">
                 <ElInput v-model={selectorValue.name} />

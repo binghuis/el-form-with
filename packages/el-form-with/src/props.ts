@@ -2,6 +2,7 @@ import type {
   WEFormBoxProps,
   WETableBoxProps,
   WESelectorBoxProps,
+  WEStepFormBoxProps,
 } from "./types";
 
 export const formBoxDefaultProps: Array<keyof WEFormBoxProps<object>> = [
@@ -13,6 +14,21 @@ export const formBoxDefaultProps: Array<keyof WEFormBoxProps<object>> = [
   "loading",
   "type",
   "extra",
+];
+
+export const stepformBoxDefaultProps: Array<
+  keyof WEStepFormBoxProps<object[]>
+> = [
+  "mode",
+  "close",
+  "ok",
+  "loading",
+  "prev",
+  "next",
+  "hasPrev",
+  "hasNext",
+  "active",
+  "forms",
 ];
 
 export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [

@@ -1,13 +1,21 @@
-import { defineComponent, ref, type PropType, type VNode } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  type PropType,
+  type VNode,
+} from "vue";
 import type {
   FormBoxOkHandle,
+  MaybeUndefined,
   WEFormMode,
   WEStepFormBoxProps,
   WEStepFormBoxPropsForms,
   WEStepOpenOverlayParams,
   WEStepWithOverlaysParams,
 } from "./types";
-import { ElDialog, type DialogProps } from "element-plus";
+import { ElDialog, type DialogProps, type FormInstance } from "element-plus";
 import { DefaultMode } from "./utils";
 
 type MulitWithDialogOpen<
@@ -29,19 +37,24 @@ const withStepDialog = <
 >(
   params: WEStepWithOverlaysParams<FormsValue, FormsType, OverlayOkType>
 ) => {
+  const { submit, steps } = params;
   const visibleRef = ref<boolean>(false);
   const titleRef = ref<string>();
   const modeRef = ref<WEFormMode>(DefaultMode);
   const loadingRef = ref<boolean>(false);
-  const formsRef = ref<WEStepFormBoxPropsForms<FormsValue, FormsType>[]>();
+  const DefaultForms = Array.from({ length: steps }, () => ({
+    reference: ref(),
+    data: undefined,
+    type: undefined,
+  }));
+  const formsRef =
+    ref<WEStepFormBoxPropsForms<FormsValue, FormsType>[]>(DefaultForms);
   const hasPrevRef = ref<boolean>(false);
-  const hasNextRef = ref<boolean>(false);
+  const hasNextRef = ref<boolean>(steps > 1 ? true : false);
   const activeRef = ref<number>(0);
 
   const StepDialogStepRef =
     ref<MulitWithDialogRefValue<FormsValue, FormsType>>();
-
-  const { submit, steps } = params;
 
   const setTitle = (val?: string) => {
     if (val) {
@@ -49,26 +62,63 @@ const withStepDialog = <
     }
   };
 
-  const next = () => {};
-  const prev = () => {};
+  watch(
+    () => activeRef.value,
+    (val) => {
+      hasPrevRef.value = val > 0;
+      hasNextRef.value = val < steps - 1;
+    }
+  );
+
+  const prev = () => {
+    if (!hasPrevRef.value) {
+      return;
+    }
+
+    activeRef.value -= 1;
+  };
+
+  const next = () => {
+    if (!hasNextRef.value) {
+      return;
+    }
+    formsRef.value?.[activeRef.value]?.reference?.validate();
+    activeRef.value += 1;
+  };
+
   const close = () => {
     visibleRef.value = false;
+    activeRef.value = 0;
+    formsRef.value = formsRef.value.map((form) => {
+      form.reference?.resetFields();
+      return {
+        ...form,
+        data: undefined,
+        type: undefined,
+      };
+    });
   };
 
   const ok: FormBoxOkHandle<OverlayOkType> = async () => {};
 
   const open: MulitWithDialogOpen<FormsValue, FormsType> = (params) => {
-    const { title, mode, forms } = params || {};
+    const { title, mode, forms, active } = params || {};
     setTitle(title);
     modeRef.value = mode || DefaultMode;
-    if (forms?.length && formsRef.value?.length) {
+    if (forms?.length && formsRef && formsRef.value.length) {
       if (forms.length !== steps || formsRef.value.length !== steps) {
         return;
       }
-      forms.forEach((form, index) => {
-        formsRef.value![index]!["data"] = form.data;
-        formsRef.value![index]!["type"] = form.type;
+      formsRef.value = formsRef.value.map((form, index) => {
+        return {
+          ...form,
+          data: forms![index]!.data as any,
+          type: forms![index]!.type as any,
+        };
       });
+    }
+    if (active && active < steps) {
+      activeRef.value = active;
     }
     visibleRef.value = true;
   };
@@ -111,7 +161,7 @@ const withStepDialog = <
                 next,
                 prev,
                 active: activeRef.value,
-                forms: formsRef.value,
+                forms: formsRef.value as any,
               })}
             </ElDialog>
           </div>

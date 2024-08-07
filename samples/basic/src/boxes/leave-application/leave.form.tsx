@@ -1,4 +1,4 @@
-import { defineComponent, reactive, toRef } from "vue";
+import { defineComponent, reactive } from "vue";
 import {
   ElForm,
   ElRow,
@@ -40,6 +40,7 @@ const LeaveApplicationFormBox = defineComponent<
     const formRules = reactive<FormRules<LeaveApplicationFormValue>>(
       leaveApplicationFormRules
     );
+    console.log(props);
 
     return () => {
       return (
@@ -47,7 +48,7 @@ const LeaveApplicationFormBox = defineComponent<
           <ElForm
             labelPosition="top"
             disabled={props.mode === "view"}
-            ref={toRef(props.reference)}
+            ref={props.reference}
             model={formValue}
             rules={formRules}
           >

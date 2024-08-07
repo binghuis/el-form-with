@@ -76,6 +76,7 @@ export interface WEStepOpenOverlayParams<
 > {
   title?: string;
   mode?: WEFormMode;
+  active?: number;
   forms?: WEStepOpenOverlayParamsForms<FormsValue, FormsType>[];
 }
 

@@ -1,4 +1,4 @@
-import { defineComponent, toRef } from "vue";
+import { defineComponent } from "vue";
 import { dayjs, ElLink, ElSpace, ElTable, ElTableColumn } from "element-plus";
 import { tableBoxDefaultProps, type WETableBoxProps } from "el-form-with";
 import { useDark } from "@vueuse/core";
@@ -31,7 +31,7 @@ const CommonTableBox = defineComponent<TableBoxProps>(
               return { background: isDark.value ? "#262727" : "#f8fafc" };
             }}
             maxHeight={"calc(100vh - 360px)"}
-            ref={toRef(props.reference)}
+            ref={props.reference}
             data={props.data}
             v-loading={props.isLoading}
             onFilter-change={props.filter}
