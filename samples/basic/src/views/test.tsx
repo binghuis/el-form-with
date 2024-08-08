@@ -1,6 +1,6 @@
 import { withStepDialog } from "el-form-with";
 import { defineComponent } from "vue";
-import TestFormBox from "../boxes/test/test.forms";
+import TestFormBox from "../boxes/test/test.stepform";
 import { ElButton } from "element-plus";
 
 const [Com, ComRef] = withStepDialog({

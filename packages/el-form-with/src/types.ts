@@ -21,32 +21,19 @@ export type FormBoxOkHandle<OverlayOkType> = (params?: {
   type?: OverlayOkType;
 }) => void;
 
-export type StepFormBoxOkHandle<OverlayOkType> = (params?: {
-  type?: OverlayOkType;
-}) => void;
-
 export interface FormBoxProps<
   FormValue extends object,
   FormType extends string = string,
   OverlayOkType extends string = string
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
-  mode: FormMode;
   data?: FormValue;
-  close: EmptyFunction;
-  ok: FormBoxOkHandle<OverlayOkType>;
-  loading: boolean;
   type?: FormType;
+  mode: FormMode;
+  loading: boolean;
+  ok: FormBoxOkHandle<OverlayOkType>;
+  close: EmptyFunction;
   extra?: object;
-}
-
-export interface StepFormBoxPropsForms<
-  FormsValue extends object[],
-  FormsType extends string[]
-> {
-  reference: Ref<MaybeUndefined<FormInstance>>;
-  data?: FormsValue[number];
-  type?: FormsType[number];
 }
 
 export interface StepFormBoxProps<
@@ -55,15 +42,15 @@ export interface StepFormBoxProps<
   OverlayOkType extends string = string
 > {
   mode: FormMode;
-  ok: StepFormBoxOkHandle<OverlayOkType>;
+  loading: boolean;
+  ok: FormBoxOkHandle<OverlayOkType>;
   close: EmptyFunction;
   prev: EmptyFunction;
   hasPrev: boolean;
   next: EmptyFunction;
   hasNext: boolean;
-  loading: boolean;
-  active: number;
-  forms?: StepFormBoxPropsForms<FormsValue, FormsType>[];
+  step: number;
+  forms?: FormBoxProps<FormsValue[number], FormsType[number]>[];
 }
 
 export interface StepOpenOverlayParamsForms<
@@ -80,7 +67,7 @@ export interface StepOpenOverlayParams<
 > {
   title?: string;
   mode?: FormMode;
-  active?: number;
+  step?: number;
   forms?: StepOpenOverlayParamsForms<FormsValue, FormsType>[];
 }
 

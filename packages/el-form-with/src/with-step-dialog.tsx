@@ -2,15 +2,16 @@ import {
   defineComponent,
   reactive,
   ref,
+  shallowReactive,
   watch,
   type PropType,
   type VNode,
 } from "vue";
 import type {
-  StepFormBoxOkHandle,
+  FormBoxOkHandle,
   FormMode,
   StepFormBoxProps,
-  StepFormBoxPropsForms,
+  FormBoxProps,
   StepOpenOverlayParams,
   StepWithOverlaysParams,
 } from "./types";
@@ -37,42 +38,79 @@ const withStepDialog = <
   params: StepWithOverlaysParams<FormsValue, FormsType, OverlayOkType>
 ) => {
   const { submit, steps } = params;
-  const DefaultForms = Array.from({ length: steps }, () => ({
-    reference: ref(),
-    data: undefined,
-    type: undefined,
-  }));
+
   const visibleRef = ref<boolean>(false);
   const titleRef = ref<string>();
   const modeRef = ref<FormMode>(DefaultMode);
   const loadingRef = ref<boolean>(false);
-  const formsRx =
-    reactive<StepFormBoxPropsForms<FormsValue, FormsType>[]>(DefaultForms);
   const hasPrevRef = ref<boolean>(false);
   const hasNextRef = ref<boolean>(steps > 1 ? true : false);
-  const activeRef = ref<number>(0);
+  const stepRef = ref<number>(0);
+
+  const close = () => {
+    visibleRef.value = false;
+    stepRef.value = 0;
+
+    formsRx.forEach((form) => {
+      form.reference?.value?.resetFields();
+      form.data = undefined;
+      form.type = undefined;
+    });
+  };
+
+  const ok: FormBoxOkHandle<OverlayOkType> = async (params) => {
+    const { type } = params ?? {};
+    submit(
+      {
+        mode: modeRef.value,
+        data: formsRx.map((form) => form.data) as unknown as FormsValue,
+        overlayOkType: type,
+      },
+      close
+    );
+  };
 
   const StepDialogStepRef =
     ref<MulitWithDialogRefValue<FormsValue, FormsType>>();
+
+  const DefaultForms: FormBoxProps<
+    FormsValue[number],
+    FormsType[number],
+    OverlayOkType
+  >[] = Array.from({ length: steps }, () => ({
+    reference: ref(),
+    data: undefined,
+    type: undefined,
+    mode: DefaultMode,
+    loading: false,
+    ok,
+    close,
+  }));
+
+  const formsRx = shallowReactive(DefaultForms);
 
   const prev = () => {
     if (!hasPrevRef.value) {
       return;
     }
 
-    activeRef.value -= 1;
+    stepRef.value -= 1;
   };
 
   const next = async () => {
     if (!hasNextRef.value) {
       return;
     }
-    await formsRx[activeRef.value]?.reference?.validate();
-    activeRef.value += 1;
+
+    formsRx[stepRef.value]?.reference?.value?.validate().then((valid) => {
+      if (valid) {
+        stepRef.value += 1;
+      }
+    });
   };
 
   const open: MulitWithDialogOpen<FormsValue, FormsType> = (params) => {
-    const { title, mode, forms, active } = params || {};
+    const { title, mode, forms, step } = params || {};
     setTitle(title);
     modeRef.value = mode || DefaultMode;
     if (forms?.length) {
@@ -85,33 +123,10 @@ const withStepDialog = <
         form.type = forms[index]?.type as typeof form.type;
       });
     }
-    if (active && active < steps) {
-      activeRef.value = active;
+    if (step && step < steps) {
+      stepRef.value = step;
     }
     visibleRef.value = true;
-  };
-
-  const close = () => {
-    visibleRef.value = false;
-    activeRef.value = 0;
-
-    formsRx.forEach((form) => {
-      form.reference?.resetFields();
-      form.data = undefined;
-      form.type = undefined;
-    });
-  };
-
-  const ok: StepFormBoxOkHandle<OverlayOkType> = async (params) => {
-    const { type } = params ?? {};
-    submit(
-      {
-        mode: modeRef.value,
-        data: formsRx.map((form) => form.data) as unknown as FormsValue,
-        overlayOkType: type,
-      },
-      close
-    );
   };
 
   const setTitle = (val?: string) => {
@@ -121,7 +136,7 @@ const withStepDialog = <
   };
 
   watch(
-    () => activeRef.value,
+    () => stepRef.value,
     (val) => {
       hasPrevRef.value = val > 0;
       hasNextRef.value = val < steps - 1;
@@ -165,10 +180,10 @@ const withStepDialog = <
                 hasPrev: hasPrevRef.value,
                 next,
                 prev,
-                active: activeRef.value,
-                forms: formsRx as unknown as StepFormBoxPropsForms<
-                  FormsValue,
-                  FormsType
+                step: stepRef.value,
+                forms: formsRx as unknown as FormBoxProps<
+                  FormsValue[number],
+                  FormsType[number]
                 >[],
               })}
             </ElDialog>

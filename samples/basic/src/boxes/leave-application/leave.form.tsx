@@ -40,7 +40,6 @@ const LeaveApplicationFormBox = defineComponent<
     const formRules = reactive<FormRules<LeaveApplicationFormValue>>(
       leaveApplicationFormRules
     );
-    console.log(props);
 
     return () => {
       return (

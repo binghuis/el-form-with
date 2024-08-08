@@ -26,7 +26,7 @@ export const stepformBoxDefaultProps: Array<keyof StepFormBoxProps<object[]>> =
     "next",
     "hasPrev",
     "hasNext",
-    "active",
+    "step",
     "forms",
   ];
 
