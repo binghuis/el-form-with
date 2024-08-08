@@ -1,6 +1,6 @@
 import { defineComponent } from "vue";
 import { dayjs, ElLink, ElSpace, ElTable, ElTableColumn } from "element-plus";
-import { tableBoxDefaultProps, type WETableBoxProps } from "el-form-with";
+import { tableBoxDefaultProps, type TableBoxProps } from "el-form-with";
 import { useDark } from "@vueuse/core";
 import {
   LeaveApplicationStatus,
@@ -13,7 +13,7 @@ import {
 } from "../../views/leave-application";
 import { leaveApplicationDetail2LeaveApplicationFormValue } from "./leave.form.helpers";
 import { Edit, View } from "@element-plus/icons-vue";
-export interface TableBoxProps extends WETableBoxProps<LeaveApplicationDetail> {
+export interface TableBoxProps extends TableBoxProps<LeaveApplicationDetail> {
   LeaveApplicationFormDialogRef: typeof LeaveApplicationFormDialogRef;
   LeaveApplicationFormDrawerRef: typeof LeaveApplicationFormDrawerRef;
   overlay: string;

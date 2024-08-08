@@ -1,12 +1,12 @@
 import { defineComponent, reactive } from "vue";
 import { ElButton, ElForm, ElFormItem, ElInput, ElRow } from "element-plus";
-import { selectorBoxDefaultProps, type WESelectorBoxProps } from "el-form-with";
+import { selectorBoxDefaultProps, type SelectorBoxProps } from "el-form-with";
 
 export interface LeaveApplicationSelectorValue {
   name: string;
 }
 
-export interface LeaveApplicationSelectorBoxProps extends WESelectorBoxProps {}
+export interface LeaveApplicationSelectorBoxProps extends SelectorBoxProps {}
 
 const CommonSelectorBox = defineComponent<LeaveApplicationSelectorBoxProps>(
   (props) => {

@@ -5,29 +5,33 @@ export { type WithDialogRefValue } from "./with-dialog";
 export { type WithDrawerRefValue } from "./with-drawer";
 export { type TableWithOverlayRef } from "./with-table";
 
-export interface WEPlainObject {
+export interface PlainObject {
   [key: string]: unknown;
 }
 
-export type WEFormMode = "view" | "copy" | "add" | "edit";
+export type FormMode = "view" | "copy" | "add" | "edit";
 
 export type EmptyFunction = () => void | Promise<void>;
 
 export type MaybeUndefined<T> = T | undefined;
 
-export type WETableFilters = Record<string, (string | number)[]>;
+export type TableFilters = Record<string, (string | number)[]>;
 
 export type FormBoxOkHandle<OverlayOkType> = (params?: {
   type?: OverlayOkType;
 }) => void;
 
-export interface WEFormBoxProps<
+export type StepFormBoxOkHandle<OverlayOkType> = (params?: {
+  type?: OverlayOkType;
+}) => void;
+
+export interface FormBoxProps<
   FormValue extends object,
   FormType extends string = string,
   OverlayOkType extends string = string
 > {
   reference: Ref<MaybeUndefined<FormInstance>>;
-  mode: WEFormMode;
+  mode: FormMode;
   data?: FormValue;
   close: EmptyFunction;
   ok: FormBoxOkHandle<OverlayOkType>;
@@ -36,7 +40,7 @@ export interface WEFormBoxProps<
   extra?: object;
 }
 
-export interface WEStepFormBoxPropsForms<
+export interface StepFormBoxPropsForms<
   FormsValue extends object[],
   FormsType extends string[]
 > {
@@ -45,13 +49,13 @@ export interface WEStepFormBoxPropsForms<
   type?: FormsType[number];
 }
 
-export interface WEStepFormBoxProps<
+export interface StepFormBoxProps<
   FormsValue extends object[],
   FormsType extends string[] = [],
   OverlayOkType extends string = string
 > {
-  mode: WEFormMode;
-  ok: FormBoxOkHandle<OverlayOkType>;
+  mode: FormMode;
+  ok: StepFormBoxOkHandle<OverlayOkType>;
   close: EmptyFunction;
   prev: EmptyFunction;
   hasPrev: boolean;
@@ -59,10 +63,10 @@ export interface WEStepFormBoxProps<
   hasNext: boolean;
   loading: boolean;
   active: number;
-  forms?: WEStepFormBoxPropsForms<FormsValue, FormsType>[];
+  forms?: StepFormBoxPropsForms<FormsValue, FormsType>[];
 }
 
-export interface WEStepOpenOverlayParamsForms<
+export interface StepOpenOverlayParamsForms<
   FormsValue extends object[],
   FormsType extends string[]
 > {
@@ -70,17 +74,17 @@ export interface WEStepOpenOverlayParamsForms<
   type?: FormsType[number];
 }
 
-export interface WEStepOpenOverlayParams<
+export interface StepOpenOverlayParams<
   FormsValue extends object[],
   FormsType extends string[]
 > {
   title?: string;
-  mode?: WEFormMode;
+  mode?: FormMode;
   active?: number;
-  forms?: WEStepOpenOverlayParamsForms<FormsValue, FormsType>[];
+  forms?: StepOpenOverlayParamsForms<FormsValue, FormsType>[];
 }
 
-export interface WEStepWithOverlaysParams<
+export interface StepWithOverlaysParams<
   FormsValue extends object[],
   FormsType extends string[],
   OverlayOkType extends string
@@ -90,9 +94,9 @@ export interface WEStepWithOverlaysParams<
   steps: number;
   submit: (
     params: {
-      mode: WEFormMode;
+      mode: FormMode;
       data: FormsValue;
-      OverlayOkType?: OverlayOkType;
+      overlayOkType?: OverlayOkType;
       formType?: FormsType;
       id?: string;
       extra?: object;
@@ -101,16 +105,16 @@ export interface WEStepWithOverlaysParams<
   ) => Promise<void>;
 }
 
-export interface WEOpenOverlayParams<FormValue, FormType> {
+export interface OpenOverlayParams<FormValue, FormType> {
   title?: string;
-  mode?: WEFormMode;
+  mode?: FormMode;
   data?: FormValue;
   type?: FormType;
   id?: string;
   extra?: object;
 }
 
-export interface WEWithOverlaysParams<
+export interface WithOverlaysParams<
   FormValue extends object,
   FormType extends string,
   OverlayOkType extends string
@@ -119,7 +123,7 @@ export interface WEWithOverlaysParams<
   afterClose?: EmptyFunction;
   submit: (
     params: {
-      mode: WEFormMode;
+      mode: FormMode;
       data?: FormValue;
       overlayOkType?: OverlayOkType;
       formType?: FormType;
@@ -130,24 +134,24 @@ export interface WEWithOverlaysParams<
   ) => Promise<void>;
 }
 
-export interface WEWithTableParams<RecordValue, SelectorValue> {
+export interface WithTableParams<RecordValue, SelectorValue> {
   pageSize?: number;
-  requester: WERequester<RecordValue, SelectorValue>;
+  requester: Requester<RecordValue, SelectorValue>;
 }
 
-export interface WELoadings {
+export interface Loadings {
   search: boolean;
   reset: boolean;
   refresh: boolean;
 }
 
-export interface WESelectorBoxProps {
+export interface SelectorBoxProps {
   reference: Ref<MaybeUndefined<FormInstance>>;
   search: EmptyFunction;
   reset: EmptyFunction;
   refresh: EmptyFunction;
   isLoading: boolean;
-  loadings: WELoadings;
+  loadings: Loadings;
 }
 
 export type PaginationPropsInj = Pick<
@@ -161,83 +165,83 @@ export type PaginationPropsInj = Pick<
   | "onUpdate:page-size"
 >;
 
-export interface WETableBoxProps<RecordValue extends object> {
+export interface TableBoxProps<RecordValue extends object> {
   reference: Ref<MaybeUndefined<TableInstance>>;
   data?: RecordValue[];
-  reset: WETableReset;
-  refresh: WETableRefresh;
-  search: WETableSearch;
-  filter: WETableFilter;
-  sort: WETableSort;
+  reset: TableReset;
+  refresh: TableRefresh;
+  search: TableSearch;
+  filter: TableFilter;
+  sort: TableSort;
   isLoading: boolean;
-  loadings: WELoadings;
+  loadings: Loadings;
   paginationPropsInj?: PaginationPropsInj;
 }
 
-export interface WEPagination {
+export interface Pagination {
   current: number;
   pageSize: number;
   total: number;
 }
 
-export interface WERequester<RecordValue, SelectorValue> {
-  (params: WERequesterParams<SelectorValue>): Promise<
-    WERequesterResponse<RecordValue>
+export interface Requester<RecordValue, SelectorValue> {
+  (params: RequesterParams<SelectorValue>): Promise<
+    RequesterResponse<RecordValue>
   >;
 }
 
-export interface WERequestParams<SelectorValue> {
-  pagination?: WEPagination;
-  filters?: WETableFilters;
-  sorts?: WETableSorts;
+export interface RequestParams<SelectorValue> {
+  pagination?: Pagination;
+  filters?: TableFilters;
+  sorts?: TableSorts;
   data?: SelectorValue;
   extra?: object;
 }
 
-export type WERequest<SelectorValue> = (
-  params?: WERequestParams<SelectorValue>
+export type Request<SelectorValue> = (
+  params?: RequestParams<SelectorValue>
 ) => void;
 
-export interface WERequesterParams<SelectorValue> {
+export interface RequesterParams<SelectorValue> {
   data?: SelectorValue;
-  pagination: WEPagination;
-  filters?: WETableFilters;
-  sorts?: WETableSorts;
+  pagination: Pagination;
+  filters?: TableFilters;
+  sorts?: TableSorts;
   extra?: object;
 }
 
-export interface WERequesterResponse<Item> {
+export interface RequesterResponse<Item> {
   total: number;
   list: Item[];
 }
 
-export type WETableSearch = (params?: { extra?: object }) => Promise<void>;
+export type TableSearch = (params?: { extra?: object }) => Promise<void>;
 
-export type WETableSort = (params: {
+export type TableSort = (params: {
   prop: string;
   order: string;
 }) => Promise<void>;
 
-export type WETableSorts = Record<string, string>;
+export type TableSorts = Record<string, string>;
 
-export type WETableFilter = (params?: WETableFilters) => Promise<void>;
+export type TableFilter = (params?: TableFilters) => Promise<void>;
 
-export type WETableReset = () => Promise<void>;
+export type TableReset = () => Promise<void>;
 
-export type WETableRefresh = () => Promise<void>;
+export type TableRefresh = () => Promise<void>;
 
-export type WETableOnHandle<SelectorValue> = (params: {
+export type TableOnHandle<SelectorValue> = (params: {
   data?: SelectorValue;
 }) => Promise<void> | void;
 
-export type WETableOnSearch<SelectorValue> = WETableOnHandle<SelectorValue>;
+export type TableOnSearch<SelectorValue> = TableOnHandle<SelectorValue>;
 
-export type WETableOnReset<SelectorValue> = WETableOnHandle<SelectorValue>;
+export type TableOnReset<SelectorValue> = TableOnHandle<SelectorValue>;
 
-export type WETableOnRefresh<SelectorValue> = WETableOnHandle<SelectorValue>;
+export type TableOnRefresh<SelectorValue> = TableOnHandle<SelectorValue>;
 
-export type WETableOnFilter = (params: {
-  filters?: WETableFilters;
+export type TableOnFilter = (params: {
+  filters?: TableFilters;
 }) => Promise<void>;
 
-export type WETableOnSort = (params: { sorts?: WETableSorts }) => Promise<void>;
+export type TableOnSort = (params: { sorts?: TableSorts }) => Promise<void>;

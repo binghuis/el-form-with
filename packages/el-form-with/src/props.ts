@@ -1,11 +1,11 @@
 import type {
-  WEFormBoxProps,
-  WETableBoxProps,
-  WESelectorBoxProps,
-  WEStepFormBoxProps,
+  FormBoxProps,
+  TableBoxProps,
+  SelectorBoxProps,
+  StepFormBoxProps,
 } from "./types";
 
-export const formBoxDefaultProps: Array<keyof WEFormBoxProps<object>> = [
+export const formBoxDefaultProps: Array<keyof FormBoxProps<object>> = [
   "reference",
   "mode",
   "data",
@@ -16,22 +16,21 @@ export const formBoxDefaultProps: Array<keyof WEFormBoxProps<object>> = [
   "extra",
 ];
 
-export const stepformBoxDefaultProps: Array<
-  keyof WEStepFormBoxProps<object[]>
-> = [
-  "mode",
-  "close",
-  "ok",
-  "loading",
-  "prev",
-  "next",
-  "hasPrev",
-  "hasNext",
-  "active",
-  "forms",
-];
+export const stepformBoxDefaultProps: Array<keyof StepFormBoxProps<object[]>> =
+  [
+    "mode",
+    "close",
+    "ok",
+    "loading",
+    "prev",
+    "next",
+    "hasPrev",
+    "hasNext",
+    "active",
+    "forms",
+  ];
 
-export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [
+export const selectorBoxDefaultProps: Array<keyof SelectorBoxProps> = [
   "reference",
   "search",
   "reset",
@@ -40,7 +39,7 @@ export const selectorBoxDefaultProps: Array<keyof WESelectorBoxProps> = [
   "loadings",
 ];
 
-export const tableBoxDefaultProps: Array<keyof WETableBoxProps<object>> = [
+export const tableBoxDefaultProps: Array<keyof TableBoxProps<object>> = [
   "reference",
   "data",
   "reset",

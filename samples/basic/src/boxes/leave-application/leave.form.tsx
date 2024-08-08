@@ -9,7 +9,7 @@ import {
   ElDatePicker,
   ElSelect,
 } from "element-plus";
-import { formBoxDefaultProps, type WEFormBoxProps } from "el-form-with";
+import { formBoxDefaultProps, type FormBoxProps } from "el-form-with";
 import {
   LeaveApplicationStatus,
   LeaveApplicationType,
@@ -25,7 +25,7 @@ import {
 } from "./leave.form.helpers";
 
 const LeaveApplicationFormBox = defineComponent<
-  WEFormBoxProps<
+  FormBoxProps<
     LeaveApplicationFormValue,
     LeaveApplicationFormType,
     LeaveApplicationFormOkType

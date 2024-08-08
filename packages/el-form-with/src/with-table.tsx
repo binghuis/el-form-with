@@ -6,31 +6,31 @@ import {
   ElPagination,
 } from "element-plus";
 import type {
-  WEPagination,
-  WEWithTableParams,
-  WERequest,
-  WETableSearch,
-  WETableFilters,
-  WELoadings,
-  WESelectorBoxProps,
-  WETableBoxProps,
-  WETableReset,
-  WETableRefresh,
-  WETableOnSearch,
-  WETableOnReset,
-  WETableOnRefresh,
+  Pagination,
+  WithTableParams,
+  Request,
+  TableSearch,
+  TableFilters,
+  Loadings,
+  SelectorBoxProps,
+  TableBoxProps,
+  TableReset,
+  TableRefresh,
+  TableOnSearch,
+  TableOnReset,
+  TableOnRefresh,
   PaginationPropsInj,
-  WETableFilter,
-  WETableOnFilter,
-  WETableSort,
-  WETableOnSort,
+  TableFilter,
+  TableOnFilter,
+  TableSort,
+  TableOnSort,
 } from "./types";
 import { getFormValueByFields, raw } from "./utils";
 
 export type TableWithOverlayRef = {
-  search: WETableSearch;
-  reset: WETableReset;
-  refresh: WETableRefresh;
+  search: TableSearch;
+  reset: TableReset;
+  refresh: TableRefresh;
 };
 
 type PaginationOpts = Partial<
@@ -55,13 +55,13 @@ type TableWithOverlayProps<
   RecordValue extends object,
   SelectorValue extends object
 > = {
-  table: (props: WETableBoxProps<RecordValue>) => VNode;
-  selector?: (props: WESelectorBoxProps) => VNode;
-  onSearch?: WETableOnSearch<SelectorValue>;
-  onSort?: WETableOnSort;
-  onReset?: WETableOnReset<SelectorValue>;
-  onRefresh?: WETableOnRefresh<SelectorValue>;
-  onFilter?: WETableOnFilter;
+  table: (props: TableBoxProps<RecordValue>) => VNode;
+  selector?: (props: SelectorBoxProps) => VNode;
+  onSearch?: TableOnSearch<SelectorValue>;
+  onSort?: TableOnSort;
+  onReset?: TableOnReset<SelectorValue>;
+  onRefresh?: TableOnRefresh<SelectorValue>;
+  onFilter?: TableOnFilter;
   hidePagination?: boolean;
   paginationOpts?: PaginationOpts;
 };
@@ -70,10 +70,10 @@ const withTable = <
   RecordValue extends object,
   SelectorValue extends object = object
 >(
-  params: WEWithTableParams<RecordValue, SelectorValue>
+  params: WithTableParams<RecordValue, SelectorValue>
 ) => {
   const { pageSize = 10, requester } = params ?? {};
-  const DefaultPagination: WEPagination = {
+  const DefaultPagination: Pagination = {
     current: 1,
     pageSize: pageSize ?? 10,
     total: 0,
@@ -85,13 +85,13 @@ const withTable = <
   const extraValueRef = ref<object>();
   const tableRef = ref<TableInstance>();
   const tableValueRef = ref<RecordValue[]>();
-  const pageinationRef = ref<WEPagination>(DefaultPagination);
-  const loadingsRef = ref<WELoadings>({
+  const pageinationRef = ref<Pagination>(DefaultPagination);
+  const loadingsRef = ref<Loadings>({
     search: false,
     reset: false,
     refresh: false,
   });
-  const filtersRef = ref<WETableFilters>({});
+  const filtersRef = ref<TableFilters>({});
   const sortsRef = ref<Record<string, string>>({});
 
   const isLoadingRef = computed(() => {
@@ -101,7 +101,7 @@ const withTable = <
   const getFormValue = () =>
     getFormValueByFields<SelectorValue>(selectorRef.value?.fields);
 
-  const request: WERequest<SelectorValue> = async (params) => {
+  const request: Request<SelectorValue> = async (params) => {
     const {
       pagination = pageinationRef.value,
       filters = filtersRef.value,
@@ -145,7 +145,7 @@ const withTable = <
       } = props;
       const { ...restPaginationOpts } = paginationOpts;
 
-      const search: WETableSearch = async (params) => {
+      const search: TableSearch = async (params) => {
         const { extra } = params ?? {};
         const data = getFormValue();
         onSearch?.({
@@ -156,7 +156,7 @@ const withTable = <
         loadingsRef.value.search = false;
       };
 
-      const filter: WETableFilter = async (params) => {
+      const filter: TableFilter = async (params) => {
         filtersRef.value = { ...filtersRef.value, ...params };
         const data = getFormValue();
         onFilter?.({
@@ -167,7 +167,7 @@ const withTable = <
         loadingsRef.value.search = false;
       };
 
-      const sort: WETableSort = async (params) => {
+      const sort: TableSort = async (params) => {
         const data = getFormValue();
         sortsRef.value = {
           [params.prop]: params.order,
@@ -180,7 +180,7 @@ const withTable = <
         loadingsRef.value.search = false;
       };
 
-      const reset: WETableReset = async () => {
+      const reset: TableReset = async () => {
         extraValueRef.value = undefined;
         selectorRef.value?.resetFields();
         const data = getFormValue();
@@ -197,7 +197,7 @@ const withTable = <
         loadingsRef.value.reset = false;
       };
 
-      const refresh: WETableRefresh = async () => {
+      const refresh: TableRefresh = async () => {
         onRefresh?.({
           data: raw(selectorValueRef.value),
         });

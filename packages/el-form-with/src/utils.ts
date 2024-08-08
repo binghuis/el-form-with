@@ -1,6 +1,6 @@
 import type { FormItemContext } from "element-plus";
 import { isProxy, toRaw } from "vue";
-import type { WEPlainObject } from "./types";
+import type { PlainObject } from "./types";
 import { klona } from "klona";
 
 export const isDate = (val: any) => val instanceof Date;
@@ -16,7 +16,7 @@ export function getFormValueByFields<FormValue>(fields?: FormItemContext[]) {
   if (!fields || fields?.length === 0) {
     return;
   }
-  return fields.reduce<WEPlainObject>((acc, cur) => {
+  return fields.reduce<PlainObject>((acc, cur) => {
     let field = cur.fieldValue;
 
     field = raw(field);

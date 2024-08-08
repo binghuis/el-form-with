@@ -5,8 +5,6 @@ import { stepformBoxDefaultProps } from "el-form-with";
 const TestFormBox = defineComponent(
   (props) => {
     return () => {
-      console.log(toRaw(props.forms[props.active]));
-
       return (
         <div>
           <ElSteps active={props.active}>

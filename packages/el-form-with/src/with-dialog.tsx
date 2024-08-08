@@ -1,16 +1,16 @@
 import { defineComponent, ref, type PropType, type VNode } from "vue";
 import { type FormInstance, ElDialog, type DialogProps } from "element-plus";
 import type {
-  WEFormMode,
-  WEOpenOverlayParams,
-  WEWithOverlaysParams,
-  WEFormBoxProps,
+  FormMode,
+  OpenOverlayParams,
+  WithOverlaysParams,
+  FormBoxProps,
   FormBoxOkHandle,
 } from "./types";
 import { DefaultMode, getFormValueByFields, raw } from "./utils";
 
 type WithDialogOpen<FormValue, FormType> = (
-  params?: WEOpenOverlayParams<FormValue, FormType>
+  params?: OpenOverlayParams<FormValue, FormType>
 ) => void;
 
 export type WithDialogRefValue<
@@ -25,13 +25,13 @@ const withDialog = <
   FormType extends string = string,
   OverlayOkType extends string = string
 >(
-  params: WEWithOverlaysParams<FormValue, FormType, OverlayOkType>
+  params: WithOverlaysParams<FormValue, FormType, OverlayOkType>
 ) => {
   const visibleRef = ref<boolean>(false);
   const formRef = ref<FormInstance>();
   const titleRef = ref<string>();
   const idRef = ref<string>();
-  const modeRef = ref<WEFormMode>(DefaultMode);
+  const modeRef = ref<FormMode>(DefaultMode);
   const dataRef = ref<FormValue>();
   const extraRef = ref<object>();
   const loadingRef = ref<boolean>(false);
@@ -97,9 +97,7 @@ const withDialog = <
 
   const DialogWithForm = defineComponent<
     Partial<DialogProps> & {
-      form: (
-        props: WEFormBoxProps<FormValue, FormType, OverlayOkType>
-      ) => VNode;
+      form: (props: FormBoxProps<FormValue, FormType, OverlayOkType>) => VNode;
     }
   >(
     (props, { expose, attrs }) => {
@@ -145,7 +143,7 @@ const withDialog = <
         },
         form: {
           type: Function as PropType<
-            (props: WEFormBoxProps<FormValue, FormType, OverlayOkType>) => VNode
+            (props: FormBoxProps<FormValue, FormType, OverlayOkType>) => VNode
           >,
           required: true,
         },
