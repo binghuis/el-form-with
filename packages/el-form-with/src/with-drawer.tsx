@@ -6,6 +6,7 @@ import type {
   WithOverlaysParams,
   FormBoxProps,
   FormBoxOkHandle,
+  DrawerWithFormProps,
 } from "./types";
 import { DefaultMode, getFormValueByFields, raw } from "./utils";
 
@@ -66,7 +67,7 @@ const withDrawer = <
     const { type } = params ?? {};
     let formValue: FormValue | undefined = undefined;
     if (formRef.value) {
-      const isValid = await formRef.value.validate().catch((error) => {});
+      const isValid = await formRef.value.validate().catch(() => false);
 
       if (!isValid) {
         return;
@@ -96,9 +97,7 @@ const withDrawer = <
   };
 
   const DrawerWithForm = defineComponent<
-    Partial<DrawerProps> & {
-      form: (props: FormBoxProps<FormValue, FormType, OverlayOkType>) => VNode;
-    }
+    DrawerWithFormProps<FormValue, FormType, OverlayOkType>
   >(
     (props, { expose, attrs }) => {
       const { form, ...restProps } = props;

@@ -1,5 +1,11 @@
-import type { ElPagination, FormInstance, TableInstance } from "element-plus";
-import type { Ref } from "vue";
+import type {
+  DialogProps,
+  DrawerProps,
+  ElPagination,
+  FormInstance,
+  TableInstance,
+} from "element-plus";
+import type { Ref, VNode } from "vue";
 
 export { type WithDialogRefValue } from "./with-dialog";
 export { type WithDrawerRefValue } from "./with-drawer";
@@ -16,6 +22,39 @@ export type EmptyFunction = () => void | Promise<void>;
 export type MaybeUndefined<T> = T | undefined;
 
 export type TableFilters = Record<string, (string | number)[]>;
+
+export type DialogWithFormProps<
+  FormValue extends object,
+  FormType extends string = string,
+  OverlayOkType extends string = string
+> = Partial<DialogProps> & {
+  form: (props: FormBoxProps<FormValue, FormType, OverlayOkType>) => VNode;
+};
+
+export type DrawerWithFormProps<
+  FormValue extends object,
+  FormType extends string = string,
+  OverlayOkType extends string = string
+> = Partial<DrawerProps> & {
+  form: (props: FormBoxProps<FormValue, FormType, OverlayOkType>) => VNode;
+};
+
+export type StepDialogWithFormsProps<
+  FormsValue extends object[],
+  FormsType extends string[] = [],
+  OverlayOkType extends string = string
+> = Partial<DialogProps> & {
+  stepform: (
+    props: StepFormBoxProps<FormsValue, FormsType, OverlayOkType>
+  ) => VNode;
+  onNext?: (step: number) =>
+    | Promise<{
+        data: FormsValue[number];
+        type?: FormsType[number];
+      }>
+    | Promise<void>
+    | void;
+};
 
 export type FormBoxOkHandle<OverlayOkType> = (params?: {
   type?: OverlayOkType;
@@ -50,7 +89,7 @@ export interface StepFormBoxProps<
   next: EmptyFunction;
   hasNext: boolean;
   step: number;
-  forms?: FormBoxProps<FormsValue[number], FormsType[number]>[];
+  forms?: FormBoxProps<FormsValue[number], FormsType[number], OverlayOkType>[];
 }
 
 export interface StepOpenOverlayParamsForms<
@@ -82,9 +121,10 @@ export interface StepWithOverlaysParams<
   submit: (
     params: {
       mode: FormMode;
-      data: FormsValue;
+      data?: MaybeUndefined<FormsValue[number]>[];
+      types?: MaybeUndefined<FormsType[number]>[];
+      step: number;
       overlayOkType?: OverlayOkType;
-      formType?: FormsType;
       id?: string;
       extra?: object;
     },

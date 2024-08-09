@@ -31,12 +31,13 @@ const App = defineComponent(
                   dropdown: () => (
                     <div>
                       <ElDropdownMenu>
-                        <ElDropdownItem>
-                          <RouterLink to="/">Base</RouterLink>
-                        </ElDropdownItem>
-                        <ElDropdownItem>
-                          <RouterLink to="/multi">Multi</RouterLink>
-                        </ElDropdownItem>
+                        <RouterLink to="/">
+                          <ElDropdownItem>Base</ElDropdownItem>
+                        </RouterLink>
+
+                        <RouterLink to="/multi">
+                          <ElDropdownItem>Multi</ElDropdownItem>
+                        </RouterLink>
                       </ElDropdownMenu>
                     </div>
                   ),

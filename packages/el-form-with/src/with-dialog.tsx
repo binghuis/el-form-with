@@ -6,6 +6,7 @@ import type {
   WithOverlaysParams,
   FormBoxProps,
   FormBoxOkHandle,
+  DialogWithFormProps,
 } from "./types";
 import { DefaultMode, getFormValueByFields, raw } from "./utils";
 
@@ -66,7 +67,7 @@ const withDialog = <
     const { type } = params ?? {};
     let formValue: FormValue | undefined = undefined;
     if (formRef.value) {
-      const isValid = await formRef.value.validate().catch((error) => {});
+      const isValid = await formRef.value.validate().catch(() => false);
 
       if (!isValid) {
         return;
@@ -96,9 +97,7 @@ const withDialog = <
   };
 
   const DialogWithForm = defineComponent<
-    Partial<DialogProps> & {
-      form: (props: FormBoxProps<FormValue, FormType, OverlayOkType>) => VNode;
-    }
+    DialogWithFormProps<FormValue, FormType, OverlayOkType>
   >(
     (props, { expose, attrs }) => {
       const { form, ...restProps } = props;
